@@ -1,0 +1,12 @@
+GENE_CATEG	Targets	Genes	GMAP_Remaining_targets	GMAP_Remaining_genes	GMAP_NonTrimmed_genes	Final_Remaining_targets	Final_NonTrimmed_targets	Final_Remaining_genes	Final_NonTrimmed_genes
+Or	385	79	296	74	41	264	249	68	32
+Gr	358	77	271	70	37	235	217	62	28
+OBP	77	11	74	11	8	73	73	11	8
+IR	104	11	92	11	6	88	83	11	3
+CSP	21	10	21	10	10	21	21	10	10
+ApisSNMP	71	9	70	9	8	63	59	9	5
+P450	493	68	400	64	41	376	364	60	36
+SP	28	5	28	5	5	23	23	5	5
+PS	30	5	19	5	3	18	16	5	1
+Control	1386	211	1223	201	149	1176	1147	194	125
+Promoter	657	657	546	546	546	440	432	440	432

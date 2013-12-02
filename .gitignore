@@ -1,0 +1,14 @@
+*todel.*
+*~
+*.png
+*.Rdata
+howToMakeAPolynomialReg.R
+testing.R
+*03_baits51_CNVpaper
+*oldStuff/*
+*03.1_PropSeq_CNVpaper_test.R
+*.log
+*.pdf
+result_*.csv
+*~lock.*
+*.xls
