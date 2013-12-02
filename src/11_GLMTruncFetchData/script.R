@@ -33,7 +33,7 @@ main <- function(argv){
 	outFileName <- argv[1]
     ver(sprintf("Saving data to %s",outFileName))
     
-    save(alpha_matrix, Genes_Info, BaitsGeneNames, ListGenes, CompGenes, file=outFileName)
+    save(alpha_matrix, Genes_Info, BaitsGeneNames, ListGenes, NonTrimGenes, file=outFileName)
 
 }
 

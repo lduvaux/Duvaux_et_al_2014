@@ -27,7 +27,7 @@ argv <- commandArgs(TRUE)[1]
     groups <- names(CLUSTERS)
     print(groups)
 	Pre_GLMtab0 <- set_Pre_GLMtable(ListGenes, BaitsGeneNames, alpha_matrix
-	, Genes_Info, CATEG_FOR_GLM, CompGenes, test_blocks=T, list_groups=CLUSTERS)
+	, Genes_Info, CATEG_FOR_GLM, NonTrimGenes, test_blocks=T, list_groups=CLUSTERS)
 	res_all_groups <- list()
 	v_samples <- paste("sample_size_", groups, sep=""); list_samples <- list()
 	for (ite in seq(length(groups)))

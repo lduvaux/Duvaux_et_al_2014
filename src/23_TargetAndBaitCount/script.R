@@ -19,12 +19,12 @@ main <- function(argv){
     # 1) Initial number of targets and baits (total: 3610 targets, 486 genes (no PMT))
 	Cleaning_sum_up <- fill_count_table(count_table, ALL_TARG_INFO, GENE_CATEG, PRO_SEGMENT, BAITS_BE4_CLEAN)
 	count_table <- Cleaning_sum_up$Count_table
-	CompGenes <- Cleaning_sum_up$CompGenes
+	NonTrimGenes <- Cleaning_sum_up$NonTrimGenes
     ######################
     write.table(count_table, file=OUTFIL, row.names=F, sep="\t", quote=F)
 	outFileName <- argv[1]
     ver(sprintf("Saving data to %s",outFileName))
-    save(CompGenes, file=outFileName)
+    save(NonTrimGenes, file=outFileName)
 
 }
 

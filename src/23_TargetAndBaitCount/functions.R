@@ -28,8 +28,8 @@ fill_count_table <- function(Count_table, all_TARG_INFO, gene_categ, pro_SEGMENT
 		# 2.3) fill complete genes
 	IncGenes_GMAP <- unique(sapply(tab0$NewTargetName[bad_target_GMAP], Pro_geneName))
 	IncGenes_ind <- targets_gene1%in%IncGenes_GMAP
-	CompGenes_GMAP <- targets_gene1[!IncGenes_ind]
-	Count_table[,6] <- table(sapply(CompGenes_GMAP, get_element))[ind]
+	NonTrimGenes_GMAP <- targets_gene1[!IncGenes_ind]
+	Count_table[,6] <- table(sapply(NonTrimGenes_GMAP, get_element))[ind]
 
 	# 3) final dataset
 	load(pro_SEGMENT)	# reference for remaining baits
@@ -54,11 +54,11 @@ fill_count_table <- function(Count_table, all_TARG_INFO, gene_categ, pro_SEGMENT
 				# F) remove incomplete genes
 	IncGenes_BaitCleaning <- unique(sapply(refBaits[rmbaits], Pro_geneName))
 	AllGenes <- unique(sapply(refBaits, Pro_geneName))
-	CompGenes_BaitCleaning <- AllGenes[!AllGenes%in%IncGenes_BaitCleaning]
-	CompGenes <- CompGenes_BaitCleaning[!CompGenes_BaitCleaning%in%IncGenes_GMAP]
-	Count_table[,10] <- table(sapply(CompGenes, get_element))[ind]
+	NonTrimGenes_BaitCleaning <- AllGenes[!AllGenes%in%IncGenes_BaitCleaning]
+	NonTrimGenes <- NonTrimGenes_BaitCleaning[!NonTrimGenes_BaitCleaning%in%IncGenes_GMAP]
+	Count_table[,10] <- table(sapply(NonTrimGenes, get_element))[ind]
 
-	res <- list(Count_table=Count_table, CompGenes=CompGenes)
+	res <- list(Count_table=Count_table, NonTrimGenes=NonTrimGenes)
 	
 	return(res)
 }

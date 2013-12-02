@@ -1,6 +1,6 @@
 ###############
 set_Pre_GLMtable <- function(list_gen, Baits_Gn_Name, alpha_mat,
-	Tab_Genes_Info, Categ_4GLM, CompGenes, test_blocks=F, list_groups, fqcy=F){
+	Tab_Genes_Info, Categ_4GLM, NonTrimGenes, test_blocks=F, list_groups, fqcy=F){
 	# 1) remove genes from bad gene families
 	good <- unlist(mclapply(list_gen, testGoodFam, Tab_Genes_Info, Categ_4GLM))
 	list_gen <- list_gen[good]
@@ -31,12 +31,12 @@ set_Pre_GLMtable <- function(list_gen, Baits_Gn_Name, alpha_mat,
         # 4) prepare the table
         if (fqcy) {
             ftab <- cbind(Fqcy_all=vec_gen_polym0, Fqcy_CpDup=vec_gen_polym1, gene_Res, ratioLength=ratiolength)
-            ftab$trimmed <- as.factor(ifelse(repgens%in%CompGenes, "No", "Yes"))
+            ftab$trimmed <- as.factor(ifelse(repgens%in%NonTrimGenes, "No", "Yes"))
             ftab$Race <- as.factor(group)
             ftab <- ftab [, c(1:3, 8, 4:7)]}
         else {
             ftab <- cbind(Polymorphism=vec_gen_polym0, gene_Res, ratioLength=ratiolength)
-            ftab$trimmed <- as.factor(ifelse(repgens%in%CompGenes, "No", "Yes"))
+            ftab$trimmed <- as.factor(ifelse(repgens%in%NonTrimGenes, "No", "Yes"))
             ftab$Race <- as.factor(group)
             ftab <- ftab [, c(1, 2, 7, 3:6)]}
 		}
@@ -61,10 +61,10 @@ set_Pre_GLMtable <- function(list_gen, Baits_Gn_Name, alpha_mat,
         # 4) prepare the table
         if (fqcy) {
             ftab <- cbind(Fqcy_all=vec_gen_polym0, Fqcy_CpDup=vec_gen_polym1, gene_Res, ratioLength=ratiolength)
-            ftab$trimmed <- as.factor(ifelse(rownames(ftab)%in%CompGenes, "No", "Yes"))}
+            ftab$trimmed <- as.factor(ifelse(rownames(ftab)%in%NonTrimGenes, "No", "Yes"))}
         else {
             ftab <- cbind(Polymorphism=vec_gen_polym0, gene_Res, ratioLength=ratiolength)
-            ftab$trimmed <- as.factor(ifelse(rownames(ftab)%in%CompGenes, "No", "Yes"))}
+            ftab$trimmed <- as.factor(ifelse(rownames(ftab)%in%NonTrimGenes, "No", "Yes"))}
 		}
 	return(ftab)
 }

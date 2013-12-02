@@ -8,7 +8,7 @@ Baits_Gn_Name <- BaitsGeneNames
 alpha_mat <- alpha_matrix
 Tab_Genes_Info <- Genes_Info
 Categ_4GLM <- CATEG_FOR_GLM
-CompGenes <- CompGenes
+NonTrimGenes <- NonTrimGenes
 test_blocks <- T
 list_groups <- CLUSTERS
 

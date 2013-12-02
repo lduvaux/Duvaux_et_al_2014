@@ -24,7 +24,7 @@ source("./Models_trimmed.R")
 groups <- names(CLUSTERS)
 print(groups)
 Pre_GLMtab0 <- set_Pre_GLMtable(ListGenes, BaitsGeneNames, alpha_matrix
-, Genes_Info, CATEG_FOR_GLM, CompGenes, test_blocks=T, list_groups=CLUSTERS, fqcy=T)
+, Genes_Info, CATEG_FOR_GLM, NonTrimGenes, test_blocks=T, list_groups=CLUSTERS, fqcy=T)
 
 
 ######################## start again from here.....
