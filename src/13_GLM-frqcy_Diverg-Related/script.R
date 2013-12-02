@@ -1,4 +1,5 @@
 #!/bin/Rscript
+rm(list=ls())
 library('multicore')
 library(lme4)
 library(MuMIn)
@@ -23,19 +24,27 @@ source("./Models_trimmed.R")
 ######################
 groups <- names(CLUSTERS)
 print(groups)
+
+
 Pre_GLMtab0 <- set_Pre_GLMtable(ListGenes, BaitsGeneNames, alpha_matrix
-, Genes_Info, CATEG_FOR_GLM, NonTrimGenes, test_blocks=T, list_groups=CLUSTERS, fqcy=T)
+, Genes_Info, CATEG_FOR_GLM, NonTrimGenes, test_blocks=T, list_groups=SUBCLUSTERS, fqcy=T)
 
-
-######################## start again from here.....
+Phylog_lvl <- rep('divergent', nrow(Pre_GLMtab0))
+ind <- Pre_GLMtab0$Race%in%CLUSTERS$related
+Phylog_lvl[ind] <- "related"
+Pre_GLMtab0 <- cbind(Pre_GLMtab0, Phylog_lvl)
 
 res_all_groups <- list()
 v_samples <- paste("sample_size_", groups, sep=""); list_samples <- list()
 
+
 for (ite in seq(length(groups)))
 {
     gp <- groups[[ite]]
-    Pre_GLMtab <- subset(Pre_GLMtab0, Race==gp)
+    Pre_GLMtab <- subset(Pre_GLMtab0, Phylog_lvl==gp)
+
+    ####### => start again from here
+
     
     # 1) Check data
     GLMtab_all2 <- set_GLMtab(Pre_GLMtab, NonTrim_only=F, covar="LnExonLength")

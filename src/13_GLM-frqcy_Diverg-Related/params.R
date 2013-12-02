@@ -3,7 +3,9 @@
 PREVIOUS_DATA <- "../11_GLMTruncFetchData.Rdata"
 RAW_DATA <- "../01_GetData.Rdata"
 CATEG_FOR_GLM <- c("Control", "Gr", "Or","P450")
+
 CLUSTERS <- list(divergent=c("Cytisus", "Lathyrus", "L.corn.", "L.ped.", "Ononis"), related=c("Medicago", "Pisum", "Trifolium"))
+SUBCLUSTERS <- list(Cytisus="Cytisus", Lathyrus="Lathyrus", L.corn.="L.corn.", L.ped.="L.ped.", Ononis="Ononis", Medicago="Medicago", Pisum="Pisum", Trifolium="Trifolium")
 
 # models
 	# for pair plots
