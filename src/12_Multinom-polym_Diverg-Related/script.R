@@ -54,6 +54,8 @@ argv <- commandArgs(TRUE)[1]
 		# 2) Investigate the effect of trimmed on CNV
 		print("Fit the main model")
 		fm1 <- multinom(formula=MOD_ALL1, data = GLMtab_all2)
+        MOD_ALL2 <- Polymorphism ~ LnGeneLength + LnExonLength + Family + trimmed + Family * trimmed
+
 		print("Test all terms")
 		test_trimmed <- dredge(fm1, fixed=FIXED_TERMS, m.max=M_MAX)
 	# 	model.avg(test_trimmed, subset = delta < 4)
@@ -64,16 +66,11 @@ argv <- commandArgs(TRUE)[1]
 		summ_best <- summary(test_best)
 		nomfil <- sub(".txt", paste("_", gp, ".txt", sep=""), GLM_RES_BEST_TRIMMED)
 		Output_glm_res(summ_best, nomfil)
-
+        
 		# 3) draw the results?
-# 		pp_dpolym <- get_prediction(test_best, GLMtab_all2)
-	# 	lpp <- melt(pp_dpolym$probaTab, id.vars = c("Family", "trimmed", "LnGeneLength", "LnExonLength"), value.name = "probability")
-	# 	lpp$AllInter <- interaction(lpp$Family, lpp$trimmed)
-	# 	ggplot(lpp, aes(x = LnGeneLength, y = probability, colour = AllInter)) + geom_line() + facet_grid(variable ~ ., scales = "free")
-# 		nompdf <- sub(".pdf", paste("_", gp, ".pdf", sep=""), HEAT_MAP_COMP)
-# 		Draw_pdf(plotmod_predic(pp_dpolym$heat_map_Complete, GLMtab_all2, "Yes"), nompdf)
-# 		nompdf <- sub(".pdf", paste("_", gp, ".pdf", sep=""), HEAT_MAP_PART)
-# 		Draw_pdf(plotmod_predic(pp_dpolym$heat_map_Partial, GLMtab_all2, "No"), nompdf)
+        drw_pred(test_best, GLMtab_all2)
+        
+        
 		assign(gp, list(test_trimmed=test_trimmed, summ_best=summ_best))
 		res_all_groups[[ite]] <- get(gp)
 	}

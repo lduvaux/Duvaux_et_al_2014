@@ -25,14 +25,12 @@ source("./Models_trimmed.R")
 groups <- names(CLUSTERS)
 print(groups)
 
-
 Pre_GLMtab0 <- set_Pre_GLMtable(ListGenes, BaitsGeneNames, alpha_matrix
 , Genes_Info, CATEG_FOR_GLM, NonTrimGenes, test_blocks=T, list_groups=SUBCLUSTERS, fqcy=T)
 
-Phylog_lvl <- rep('divergent', nrow(Pre_GLMtab0))
-ind <- Pre_GLMtab0$Race%in%CLUSTERS$related
-Phylog_lvl[ind] <- "related"
-Pre_GLMtab0 <- cbind(Pre_GLMtab0, Phylog_lvl)
+Pre_GLMtab0 <- add_Phylog_lvl(Pre_GLMtab0, CLUSTERS)
+Pre_GLMtab0 <- add_CpDupField(Pre_GLMtab0)
+Pre_GLMtab0 <- add_raceField(Pre_GLMtab0)
 
 res_all_groups <- list()
 v_samples <- paste("sample_size_", groups, sep=""); list_samples <- list()
@@ -42,32 +40,44 @@ for (ite in seq(length(groups)))
 {
     gp <- groups[[ite]]
     Pre_GLMtab <- subset(Pre_GLMtab0, Phylog_lvl==gp)
-
-    ####### => start again from here
-
     
     # 1) Check data
     GLMtab_all2 <- set_GLMtab(Pre_GLMtab, NonTrim_only=F, covar="LnExonLength")
-    print(sample_size1 <- table(GLMtab_all2$Polymorphism, GLMtab_all2$Family))
-    print(sample_size2 <- table(GLMtab_all2$Family, GLMtab_all2$trimmed))
-    print(sample_size3 <- table(GLMtab_all2$Polymorphism, interaction(GLMtab_all2$Family, GLMtab_all2$trimmed)))
+
+    ####### => start again from here
+    
+    print(sample_size1 <- table(GLMtab_all2$Family, GLMtab_all2$trimmed))
+    print(sample_size2 <- table(GLMtab_all2$Family, GLMtab_all2$CpDup))
+    print(sample_size3 <- table(GLMtab_all2$Family, interaction(GLMtab_all2$trimmed, GLMtab_all2$CpDup)))
     assign(v_samples[ite], list(sample_size1=sample_size1, sample_size2=sample_size2, sample_size3=sample_size3))
     list_samples[[ite]] <- get(v_samples[ite])
     nompdf <- sub(".pdf", paste("_", gp, ".pdf", sep=""), PAIRS_ALL_EXON_LENGTH)
     Draw_pdf(pairs_glm(MODP2, data=GLMtab_all2), nompdf)
 
         # 1.c) draw histograms per class of interactions
-    vec_int <- with(Pre_GLMtab, interaction(trimmed, Family))
-    tab_draw <- cbind(Pre_GLMtab[,c("Polymorphism", "Family", "Race", "GeneLength")], LnGeneLength=log(Pre_GLMtab[,"GeneLength"]), TotExonLength=Pre_GLMtab[,"TotExonLength"], LnExonLength=log(Pre_GLMtab[,"TotExonLength"]))
-    nompdf <- sub(".pdf", paste("_", gp, ".pdf", sep=""), INTERACTION_HIST)
-    Draw_pdf(Draw_distrib(tab_draw, Vec_int1=vec_int, Vec_int2=tab_draw$trimmed, numeric_var=4:7, nrow=4), nompdf)
+
 
     # 2) Investigate the effect of trimmed on CNV
     print("Fit the main model")
-    fm1 <- multinom(formula=MOD_ALL1, data = GLMtab_all2)
+    fm1 <- glmer(formula=MOD_ALL1, data = GLMtab_all2, family=FAMILY)
+
+    fac <- with(GLMtab_all2, interaction(trimmed, CpDup, Family))
+    boxplot(fitted(fm1)~fac)
+    boxplot(GLMtab_all2$Fqcy_all~fac)
+    
     print("Test all terms")
     test_trimmed <- dredge(fm1, fixed=FIXED_TERMS, m.max=M_MAX)
-# 	model.avg(test_trimmed, subset = delta < 4)
+    model.avg(test_trimmed, subset = delta < 4)
+
+
+
+
+
+
+
+
+
+#### start back here
 
         # 2.1) best
     best_mod <- get_best(test_trimmed)

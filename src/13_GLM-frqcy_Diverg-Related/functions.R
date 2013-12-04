@@ -1,7 +1,32 @@
 source("./10_GeneralStats_functions.R")
 source("./glm_common.R")
 
-###############
+############### add fields to Pre_GLMtab0
+add_Phylog_lvl <- function(tab, clusters)
+{
+    Phylog_lvl <- rep('divergent', nrow(tab))
+    ind <- tab$Race%in%clusters$related
+    Phylog_lvl[ind] <- "related"
+    tab <- cbind(tab, Phylog_lvl)
+    return(tab)
+}
+
+add_CpDupField <- function (tab)
+{
+    CpDup <- tab$Fqcy_CpDup!=0
+    tab <- cbind(tab, CpDup)
+    return(tab)
+}
+
+add_raceField <- function (tab)
+{
+    v <- rownames(tab)
+    race <- sapply(v, function (x) unlist(strsplit(x, "_"))[3])
+    tab <- cbind(tab, race)
+    return(tab)
+}
+
+############### set_GLMtab
 set_GLMtab <- function(tab0, NonTrim_only=F, covar)
 {
 	if (covar!="LnExonLength" & covar!="ratioLength")
@@ -11,26 +36,22 @@ set_GLMtab <- function(tab0, NonTrim_only=F, covar)
 		tab0 <- tab0[tab0$trimmed=="Yes",]
 
 	if (covar=="LnExonLength") {
-		tab <- with(tab0, data.frame(Polymorphism, Family, trimmed=as.factor(trimmed), LnGeneLength=log(GeneLength), LnExonLength=log(TotExonLength)))
-		rownames(tab) <- rownames(tab0)
-		
-		bad <- which(is.na(tab$LnGeneLength) | is.na(tab$LnGeneLength)| is.na(tab$LnExonLength)| is.na(tab$LnExonLength))
-		nambad <- rownames(tab)[bad]
-		tab <- tab[-bad,]}
+		tab <- with(tab0, data.frame(Fqcy_all, Fqcy_CpDup, CpDup, Phylog_lvl, race, Family, trimmed=as.factor(trimmed), LnGeneLength=log(GeneLength), LnExonLength=log(TotExonLength)))
+		bad <- which(is.na(tab$LnGeneLength) | is.na(tab$LnExonLength))}
 
 	if (covar=="ratioLength") {
-		tab <- with(tab0, data.frame(Polymorphism, Family, trimmed=as.factor(trimmed), LnGeneLength=log(GeneLength), ratioLength=qlogis(ratioLength)))
-		rownames(tab) <- rownames(tab0)
+		tab <- with(tab0, data.frame(Fqcy_all, Fqcy_CpDup, CpDup, Phylog_lvl, race, Family, trimmed=as.factor(trimmed), LnGeneLength=log(GeneLength), ratioLength=qlogis(ratioLength)))
+		bad <- which(is.na(tab$LnGeneLength) | is.na(tab$ratioLength))}
 
-		bad <- which(is.na(tab$LnGeneLength) | is.na(tab$LnGeneLength)| is.na(tab$ratioLength)| is.na(tab$ratioLength))
-		nambad <- rownames(tab)[bad]
-		tab <- tab[-bad,]}
+    rownames(tab) <- rownames(tab0)
+    nambad <- rownames(tab)[bad]
+    tab <- tab[-bad,]
 
-	print(paste ("The following locus have been removed from the analysis:", nambad, sep=" "))
+	print(paste ("Because of Nas, the following locus have been removed from the analysis:", nambad, sep=" "))
 	return(tab)
 }
 
-###############
+############### plotting functions (depricated)
 get_prediction <- function(test_mod, GLMtab, n=30, heat_mat=T, gene_categ = c("Control", "Gr", "Or", "P450"))
 {
 

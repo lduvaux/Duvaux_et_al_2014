@@ -9,9 +9,7 @@ SUBCLUSTERS <- list(Cytisus="Cytisus", Lathyrus="Lathyrus", L.corn.="L.corn.", L
 
 # models
 	# for pair plots
-#~MODP1 <- Polymorphism ~ LnGeneLength + ratioLength + Family + trimmed
-MODP2 <- Polymorphism ~ LnGeneLength + LnExonLength + Family + trimmed
-#~MODP3 <-  Polymorphism ~ LnGeneLength + LnExonLength + Family
+MODP2 <- Fqcy_all ~ LnGeneLength + LnExonLength + Family + trimmed + CpDup + race
 
 	# without trimmed
 # outputs
