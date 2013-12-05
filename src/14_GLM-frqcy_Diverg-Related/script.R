@@ -30,7 +30,7 @@ Pre_GLMtab0 <- set_Pre_GLMtable(ListGenes, BaitsGeneNames, alpha_matrix
 
 Pre_GLMtab0 <- add_Phylog_lvl(Pre_GLMtab0, CLUSTERS)
 Pre_GLMtab0 <- add_CpDupField(Pre_GLMtab0)
-Pre_GLMtab0 <- add_raceField(Pre_GLMtab0)
+#~Pre_GLMtab0 <- add_raceField(Pre_GLMtab0)
 
 res_all_groups <- list()
 v_samples <- paste("sample_size_", groups, sep=""); list_samples <- list()
@@ -43,12 +43,12 @@ for (ite in seq(length(groups)))
     
     # 1) Check data
     GLMtab_all2 <- set_GLMtab(Pre_GLMtab, NonTrim_only=F, covar="LnExonLength")
-
+    GLMtab_all2 <- GLMtab_all2[GLMtab_all2$Fqcy_all!=0,]
     ####### => start again from here
     
     print(sample_size1 <- table(GLMtab_all2$Family, GLMtab_all2$trimmed))
     print(sample_size2 <- table(GLMtab_all2$Family, GLMtab_all2$CpDup))
-    print(sample_size3 <- table(GLMtab_all2$Family, interaction(GLMtab_all2$trimmed, GLMtab_all2$CpDup)))
+    print(sample_size3 <- table(GLMtab_all2$Family, with(GLMtab_all2, interaction(CpDup, race, trimmed))))
     assign(v_samples[ite], list(sample_size1=sample_size1, sample_size2=sample_size2, sample_size3=sample_size3))
     list_samples[[ite]] <- get(v_samples[ite])
     nompdf <- sub(".pdf", paste("_", gp, ".pdf", sep=""), PAIRS_ALL_EXON_LENGTH)
@@ -60,34 +60,31 @@ for (ite in seq(length(groups)))
     # 2) Investigate the effect of trimmed on CNV
     print("Fit the main model")
     fm1 <- glmer(formula=MOD_ALL1, data = GLMtab_all2, family=FAMILY)
+#~    fm2 <- glmer(formula=MOD_ALL2, data = GLMtab_all2, family=FAMILY)
+
+    print("Test all terms")
+    test_trimmed <- dredge(fm1, fixed=FIXED_TERMS, m.max=M_MAX)
+    mdl_vag <- model.avg(test_trimmed, subset = delta < 2)
+    summary(mdl_vag)
+
+        # 2.1) best
+    best_mod <- get_best(test_trimmed, Delta=5)
+    test_best <-  get.models(test_trimmed, best_mod)[[1]]
+    summ_best <- summary(test_best)
+#~    nomfil <- sub(".txt", paste("_", gp, ".txt", sep=""), GLM_RES_BEST_TRIMMED)
+#~    Output_glm_res(summ_best, nomfil)
+
+    assign(gp, list(test_trimmed=test_trimmed, summ_best=summ_best))
+    res_all_groups[[ite]] <- get(gp)
+    
+    # 3) draw the results?
+    nompdf <- sub(".pdf", paste("_", gp, ".pdf", sep=""), BOXPLOTS_PDF)
+    Draw_pdf(drw_pred(test_best, GLMtab_all2), nompdf)
 
     fac <- with(GLMtab_all2, interaction(trimmed, CpDup, Family))
     boxplot(fitted(fm1)~fac)
     boxplot(GLMtab_all2$Fqcy_all~fac)
     
-    print("Test all terms")
-    test_trimmed <- dredge(fm1, fixed=FIXED_TERMS, m.max=M_MAX)
-    model.avg(test_trimmed, subset = delta < 4)
-
-
-
-
-
-
-
-
-
-#### start back here
-
-        # 2.1) best
-    best_mod <- get_best(test_trimmed)
-    test_best <-  get.models(test_trimmed, best_mod)[[1]]
-    summ_best <- summary(test_best)
-    nomfil <- sub(".txt", paste("_", gp, ".txt", sep=""), GLM_RES_BEST_TRIMMED)
-    Output_glm_res(summ_best, nomfil)
-
-    assign(gp, list(test_trimmed=test_trimmed, summ_best=summ_best))
-    res_all_groups[[ite]] <- get(gp)
 }
 names(res_all_groups) <- groups
 names(list_samples) <- groups

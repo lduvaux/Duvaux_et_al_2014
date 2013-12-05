@@ -167,45 +167,6 @@ Draw_distrib <- function(tab, Vec_int1, Vec_int2, numeric_var, nrow=5, ncol=4){
 }
 
 ############
-Output_glm_res <- function(Sum, outfile, sep="\t")
-{
-	z <- Sum$coefficients/Sum$standard.errors
-	p <- (1 - pnorm(abs(z), 0, 1))*2
-	tab <- round(rbind(Sum$coefficients, Sum$standard.errors, z, p),5)
-	nlevel <- length(Sum$lev)
-	if (nlevel==2)
-		rownames(tab) <- paste(Sum$lev[2], c("coef", "sd", "z", "p-val"), sep="_")
-	else
-		rownames(tab) <- paste(rownames(tab), rep(c("coef", "sd", "z", "p-val"),each=nlevel-1), sep="_")
-	tab  <- redo_table(t(tab))
-	write.table(tab, file=outfile, sep=sep, row.names=F, quote=F)
-}
-
-redo_table <- function(tab)
-{
-	return(tab <- cbind(Model_Terms=rownames(tab), tab))
-}
-
-Fit_models <- function (all_models, data_tab)
-{
-	a <- list()
-	vAIC <- numeric()
-	for (ite in 1:length(all_models))
-	{
-		print(names(all_models)[ite])
-		mod <- all_models[[ite]]
-		test <- multinom(formula=mod, data=data_tab)
-		# sum_test <- summary(test)	# deprecated: summary (test) doesn't work in the function whereas it works as a simple loop!!! Probably come from the object stocked in test$call
-		a[[ite]] <- test
-		vAIC[ite] <- test$AIC
-	}
-	names(vAIC) <- names(all_models)
-	names(a) <- names(all_models)
-	res <- list(test_details=a, AIC=vAIC)
-	return(res)
-}
-
-############
 get_best <- function(dredge_object, Delta=5)
 {
 	good_mod0 <- subset(dredge_object, delta < Delta)

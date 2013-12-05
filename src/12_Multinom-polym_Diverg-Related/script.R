@@ -68,7 +68,8 @@ argv <- commandArgs(TRUE)[1]
 		Output_glm_res(summ_best, nomfil)
         
 		# 3) draw the results?
-        drw_pred(test_best, GLMtab_all2)
+        nompdf <- sub(".pdf", paste("_", gp, ".pdf", sep=""), BOXPLOTS_PDF)
+        Draw_pdf(drw_pred(test_best, GLMtab_all2), nompdf)
         
         
 		assign(gp, list(test_trimmed=test_trimmed, summ_best=summ_best))
