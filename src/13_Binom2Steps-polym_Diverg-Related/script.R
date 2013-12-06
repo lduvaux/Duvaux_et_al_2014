@@ -3,10 +3,10 @@ rm(list=ls())
 library('multicore')
 library(lme4)
 library(MuMIn)
-library("epicalc")
+#~library("epicalc")
 library(methods)
 library(ggplot2)
-library(multcomp)
+#~library(multcomp)
 
 source("../utils/functions.R")
 source("../utils/getter_functions.R")
@@ -16,7 +16,7 @@ source("./params.R")
 source("./functions.R")
 source("./Models_trimmed.R")
 
-#~argv <- commandArgs(TRUE)[1]
+argv <- commandArgs(TRUE)[1]
 
 # main <- function(argv){
 
@@ -24,9 +24,15 @@ source("./Models_trimmed.R")
 	set.seed(0)
 
 ######################
+cat("
+##########################################
+13_Binom2Steps-polym_Diverg-Related: test the effect of gene features on Pr(duplication)
+##########################################\n")
 groups <- names(CLUSTERS)
-print(groups)
+cat(groups)
 
+# 13.1) Set up GLM data table
+cat("\n\n# 13.1) Set up GLM data table\n")
 Pre_GLMtab0 <- set_Pre_GLMtable(ListGenes, BaitsGeneNames, alpha_matrix
 , Genes_Info, CATEG_FOR_GLM, NonTrimGenes, test_blocks=T, list_groups=SUBCLUSTERS, fqcy=F)
 
@@ -41,11 +47,16 @@ v_samples <- paste("sample_size_", groups, sep=""); list_samples <- list()
 for (ite in seq(length(groups)))
 {
     gp <- groups[[ite]]
+    cat("\n\n\n     ##################\ngroupe ", gp,
+"\n     ##################\n", sep="")
+
+
     Pre_GLMtab <- subset(Pre_GLMtab0, Phylog_lvl==gp)
-    
-    # 1) Check data
+
+    # 13.2) Check data
+    cat("\n\n     # 13.2) Check data distrisbution\n")
     GLMtab_all1 <- set_GLMtab(Pre_GLMtab, NonTrim_only=F, covar="LnExonLength")
-    
+
     print(sample_size1 <- table(GLMtab_all1$Family, GLMtab_all1$trimmed))
     print(sample_size2 <- table(GLMtab_all1$Family, GLMtab_all1$Dup))
     print(sample_size3 <- table(GLMtab_all1$Family, with(GLMtab_all1, interaction(Dup, trimmed))))
@@ -54,58 +65,53 @@ for (ite in seq(length(groups)))
     nompdf <- sub(".pdf", paste("_", gp, ".pdf", sep=""), PAIRS_ALL_EXON_LENGTH)
     Draw_pdf(pairs_glm(MODP2, data=GLMtab_all1), nompdf)
 
-    # 2) Effect of variables on duplication events
-    print("Fit model 1")
+    # 13.3) Effect of variables on duplication events
+        # 13.3.1) fit the models
+    cat("\n\n     # 13.3) Effect of variables on duplication events\n")
+    cat("\n         # 13.3.1) Fit the maximal model\n")
     fm1 <- glmer(formula=MOD_ALL1, data = GLMtab_all1, family=FAMILY)
-    summary(fm1)
+    print(summary(fm1), corr=F)
 
-    print("Test all terms")
-    test_trimmed <- dredge(fm1, fixed=FIXED_TERMS, m.max=M_MAX)
-#~    mdl_vag <- model.avg(test_trimmed, subset = delta < 2)
-#~    summary(mdl_vag)
+        # 13.3.2) Fit al other models & model averaging
+    cat("\n         # 13.3.2) Fit al other models & model averaging\n")
+    test_trimmed <- dredge(fm1, fixed=FIXED_TERMS1, m.max=M_MAX)
+    mdl_avg <- model.avg(test_trimmed, subset = delta < DELTA1)
+    print(summary(mdl_avg)) # save in a file
 
-        # 2.1) best
-    best_mod <- get_best(test_trimmed, Delta=5)
-    test_best <-  get.models(test_trimmed, best_mod)[[1]]
-    summ_best <- summary(test_best)
-#~    nomfil <- sub(".txt", paste("_", gp, ".txt", sep=""), GLM_RES_BEST_TRIMMED)
-#~    Output_glm_res(summ_best, nomfil)
+        # 13.3.3) draw the results
+    cat("\n         # 13.3.3) Draw predicted probability of duplication\n")
+    nompdf <- sub(".pdf", paste("_", gp, ".pdf", sep=""), DP_PDF)
+    Draw_pdf(drw_pred(test_trimmed, GLMtab_all1, DELTA1), nompdf)
 
-    assign(gp, list(test_trimmed=test_trimmed, summ_best=summ_best))
-    res_all_groups[[ite]] <- get(gp)
 
-        # 2.2) draw the results?
-    nompdf <- sub(".pdf", paste("_", gp, ".pdf", sep=""), BOXPLOTS_PDF)
-    Draw_pdf(drw_pred(test_best, GLMtab_all1), nompdf)
-
-    # 3) Effect of variables on complete duplication event
-        # 3.1) data
+    # 13.4) Effect of variables on complete duplication events
+    cat("\n\n     # 13.4) Effect of variables on complete duplication events\n")
+        # 13.4.1) data
+    cat("\n         # 13.4.1) Remove non polymorphic genes\n")
     GLMtab_all2 <- GLMtab_all1[GLMtab_all1$Dup==T,]
 
-        # 3.2) test th emodel
-    print("Fit model 2")
+        # 13.4.2)  Fit the maximal model
+    cat("\n         # 13.4.2) Fit the maximal model\n")
     fm2 <- glmer(formula=MOD_ALL2, data = GLMtab_all2, family=FAMILY)
-#~    summary(fm2)
+    print(summary(fm2), corr=F)
 
+        # 13.4.3) Fit al other models & model averaging
+    cat("\n         # 13.4.3) Fit al other models & model averaging\n")
     print("Test all terms")
-    test_trimmed2 <- dredge(fm2, fixed=FIXED_TERMS, m.max=M_MAX)
-#~    mdl_vag <- model.avg(test_trimmed, subset = delta < 2)
-#~    summary(mdl_vag)
+    test_trimmed2 <- dredge(fm2, fixed=FIXED_TERMS2, m.max=M_MAX)
+    mdl_avg2 <- model.avg(test_trimmed2, subset = delta < DELTA2[ite])
+    print(summary(mdl_avg2))
 
-        # 2.1) best
-    best_mod2 <- get_best(test_trimmed2, Delta=5)
-    test_best2 <-  get.models(test_trimmed2, best_mod2)[[1]]
-    test_best2.1 <-  get.models(test_trimmed2, 2)[[1]]
-    summ_best2 <- summary(test_best2)
+        # 13.4.4) draw the results
+    cat("\n         # 13.4.4) Draw predicted probability of complete duplication\n")
+    nompdf2 <- sub(".pdf", paste("_", gp, ".pdf", sep=""), CPDP_PDF)
+    Draw_pdf(drw_pred(test_trimmed2, GLMtab_all2, DELTA2[ite], draw_CpDup=T), nompdf2)
 
+    # 13.5) record results
+    assign(gp, list(ModelDup=list(max_mdl_Dup=fm1, all_mdl_Dup=test_trimmed, mdl_avg_Dup=mdl_avg),
+                ModelCpDup=list(max_mdl_CpDup=fm2, all_mdl_CpDup=test_trimmed2, mdl_avg_CpDup=mdl_avg2)))
+    res_all_groups[[ite]] <- get(gp)
 
-
-
-    
-    fac <- with(GLMtab_all1, interaction(trimmed, CpDup, Family))
-    boxplot(fitted(fm1)~fac)
-    boxplot(GLMtab_all1$Fqcy_all~fac)
-    
 }
 names(res_all_groups) <- groups
 names(list_samples) <- groups
@@ -114,7 +120,6 @@ outFileName <- argv[1]
 ver(sprintf("Saving data to %s",outFileName))
 #     dummy <- numeric()
 save(res_all_groups, list_samples, file=outFileName)
-print(sort(test_trimmed$AIC))
 # }
 
 # if(DEBUG)

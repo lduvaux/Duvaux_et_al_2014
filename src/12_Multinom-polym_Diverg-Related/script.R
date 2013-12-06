@@ -1,9 +1,6 @@
 #!/bin/Rscript
 library('multicore')
 library(nnet)
-# library(ggplot2)
-# library(reshape2)
-#QQ~ library(fields)
 library(MuMIn)
 library("epicalc")
 library(methods)
@@ -61,7 +58,7 @@ argv <- commandArgs(TRUE)[1]
 	# 	model.avg(test_trimmed, subset = delta < 4)
 
 			# 2.1) best
-		best_mod <- get_best(test_trimmed)
+		best_mod <- get_best_nnet_multinom(test_trimmed)
 		test_best <-  get.models(test_trimmed, best_mod)[[1]]
 		summ_best <- summary(test_best)
 		nomfil <- sub(".txt", paste("_", gp, ".txt", sep=""), GLM_RES_BEST_TRIMMED)

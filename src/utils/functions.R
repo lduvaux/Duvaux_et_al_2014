@@ -68,7 +68,7 @@ Prepro_fixName <- function(str){
 
 Draw_pdf <- function(fonction, nom_pdf)
 {
-	pdf(nom_pdf)
+	pdf(nom_pdf, onefile = TRUE)
 	fonction
 	dev.off()
 }

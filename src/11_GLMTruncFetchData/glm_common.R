@@ -166,37 +166,6 @@ Draw_distrib <- function(tab, Vec_int1, Vec_int2, numeric_var, nrow=5, ncol=4){
 	}
 }
 
-############
-get_best <- function(dredge_object, Delta=5)
-{
-	good_mod0 <- subset(dredge_object, delta < Delta)
-	good <- !c(F, sapply(2:length(good_mod0$df), function(x) T%in%(good_mod0$df[x]>good_mod0$df[1:(x-1)])))
-	good_mod <- subset(good_mod0, good)
-	df_order <- order(good_mod$df)
-	if (df_order[1]==1)
-		res <- attributes(good_mod)$row.names[1]
-	else {
-		df_order2 <- df_order[-which(df_order==1)]
-		inc <- 1
-		mod1 <- get.models(test_trimmed, inc)[[1]]
-		for (ite in 2:nrow(good_mod))
-		{
-			mod2 <- get.models(good_mod, ite)[[1]]
-			lrt_test <- lrtest(mod1, mod2)
-			print(paste("P-val:", round(lrt_test$p.value, 4)))
-			if (lrt_test$p.value>=0.06) {
-				mod1 <- mod2
-				inc <- ite}
-		}
-		res <- attributes(good_mod)$row.names[inc]
-	}
-	fres <- which(attributes(test_trimmed)$row.names==res)
-	return(fres)
-}
-
-
-
-
 
 
 

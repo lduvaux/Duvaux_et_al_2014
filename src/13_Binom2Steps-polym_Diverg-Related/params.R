@@ -10,9 +10,9 @@ SUBCLUSTERS <- list(Cytisus="Cytisus", Lathyrus="Lathyrus", L.corn.="L.corn.", L
 
 # 2) models for pair plots
 MODP2 <- Polymorphism ~ LnGeneLength + LnExonLength + Family + trimmed + Dup + Race
-#~MODP2 <- Polymorphism ~ LnGeneLength + LnExonLength + Family + trimmed
 
 # 3) outputs
 PAIRS_ALL_EXON_LENGTH <- "./Pair_Polym_ExLgCovar_AllGenes.pdf"
-BOXPLOTS_PDF <- "./FqcyDistribution.pdf"
-GLM_RES_BEST_TRIMMED <- "./GLM_CNVpolym_All_Best_trimmed.txt"
+GLM_RES_BEST_TRIMMED <- "./GLM_CNVpolym_All_Best_trimmed.txt"   # to be change
+DP_PDF <- "./PredictProbaOfDuplication.pdf"
+CPDP_PDF <- "./PredictProbaOfCpDuplication.pdf"
