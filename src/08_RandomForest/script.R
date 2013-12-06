@@ -55,10 +55,10 @@ main <- function(argv){
     geneOfbest50 <- unique(sapply(best50_ExonPromot, function(x) unlist(strsplit(x, "\\."))[1]))
 	
 	tem_tab <- cbind(rownames(tab_best50), round(tab_best50,4))
-	write.table(tem_tab, "Tab_best50_exons.csv", quote=T, sep="\t", row.names=F)
+	write.table(tem_tab, "result_Tab_best50_exons.csv", quote=T, sep="\t", row.names=F)
 	tem_tab <- exon_rf$importance[gini_exon_rf_ind,]
 	tem_tab <- cbind(rownames(tem_tab), round(tem_tab,4))
-	write.table(tem_tab, "RF_Imptce_exons.csv", quote=T, sep="\t", row.names=F)
+	write.table(tem_tab, "result_RF_Imptce_exons.csv", quote=T, sep="\t", row.names=F)
 
 
 		# 2) run a RF with one bait per gene
@@ -81,10 +81,10 @@ main <- function(argv){
     tab_best20_genes <- (gene_rf$importance[gini_gene_rf_ind,])[1:20,]
 	
 	tem_tab <- cbind(rownames(tab_best20_genes), round(tab_best20_genes,4))
-	write.table(tem_tab, "Tab_best20_genes.csv", quote=T, sep="\t", row.names=F)
+	write.table(tem_tab, "result_Tab_best20_genes.csv", quote=T, sep="\t", row.names=F)
 	tem_tab <- gene_rf$importance[gini_gene_rf_ind,]
 	tem_tab <- cbind(rownames(tem_tab), round(tem_tab,4))
-	write.table(tem_tab,"RF_imptce_genes.csv", quote=T, sep="\t", row.names=F)
+	write.table(tem_tab,"result_RF_imptce_genes.csv", quote=T, sep="\t", row.names=F)
 
 
 		# 3) run a RF with one bait per contig (either PMT either exon)
@@ -109,10 +109,10 @@ main <- function(argv){
     tab_best20_contig <- (contig_rf$importance[gini_contig_rf_ind,])[1:20,]
 	
 	tem_tab <- cbind(rownames(tab_best20_contig), round(tab_best20_contig,4))
-	write.table(tem_tab,"Tab_best20_contigs.csv", quote=F, sep="\t", row.names=F)
+	write.table(tem_tab,"result_Tab_best20_contigs.csv", quote=F, sep="\t", row.names=F)
 	tem_tab <- contig_rf$importance[gini_contig_rf_ind,]
 	tem_tab <- cbind(rownames(tem_tab), round(tem_tab,4))
-	write.table(tem_tab, "RF_imptce_contigs.csv", quote=F, sep="\t", row.names=F)
+	write.table(tem_tab, "result_RF_imptce_contigs.csv", quote=F, sep="\t", row.names=F)
     
     indiv_votes <- round(contig_rf$votes,2)
     test_indiv_votes <- round(contig_rf$test$votes,2)
@@ -120,7 +120,7 @@ main <- function(argv){
     indiv_predic <- as.character(contig_rf$predicted)
     test_indiv_predic <- as.character(contig_rf$test$predicted)
     tab <-  cbind(tvotes, c(indiv_predic, test_indiv_predic))
-    write.table(tab, "Indiv_Assign_contig_rf.csv", quote=F, sep="\t", row.names=F)
+    write.table(tab, "result_Indiv_Assign_contig_rf.csv", quote=F, sep="\t", row.names=F)
     
     # 4) check CN for best baits and their contigous baits
     print("###### 4) check CN for best baits and their contigous baits ######")
