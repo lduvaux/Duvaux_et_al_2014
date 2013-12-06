@@ -13,6 +13,13 @@ MODP2 <- Polymorphism ~ LnGeneLength + LnExonLength + Family + trimmed + Dup + R
 
 # 3) outputs
 PAIRS_ALL_EXON_LENGTH <- "./Pair_Polym_ExLgCovar_AllGenes.pdf"
-GLM_RES_BEST_TRIMMED <- "./GLM_CNVpolym_All_Best_trimmed.txt"   # to be change
-DP_PDF <- "./PredictProbaOfDuplication.pdf"
-CPDP_PDF <- "./PredictProbaOfCpDuplication.pdf"
+
+GLM_DUP_MAX <- "./GLM_DupMax.txt"
+GLM_DUP_DREDGE <- "./GLM_DupDredge.txt"
+GLM_DUP_AVG <- "./GLM_DupAvg.txt"
+DUP_PDF <- "./PredictProbaOfDuplication.pdf"
+
+GLM_CPDUP_MAX <- "./GLM_CpDupMax.txt"
+GLM_CPDUP_DREDGE <- "./GLM_CpDupDredge.txt"
+GLM_CPDUP_AVG <- "./GLM_CpDupAvg.txt"
+CPDUP_PDF <- "./PredictProbaOfCpDuplication.pdf"

@@ -1,0 +1,48 @@
+
+Call:
+model.avg.model.selection(object = test_trimmed, subset = delta < 
+    DELTA1)
+
+Component models:
+      df  logLik   AICc Delta Weight
+124   10 -382.92 786.04  0.00   0.62
+1234  11 -382.78 787.79  1.75   0.26
+12345 14 -380.40 789.17  3.13   0.13
+
+Term codes:
+             Family        LnExonLength        LnGeneLength Family:LnExonLength 
+                  1                   2                   3                   4 
+Family:LnGeneLength 
+                  5 
+
+Model-averaged coefficients: 
+                        Estimate Std. Error z value Pr(>|z|)   
+(Intercept)              -4.2780     2.5288   1.692  0.09070 . 
+LnExonLength              0.3131     0.3302   0.948  0.34293   
+FamilyGr                 22.5430     8.5076   2.650  0.00805 **
+FamilyOr                 10.4177     6.0792   1.714  0.08659 . 
+FamilyP450               22.1950     7.9547   2.790  0.00527 **
+FamilyGr:LnExonLength    -3.2144     1.2386   2.595  0.00945 **
+FamilyOr:LnExonLength    -1.3914     0.9657   1.441  0.14962   
+FamilyP450:LnExonLength  -2.9879     1.0938   2.732  0.00630 **
+LnGeneLength             -0.1258     0.1677   0.750  0.45329   
+FamilyGr:LnGeneLength     0.3370     0.4420   0.762  0.44583   
+FamilyOr:LnGeneLength     0.6911     0.3476   1.988  0.04679 * 
+FamilyP450:LnGeneLength  -0.1010     0.4539   0.223  0.82384   
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Full model-averaged coefficients (with shrinkage): 
+ (Intercept) LnExonLength  FamilyGr  FamilyOr FamilyP450 FamilyGr:LnExonLength
+   -4.278005     0.313125 22.542965 10.417732  22.194997             -3.214362
+ FamilyOr:LnExonLength FamilyP450:LnExonLength LnGeneLength
+             -1.391433               -2.987922    -0.048381
+ FamilyGr:LnGeneLength FamilyOr:LnGeneLength FamilyP450:LnGeneLength
+              0.043293              0.088786               -0.012981
+
+Relative variable importance:
+             Family        LnExonLength Family:LnExonLength        LnGeneLength 
+               1.00                1.00                1.00                0.38 
+Family:LnGeneLength 
+               0.13 
+[1] "./GLM_DupAvg_related.txt"

@@ -1,0 +1,47 @@
+
+Call:
+model.avg.model.selection(object = test_trimmed2, subset = delta < 
+    DELTA2[ite])
+
+Component models:
+      df logLik   AICc Delta Weight
+12345 14 -68.50 168.07  0.00   0.99
+1235  11 -76.96 177.80  9.73   0.01
+
+Term codes:
+             Family        LnExonLength        LnGeneLength Family:LnExonLength 
+                  1                   2                   3                   4 
+Family:LnGeneLength 
+                  5 
+
+Model-averaged coefficients: 
+                         Estimate Std. Error z value Pr(>|z|)    
+(Intercept)              20.04552    6.85487   2.924 0.003453 ** 
+FamilyGr                 44.91679   61.74931   0.727 0.466978    
+FamilyOr                111.08940   41.17788   2.698 0.006980 ** 
+FamilyP450               -6.62038   13.93358   0.475 0.634688    
+LnExonLength             -1.18098    0.78965   1.496 0.134765    
+LnGeneLength             -1.38223    0.56804   2.433 0.014960 *  
+FamilyGr:LnExonLength    -7.88801    8.82751   0.894 0.371551    
+FamilyOr:LnExonLength   -24.93387    7.80928   3.193 0.001409 ** 
+FamilyP450:LnExonLength  -0.08862    1.75552   0.050 0.959738    
+FamilyGr:LnGeneLength     1.17093    1.10105   1.063 0.287570    
+FamilyOr:LnGeneLength     7.75818    2.16920   3.577 0.000348 ***
+FamilyP450:LnGeneLength   0.84030    0.98265   0.855 0.392477    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Full model-averaged coefficients (with shrinkage): 
+ (Intercept)   FamilyGr   FamilyOr FamilyP450 LnExonLength LnGeneLength
+   20.045518  44.916785 111.089396  -6.620380    -1.180979    -1.382231
+ FamilyGr:LnExonLength FamilyOr:LnExonLength FamilyP450:LnExonLength
+             -7.827742            -24.743379               -0.087946
+ FamilyGr:LnGeneLength FamilyOr:LnGeneLength FamilyP450:LnGeneLength
+              1.170933              7.758176                0.840299
+
+Relative variable importance:
+             Family        LnExonLength        LnGeneLength Family:LnGeneLength 
+               1.00                1.00                1.00                1.00 
+Family:LnExonLength 
+               0.99 
+[1] "./GLM_CpDupAvg_related.txt"

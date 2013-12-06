@@ -70,17 +70,26 @@ for (ite in seq(length(groups)))
     cat("\n\n     # 13.3) Effect of variables on duplication events\n")
     cat("\n         # 13.3.1) Fit the maximal model\n")
     fm1 <- glmer(formula=MOD_ALL1, data = GLMtab_all1, family=FAMILY)
-    print(summary(fm1), corr=F)
+    sum_fm1 <- summary(fm1)
+    print(sum_fm1, corr=F)
+    nomfil <- sub(".txt", paste("_", gp, ".txt", sep=""), GLM_DUP_MAX)
+    output_glm(sum_fm1, nomfil)
 
         # 13.3.2) Fit al other models & model averaging
     cat("\n         # 13.3.2) Fit al other models & model averaging\n")
     test_trimmed <- dredge(fm1, fixed=FIXED_TERMS1, m.max=M_MAX)
+    nomfil <- sub(".txt", paste("_", gp, ".txt", sep=""), GLM_DUP_DREDGE)
+    cat(capture.output(test_trimmed), file=nomfil, sep="\n")
+    
     mdl_avg <- model.avg(test_trimmed, subset = delta < DELTA1)
-    print(summary(mdl_avg)) # save in a file
+    sum_avg1 <- summary(mdl_avg)
+    print(sum_avg1) # save in a file
+    nomfil <- sub(".txt", paste("_", gp, ".txt", sep=""), GLM_DUP_AVG)
+    cat(capture.output(sum_avg1, nomfil), file=nomfil, sep="\n")
 
         # 13.3.3) draw the results
     cat("\n         # 13.3.3) Draw predicted probability of duplication\n")
-    nompdf <- sub(".pdf", paste("_", gp, ".pdf", sep=""), DP_PDF)
+    nompdf <- sub(".pdf", paste("_", gp, ".pdf", sep=""), DUP_PDF)
     Draw_pdf(drw_pred(test_trimmed, GLMtab_all1, DELTA1), nompdf)
 
 
@@ -94,18 +103,28 @@ for (ite in seq(length(groups)))
     cat("\n         # 13.4.2) Fit the maximal model\n")
     fm2 <- glmer(formula=MOD_ALL2, data = GLMtab_all2, family=FAMILY)
     print(summary(fm2), corr=F)
+    sum_fm2 <- summary(fm2)
+    print(sum_fm2, corr=F)
+    nomfil <- sub(".txt", paste("_", gp, ".txt", sep=""), GLM_CPDUP_MAX)
+    output_glm(sum_fm2, nomfil)
 
         # 13.4.3) Fit al other models & model averaging
     cat("\n         # 13.4.3) Fit al other models & model averaging\n")
     print("Test all terms")
     test_trimmed2 <- dredge(fm2, fixed=FIXED_TERMS2, m.max=M_MAX)
+    nomfil <- sub(".txt", paste("_", gp, ".txt", sep=""), GLM_CPDUP_DREDGE)
+    cat(capture.output(test_trimmed2), file=nomfil, sep="\n")
+
     mdl_avg2 <- model.avg(test_trimmed2, subset = delta < DELTA2[ite])
-    print(summary(mdl_avg2))
+    sum_avg2 <- summary(mdl_avg2)
+    print(sum_avg2)
+    nomfil <- sub(".txt", paste("_", gp, ".txt", sep=""), GLM_CPDUP_AVG)
+    cat(capture.output(sum_avg2, nomfil), file=nomfil, sep="\n")
 
         # 13.4.4) draw the results
     cat("\n         # 13.4.4) Draw predicted probability of complete duplication\n")
-    nompdf2 <- sub(".pdf", paste("_", gp, ".pdf", sep=""), CPDP_PDF)
-    Draw_pdf(drw_pred(test_trimmed2, GLMtab_all2, DELTA2[ite], draw_CpDup=T), nompdf2)
+    nompdf <- sub(".pdf", paste("_", gp, ".pdf", sep=""), CPDUP_PDF)
+    Draw_pdf(drw_pred(test_trimmed2, GLMtab_all2, DELTA2[ite], draw_CpDup=T), nompdf)
 
     # 13.5) record results
     assign(gp, list(ModelDup=list(max_mdl_Dup=fm1, all_mdl_Dup=test_trimmed, mdl_avg_Dup=mdl_avg),

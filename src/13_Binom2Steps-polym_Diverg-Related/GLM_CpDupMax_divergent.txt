@@ -1,0 +1,56 @@
+Generalized linear mixed model fit by maximum likelihood ['glmerMod']
+ Family: binomial ( logit )
+Formula: Polymorphism ~ LnGeneLength + LnExonLength + Family + LnGeneLength *      Family + LnExonLength * Family + (1 | Race) + (1 | trimmed) 
+   Data: GLMtab_all2 
+
+      AIC       BIC    logLik  deviance 
+ 349.0264  402.4660 -160.5132  321.0264 
+
+Random effects:
+ Groups  Name        Variance Std.Dev.
+ Race    (Intercept) 0.01978  0.1406  
+ trimmed (Intercept) 0.84169  0.9174  
+Number of obs: 336, groups: Race, 5; trimmed, 2
+
+Fixed effects:
+                        Estimate Std. Error z value Pr(>|z|)    
+(Intercept)              26.5850     5.0263   5.289 1.23e-07 ***
+LnGeneLength             -1.9024     0.4024  -4.728 2.26e-06 ***
+LnExonLength             -1.4585     0.5246  -2.780 0.005432 ** 
+FamilyGr                 16.6471    25.2086   0.660 0.509014    
+FamilyOr                 -6.7666    11.4903  -0.589 0.555929    
+FamilyP450               28.2947    18.8658   1.500 0.133670    
+LnGeneLength:FamilyGr     0.7500     0.7831   0.958 0.338204    
+LnGeneLength:FamilyOr     1.9923     0.5968   3.338 0.000843 ***
+LnGeneLength:FamilyP450   1.4320     0.6618   2.164 0.030488 *  
+LnExonLength:FamilyGr    -3.3970     3.4041  -0.998 0.318322    
+LnExonLength:FamilyOr    -1.4222     1.8583  -0.765 0.444083    
+LnExonLength:FamilyP450  -5.5324     2.3816  -2.323 0.020180 *  
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Correlation of Fixed Effects:
+            (Intr) LnGnLn LnExnL FmlyGr FmlyOr FmP450 LGL:FG LGL:FO LGL:FP
+LnGeneLngth -0.637                                                        
+LnExonLngth -0.711 -0.071                                                 
+FamilyGr    -0.207  0.135  0.149                                          
+FamilyOr    -0.455  0.297  0.328  0.097                                   
+FamilyP450  -0.203  0.127  0.149  0.038  0.079                            
+LnGnLngt:FG  0.319 -0.507  0.042 -0.289 -0.146 -0.069                     
+LnGnLngt:FO  0.379 -0.638  0.083 -0.075  0.134 -0.104  0.328              
+LnGnL:FP450  0.364 -0.591  0.059 -0.075 -0.164 -0.379  0.302  0.389       
+LnExnLng:FG  0.122  0.002 -0.162 -0.964 -0.058 -0.019  0.024 -0.013 -0.007
+LnExnLng:FO  0.240 -0.008 -0.309 -0.053 -0.922 -0.027 -0.002 -0.506 -0.010
+LnExL:FP450  0.100  0.057 -0.182 -0.016 -0.032 -0.953 -0.024 -0.015  0.082
+            LEL:FG LEL:FO
+LnGeneLngth              
+LnExonLngth              
+FamilyGr                 
+FamilyOr                 
+FamilyP450               
+LnGnLngt:FG              
+LnGnLngt:FO              
+LnGnL:FP450              
+LnExnLng:FG              
+LnExnLng:FO  0.054       
+LnExL:FP450  0.023  0.033
