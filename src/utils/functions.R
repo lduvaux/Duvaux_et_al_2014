@@ -72,4 +72,3 @@ Draw_pdf <- function(fonction, nom_pdf)
 	fonction
 	dev.off()
 }
-

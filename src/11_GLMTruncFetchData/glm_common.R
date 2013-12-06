@@ -166,7 +166,15 @@ Draw_distrib <- function(tab, Vec_int1, Vec_int2, numeric_var, nrow=5, ncol=4){
 	}
 }
 
-
+#############
+output_glm <- function(sum_glm, nom_fil)
+{
+    cat(capture.output(sum_glm), file=nomfil, sep="\n")
+    tab_only <- sum_glm$coefficients
+    tab_only <- cbind(rownames(tab_only), round(tab_only,5))
+    nomfil <- sub(".txt", "_coef.txt", nom_fil)
+    write.table(tab_only, file=nomfil, sep="\t", quote=F, row.names=F)
+}
 
 
 
