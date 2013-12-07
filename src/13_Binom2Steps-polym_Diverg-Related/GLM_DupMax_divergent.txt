@@ -4,44 +4,44 @@ Formula: Dup ~ LnGeneLength + LnExonLength + Family + LnGeneLength * Family +   
    Data: GLMtab_all1 
 
       AIC       BIC    logLik  deviance 
-1663.1339 1740.9019 -817.5669 1635.1339 
+1670.6109 1748.3789 -821.3055 1642.6109 
 
 Random effects:
  Groups  Name        Variance Std.Dev.
- Race    (Intercept) 0.1119   0.3346  
- trimmed (Intercept) 0.2672   0.5169  
+ Race    (Intercept) 0.1163   0.3410  
+ trimmed (Intercept) 0.2856   0.5344  
 Number of obs: 1910, groups: Race, 5; trimmed, 2
 
 Fixed effects:
-                        Estimate Std. Error z value Pr(>|z|)    
-(Intercept)             -4.74856    1.66490  -2.852 0.004342 ** 
-LnGeneLength             0.02135    0.10566   0.202 0.839880    
-LnExonLength             0.37096    0.21372   1.736 0.082615 .  
-FamilyGr                 4.78414    5.45251   0.877 0.380259    
-FamilyOr                19.75841    5.11039   3.866 0.000110 ***
-FamilyP450              13.15209    5.21277   2.523 0.011634 *  
-LnGeneLength:FamilyGr   -0.47322    0.28019  -1.689 0.091232 .  
-LnGeneLength:FamilyOr    0.44026    0.25627   1.718 0.085803 .  
-LnGeneLength:FamilyP450 -0.16676    0.27311  -0.611 0.541473    
-LnExonLength:FamilyGr   -0.04686    0.82341  -0.057 0.954614    
-LnExonLength:FamilyOr   -3.20761    0.88041  -3.643 0.000269 ***
-LnExonLength:FamilyP450 -1.55619    0.70945  -2.194 0.028269 *  
+                         Estimate Std. Error z value Pr(>|z|)    
+(Intercept)             -4.925491   1.670784  -2.948 0.003198 ** 
+LnGeneLength             0.009912   0.105985   0.094 0.925487    
+LnExonLength             0.409916   0.213994   1.916 0.055422 .  
+FamilyGr                 4.926358   5.453150   0.903 0.366315    
+FamilyOr                18.372950   5.009249   3.668 0.000245 ***
+FamilyP450              13.137266   5.195033   2.529 0.011445 *  
+LnGeneLength:FamilyGr   -0.461267   0.280489  -1.645 0.100071    
+LnGeneLength:FamilyOr    0.396926   0.252432   1.572 0.115856    
+LnGeneLength:FamilyP450 -0.197187   0.272260  -0.724 0.468905    
+LnExonLength:FamilyGr   -0.082580   0.823476  -0.100 0.920120    
+LnExonLength:FamilyOr   -2.955001   0.858430  -3.442 0.000577 ***
+LnExonLength:FamilyP450 -1.517216   0.706610  -2.147 0.031779 *  
 ---
 Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
 
 Correlation of Fixed Effects:
             (Intr) LnGnLn LnExnL FmlyGr FmlyOr FmP450 LGL:FG LGL:FO LGL:FP
 LnGeneLngth -0.329                                                        
-LnExonLngth -0.802 -0.247                                                 
-FamilyGr    -0.289  0.102  0.244                                          
-FamilyOr    -0.310  0.116  0.259  0.097                                   
-FamilyP450  -0.303  0.109  0.255  0.094  0.105                            
-LnGnLngt:FG  0.125 -0.378  0.093 -0.052 -0.045 -0.042                     
-LnGnLngt:FO  0.133 -0.401  0.098 -0.038  0.353 -0.038  0.150              
-LnGnL:FP450  0.128 -0.389  0.096 -0.040 -0.048 -0.221  0.148  0.152       
-LnExnLng:FG  0.208  0.063 -0.259 -0.912 -0.068 -0.067 -0.360 -0.027 -0.024
-LnExnLng:FO  0.198  0.049 -0.239 -0.063 -0.944 -0.069 -0.017 -0.640 -0.016
-LnExL:FP450  0.242  0.071 -0.300 -0.075 -0.082 -0.897 -0.027 -0.033 -0.231
+LnExonLngth -0.801 -0.248                                                 
+FamilyGr    -0.289  0.103  0.245                                          
+FamilyOr    -0.316  0.119  0.264  0.099                                   
+FamilyP450  -0.304  0.110  0.256  0.094  0.107                            
+LnGnLngt:FG  0.125 -0.379  0.094 -0.053 -0.046 -0.042                     
+LnGnLngt:FO  0.136 -0.408  0.100 -0.039  0.332 -0.039  0.153              
+LnGnL:FP450  0.129 -0.391  0.097 -0.041 -0.049 -0.222  0.149  0.156       
+LnExnLng:FG  0.208  0.063 -0.259 -0.912 -0.070 -0.067 -0.360 -0.027 -0.025
+LnExnLng:FO  0.202  0.051 -0.246 -0.065 -0.942 -0.071 -0.018 -0.627 -0.017
+LnExL:FP450  0.243  0.072 -0.302 -0.075 -0.084 -0.897 -0.027 -0.034 -0.231
             LEL:FG LEL:FO
 LnGeneLngth              
 LnExonLngth              
@@ -52,5 +52,5 @@ LnGnLngt:FG
 LnGnLngt:FO              
 LnGnL:FP450              
 LnExnLng:FG              
-LnExnLng:FO  0.064       
-LnExL:FP450  0.078  0.077
+LnExnLng:FO  0.065       
+LnExL:FP450  0.079  0.079

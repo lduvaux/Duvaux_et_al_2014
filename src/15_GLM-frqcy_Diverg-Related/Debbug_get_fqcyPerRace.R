@@ -14,7 +14,7 @@ list_groups <- CLUSTERS
 
 
 # test pro_polymGene function (folder 10_)
-gene <- "Control_g209"
+gene <- "Control_g72"
 fqcy <- T
 blocks <- T
 groups <- list_groups

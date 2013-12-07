@@ -182,14 +182,14 @@ pro_polymGene <- function(gene, BaitsGeneNames, alpha_matrix, fqcy=F, blocks=F, 
             res <- test_pro_polymGene(tab)}
 	return(res)}
 
-test_pro_polymGene <- function(tab)
+test_pro_polymGene <- function(tab_2)
 {
-	if (is.matrix(tab)) {
-		vec_test <- apply(tab, 2, sub_test_partialVect)	# test the polymorphism of each indiv
+	if (is.matrix(tab_2)) {
+		vec_test <- apply(tab_2, 2, sub_test_partialVect)	# test the polymorphism of each indiv
 		res <- sub_get_polymGene(vec_test)}
 	else {
-		test <- length(unique(tab))
-		res <- ifelse(test==1 & test[1]==1, "1_NoDup", "3_CpDup")}	# if length==1 and the only value is 1, sothere is no CNV (value=0), if not because there is only one bait so the gene is completely duplicated for at least one indiv (value=1)
+		test <- unique(tab_2)
+		res <- ifelse(length(test)==1 & test[1]==1, "1_NoDup", "3_CpDup")}	# if length==1 and the only value is 1, sothere is no CNV (value=0), if not because there is only one bait so the gene is completely duplicated for at least one indiv (value=1)
 	return(res)}
 
 sub_get_polymGene <- function(vec_test){

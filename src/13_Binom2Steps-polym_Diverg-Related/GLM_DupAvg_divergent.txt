@@ -5,9 +5,9 @@ model.avg.model.selection(object = test_trimmed, subset = delta <
 
 Component models:
       df  logLik    AICc Delta Weight
-124   10 -821.33 1662.78  0.00   0.47
-12345 14 -817.57 1663.36  0.58   0.35
-1234  11 -821.32 1664.79  2.01   0.17
+124   10 -824.74 1669.60  0.00   0.53
+12345 14 -821.31 1670.83  1.23   0.28
+1234  11 -824.74 1671.61  2.02   0.19
 
 Term codes:
              Family        LnExonLength        LnGeneLength Family:LnExonLength 
@@ -17,34 +17,34 @@ Family:LnGeneLength
 
 Model-averaged coefficients: 
                         Estimate Std. Error z value Pr(>|z|)    
-(Intercept)             -4.68923    1.61960   2.895  0.00379 ** 
-LnExonLength             0.37720    0.21036   1.793  0.07296 .  
-FamilyGr                 4.61293    5.59550   0.824  0.40971    
-FamilyOr                17.19442    5.04267   3.410  0.00065 ***
-FamilyP450              12.64607    5.15060   2.455  0.01408 *  
-FamilyGr:LnExonLength   -0.39140    0.84812   0.461  0.64444    
-FamilyOr:LnExonLength   -2.50634    0.89266   2.808  0.00499 ** 
-FamilyP450:LnExonLength -1.61416    0.69961   2.307  0.02104 *  
-LnGeneLength             0.01788    0.09929   0.180  0.85711    
-FamilyGr:LnGeneLength   -0.47272    0.28017   1.687  0.09155 .  
-FamilyOr:LnGeneLength    0.44006    0.25626   1.717  0.08594 .  
-FamilyP450:LnGeneLength -0.16663    0.27311   0.610  0.54178    
+(Intercept)             -4.88465    1.61968   3.016 0.002563 ** 
+LnExonLength             0.41467    0.21026   1.972 0.048587 *  
+FamilyGr                 4.77618    5.60602   0.852 0.394229    
+FamilyOr                15.92527    4.83012   3.297 0.000977 ***
+FamilyP450              12.49514    5.12546   2.438 0.014774 *  
+FamilyGr:LnExonLength   -0.45993    0.84074   0.547 0.584339    
+FamilyOr:LnExonLength   -2.26984    0.81984   2.769 0.005629 ** 
+FamilyP450:LnExonLength -1.59586    0.69613   2.292 0.021879 *  
+LnGeneLength             0.00270    0.09826   0.027 0.978081    
+FamilyGr:LnGeneLength   -0.46107    0.28048   1.644 0.100204    
+FamilyOr:LnGeneLength    0.39649    0.25241   1.571 0.116228    
+FamilyP450:LnGeneLength -0.19703    0.27226   0.724 0.469261    
 ---
 Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
 
 Full model-averaged coefficients (with shrinkage): 
  (Intercept) LnExonLength   FamilyGr   FamilyOr FamilyP450
-  -4.6892326    0.3771960  4.6129329 17.1944172 12.6460701
+  -4.8846520    0.4146672  4.7761807 15.9252690 12.4951414
  FamilyGr:LnExonLength FamilyOr:LnExonLength FamilyP450:LnExonLength
-            -0.3914023            -2.5063433              -1.6141631
+            -0.4599348            -2.2698346              -1.5958621
  LnGeneLength FamilyGr:LnGeneLength FamilyOr:LnGeneLength
-    0.0094301            -0.1674666             0.1558944
+    0.0012823            -0.1306144             0.1123204
  FamilyP450:LnGeneLength
-              -0.0590304
+              -0.0558146
 
 Relative variable importance:
              Family        LnExonLength Family:LnExonLength        LnGeneLength 
-               1.00                1.00                1.00                0.53 
+               1.00                1.00                1.00                0.47 
 Family:LnGeneLength 
-               0.35 
+               0.28 
 [1] "./GLM_DupAvg_divergent.txt"

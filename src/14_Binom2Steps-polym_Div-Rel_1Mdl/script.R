@@ -18,8 +18,8 @@ argv <- commandArgs(TRUE)[1]
 
 # main <- function(argv){
 
-    load(PREVIOUS_DATA)
-	set.seed(0)
+load(PREVIOUS_DATA)
+set.seed(0)
 
 ######################
 cat("
@@ -34,6 +34,7 @@ Pre_GLMtab0 <- set_Pre_GLMtable(ListGenes, BaitsGeneNames, alpha_matrix
 
 Pre_GLMtab0 <- add_Phylog_lvl(Pre_GLMtab0, CLUSTERS)
 Pre_GLMtab0 <- add_DupField(Pre_GLMtab0)
+Pre_GLMtab0 <- add_GeneField(Pre_GLMtab0)
 
 ##### main script
 # 13.2) Check data
