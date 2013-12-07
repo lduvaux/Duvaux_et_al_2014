@@ -96,7 +96,7 @@ test_trimmed2 <- dredge(fm2, fixed=FIXED_TERMS2, m.max=M_MAX)
 nomfil <- GLM_CPDUP_DREDGE
 cat(capture.output(test_trimmed2), file=nomfil, sep="\n")
 
-mdl_avg2 <- model.avg(test_trimmed2, subset = delta < DELTA2[ite])
+mdl_avg2 <- model.avg(test_trimmed2, subset = delta < DELTA2)
 sum_avg2 <- summary(mdl_avg2)
 print(sum_avg2)
 nomfil <- GLM_CPDUP_AVG
