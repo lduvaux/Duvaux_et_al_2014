@@ -1,13 +1,13 @@
 
 # 1) model binomial 1 (duplication events)
-MOD_ALL1 <- Dup ~ LnGeneLength + LnExonLength + Family + LnGeneLength * Family + LnExonLength * Family + (1|Race) + (1|trimmed)
+MOD_ALL1 <- Dup ~ LnGeneLength + LnExonLength + Family + Phylog_lvl + Family * Phylog_lvl + LnGeneLength * LnExonLength + (1|Race) + (1|trimmed)
 FAMILY <- "binomial"
 DELTA1 <- 4
-FIXED_TERMS1 <- c("Family")  # dredge is quite long for MOD_ALL1 and 'Familly' term strongly significant for MOD_ALL1
+FIXED_TERMS1 <- NULL  # dredge is quite long for MOD_ALL1 and 'Familly' term strongly significant for MOD_ALL1
 
 # 2) model binomial 2 (complete duplication events)
-MOD_ALL2<- Polymorphism ~ LnGeneLength + LnExonLength + Family + LnGeneLength * Family + LnExonLength * Family + (1|Race) + (1|trimmed)
-DELTA2 <- c(4, 10)  # only one model is really relevantfor related group, so use a large delta value for averaging (the othe rmodel won't have any weight anyway)
+MOD_ALL2 <- Polymorphism ~ LnGeneLength + LnExonLength + Family + Phylog_lvl + Family * Phylog_lvl + LnGeneLength * LnExonLength * Family - LnGeneLength:LnExonLength:Family + (1|Race) + (1|trimmed)
+DELTA2 <- DELTA1
 FIXED_TERMS2 <- NULL
 
-M_MAX <- 5
+M_MAX <- 10

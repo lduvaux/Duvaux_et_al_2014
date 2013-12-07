@@ -18,14 +18,6 @@ add_DupField <- function (tab)
     return(tab)
 }
 
-#~add_raceField <- function (tab)
-#~{
-#~    v <- rownames(tab)
-#~    race <- sapply(v, function (x) unlist(strsplit(x, "_"))[3])
-#~    tab <- cbind(tab, race)
-#~    return(tab)
-#~}
-
 ############### set_GLMtab
 set_GLMtab <- function(tab0, NonTrim_only=F, covar)
 {

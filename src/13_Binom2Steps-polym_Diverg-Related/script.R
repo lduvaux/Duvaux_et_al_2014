@@ -3,10 +3,8 @@ rm(list=ls())
 library('multicore')
 library(lme4)
 library(MuMIn)
-#~library("epicalc")
 library(methods)
 library(ggplot2)
-#~library(multcomp)
 
 source("../utils/functions.R")
 source("../utils/getter_functions.R")
@@ -38,7 +36,6 @@ Pre_GLMtab0 <- set_Pre_GLMtable(ListGenes, BaitsGeneNames, alpha_matrix
 
 Pre_GLMtab0 <- add_Phylog_lvl(Pre_GLMtab0, CLUSTERS)
 Pre_GLMtab0 <- add_DupField(Pre_GLMtab0)
-#~Pre_GLMtab0 <- add_raceField(Pre_GLMtab0)
 
 res_all_groups <- list()
 v_samples <- paste("sample_size_", groups, sep=""); list_samples <- list()
@@ -102,7 +99,6 @@ for (ite in seq(length(groups)))
         # 13.4.2)  Fit the maximal model
     cat("\n         # 13.4.2) Fit the maximal model\n")
     fm2 <- glmer(formula=MOD_ALL2, data = GLMtab_all2, family=FAMILY)
-    print(summary(fm2), corr=F)
     sum_fm2 <- summary(fm2)
     print(sum_fm2, corr=F)
     nomfil <- sub(".txt", paste("_", gp, ".txt", sep=""), GLM_CPDUP_MAX)
