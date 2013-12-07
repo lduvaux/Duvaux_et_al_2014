@@ -1,10 +1,17 @@
 #!/bin/Rscript
 rm(list=ls())
-library('multicore')
+#~library('multicore')
 library(lme4)
 library(MuMIn)
 library(methods)
 library(ggplot2)
+
+# 0) set up parallel dredge
+require(parallel)
+    # Set up the cluster
+clusterType <- if(length(find.package("snow", quiet = TRUE))) "SOCK" else "PSOCK"
+clust <- try(makeCluster(getOption("cl.cores", 2), type = clusterType))
+
 
 source("../utils/functions.R")
 source("../utils/getter_functions.R")
@@ -60,6 +67,7 @@ output_glm(sum_fm1, nomfil)
 
     # 13.3.2) Fit al other models & model averaging
 cat("\n         # 13.3.2) Fit al other models & model averaging\n")
+clusterExport(clust, "GLMtab_all1")
 test_trimmed <- dredge(fm1, fixed=FIXED_TERMS1, m.max=M_MAX)
 nomfil <-  GLM_DUP_DREDGE
 cat(capture.output(test_trimmed), file=nomfil, sep="\n")
