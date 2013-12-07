@@ -1,17 +1,21 @@
 Global model call: glmer(formula = Dup ~ LnGeneLength + LnExonLength + Family + 
     LnGeneLength * Family + LnExonLength * Family + (1 | Race) + 
-    (1 | trimmed), data = GLMtab_all1, family = FAMILY)
+    (1 | trimmed) + (1 | Gene), data = GLMtab_all1, family = FAMILY)
 ---
 Model selection table 
-   (Int)  Fml LEL     LGL       Fml:LEL Fml:LGL df logLik   AICc   delta weight
-6  -4.882 +   0.41590           +               10 -824.741 1669.6  0.00 0.506 
-16 -4.922 +   0.40950  0.009930 +       +       14 -821.305 1670.8  1.23 0.273 
-8  -4.835 +   0.41910 -0.007986 +               11 -824.737 1671.6  2.02 0.185 
-1  -1.845 +                                      6 -832.248 1676.5  6.94 0.016 
-3  -1.409 +           -0.049600                  7 -832.040 1678.1  8.54 0.007 
-2  -2.381 +   0.07351                            7 -832.163 1678.4  8.79 0.006 
-4  -2.149 +   0.12280 -0.067130                  8 -831.827 1679.7 10.13 0.003 
-11 -2.337 +            0.055680         +       10 -829.921 1680.0 10.36 0.003 
-12 -3.021 +   0.11100  0.041540         +       11 -829.747 1681.6 12.03 0.001 
+   (Int)  Fml LEL    LGL     Fml:LEL Fml:LGL df logLik   AICc   delta weight
+6  -6.773 +   0.5953         +               11 -775.404 1572.9 0.00  0.378 
+1  -2.423 +                                   7 -780.120 1574.3 1.35  0.193 
+8  -6.843 +   0.5408 0.05475 +               12 -775.338 1574.8 1.89  0.147 
+2  -4.219 +   0.2457                          8 -779.747 1575.6 2.62  0.102 
+3  -2.765 +          0.03840                  8 -780.072 1576.2 3.27  0.074 
+16 -7.035 +   0.5051 0.10690 +       +       15 -773.468 1577.2 4.24  0.045 
+4  -4.229 +   0.2436 0.00361                  9 -779.745 1577.6 4.64  0.037 
+11 -4.028 +          0.18150         +       11 -778.556 1579.3 6.30  0.016 
+12 -5.257 +   0.2142 0.14460         +       12 -778.313 1580.8 7.84  0.007 
 Random terms (all models): 
-‘1 | Race’, ‘1 | trimmed’
+‘1 | Race’, ‘1 | trimmed’, ‘1 | Gene’
+
+Warning message:
+In (function (fn, par, lower = rep.int(-Inf, n), upper = rep.int(Inf,  ... :
+  failure to converge in 10000 evaluations (in model 16)

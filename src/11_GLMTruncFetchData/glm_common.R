@@ -176,8 +176,35 @@ output_glm <- function(sum_glm, nom_fil)
     write.table(tab_only, file=nom_fil, sep="\t", quote=F, row.names=F)
 }
 
+############### add fields to Pre_GLMtab0
+add_Phylog_lvl <- function(tab, clusters)
+{
+    Phylog_lvl <- rep('divergent', nrow(tab))
+    ind <- tab$Race%in%clusters$related
+    Phylog_lvl[ind] <- "related"
+    tab <- cbind(tab, Phylog_lvl)
+    return(tab)
+}
 
+add_DupField <- function (tab)
+{
+    Dup <- tab$Polymorphism!="1_NoDup"
+    tab <- cbind(tab, Dup)
+    return(tab)
+}
 
+add_GeneField <- function (tab)
+{
+    getGeneName <- function(stg) {
+        ve <- unlist(strsplit(stg, "_"))[1:2]
+        nom <- paste(ve, collapse="_")
+        return(nom)}
+
+    vec <- rownames(tab)
+    Gene <- sapply(vec, getGeneName)
+    tab <- cbind(tab, Gene)
+    return(tab)
+}
 
 
 

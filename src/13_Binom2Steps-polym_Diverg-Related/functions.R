@@ -1,23 +1,6 @@
 source("./10_GeneralStats_functions.R")
 source("./glm_common.R")
 
-############### add fields to Pre_GLMtab0
-add_Phylog_lvl <- function(tab, clusters)
-{
-    Phylog_lvl <- rep('divergent', nrow(tab))
-    ind <- tab$Race%in%clusters$related
-    Phylog_lvl[ind] <- "related"
-    tab <- cbind(tab, Phylog_lvl)
-    return(tab)
-}
-
-add_DupField <- function (tab)
-{
-    Dup <- tab$Polymorphism!="1_NoDup"
-    tab <- cbind(tab, Dup)
-    return(tab)
-}
-
 ############### set_GLMtab
 set_GLMtab <- function(tab0, NonTrim_only=F, covar)
 {
