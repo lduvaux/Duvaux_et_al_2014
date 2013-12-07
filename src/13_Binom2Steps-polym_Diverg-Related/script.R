@@ -36,6 +36,7 @@ Pre_GLMtab0 <- set_Pre_GLMtable(ListGenes, BaitsGeneNames, alpha_matrix
 
 Pre_GLMtab0 <- add_Phylog_lvl(Pre_GLMtab0, CLUSTERS)
 Pre_GLMtab0 <- add_DupField(Pre_GLMtab0)
+Pre_GLMtab0 <- add_GeneField(Pre_GLMtab0)
 
 res_all_groups <- list()
 v_samples <- paste("sample_size_", groups, sep=""); list_samples <- list()

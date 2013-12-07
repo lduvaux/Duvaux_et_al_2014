@@ -28,11 +28,11 @@ set_GLMtab <- function(tab0, NonTrim_only=F, covar)
 		tab0 <- tab0[tab0$trimmed=="Yes",]
 
 	if (covar=="LnExonLength") {
-		tab <- with(tab0, data.frame(Polymorphism, Dup, Phylog_lvl, Race, Family, trimmed=as.factor(trimmed), LnGeneLength=log(GeneLength), LnExonLength=log(TotExonLength)))
+		tab <- with(tab0, data.frame(Polymorphism, Dup, Phylog_lvl, Race, Gene, Family, trimmed=as.factor(trimmed), LnGeneLength=log(GeneLength), LnExonLength=log(TotExonLength)))
 		bad <- which(is.na(tab$LnGeneLength) | is.na(tab$LnExonLength))}
 
 	if (covar=="ratioLength") {
-		tab <- with(tab0, data.frame(Polymorphism, Dup, Phylog_lvl, Race, Family, trimmed=as.factor(trimmed), LnGeneLength=log(GeneLength), ratioLength=qlogis(ratioLength)))
+		tab <- with(tab0, data.frame(Polymorphism, Dup, Phylog_lvl, Race, Gene, Family, trimmed=as.factor(trimmed), LnGeneLength=log(GeneLength), ratioLength=qlogis(ratioLength)))
 		bad <- which(is.na(tab$LnGeneLength) | is.na(tab$ratioLength))}
 
     rownames(tab) <- rownames(tab0)
