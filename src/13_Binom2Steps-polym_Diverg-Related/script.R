@@ -51,7 +51,7 @@ v_samples <- paste("sample_size_", groups, sep=""); list_samples <- list()
 for (ite in seq(length(groups)))
 {
     gp <- groups[[ite]]
-    cat("\n\n\n     ##################\ngroupe ", gp,
+    cat("\n\n\n     ##################\n\tgroupe ", gp,
 "\n     ##################\n", sep="")
 
 

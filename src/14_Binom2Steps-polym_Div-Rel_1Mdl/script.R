@@ -122,7 +122,7 @@ cat(capture.output(sum_avg2, nomfil), file=nomfil, sep="\n")
 
 # 14.5) record results
 results <- list(ModelDup=list(max_mdl_Dup=fm1, all_mdl_Dup=test_trimmed, mdl_avg_Dup=mdl_avg),
-            ModelCpDup=list(max_mdl_CpDup=fm2, all_mdl_CpDup=test_trimmed2, mdl_avg_CpDup=mdl_avg2)))
+            ModelCpDup=list(max_mdl_CpDup=fm2, all_mdl_CpDup=test_trimmed2, mdl_avg_CpDup=mdl_avg2))
 
 
 #### end of the script
