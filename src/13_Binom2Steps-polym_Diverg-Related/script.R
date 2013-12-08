@@ -58,7 +58,7 @@ for (ite in seq(length(groups)))
     Pre_GLMtab <- subset(Pre_GLMtab0, Phylog_lvl==gp)
 
     # 13.2) Check data
-    cat("\n\n     # 13.2) Check data distrisbution for group ", gp, "\n", sep="")
+    cat("\n\n     # 13.2) Check data distrisbution for group '", gp, "'\n", sep="")
     GLMtab_all1 <- set_GLMtab(Pre_GLMtab, NonTrim_only=F, covar="LnExonLength")
 
     print(sample_size1 <- table(GLMtab_all1$Family, GLMtab_all1$trimmed))
@@ -71,16 +71,16 @@ for (ite in seq(length(groups)))
 
     # 13.3) Effect of variables on duplication events
         # 13.3.1) fit the models
-    cat("\n\n     # 13.3) Effect of variables on duplication events for group ", gp, "\n")
-    cat("\n         # 13.3.1) Fit the maximal model for group ", gp, "\n")
+    cat("\n\n     # 13.3) Effect of variables on duplication events for group '", gp, "'\n", sep="")
+    cat("\n         # 13.3.1) Fit the maximal model for group", gp, "\n")
     fm1 <- glmer(formula=MOD_ALL1, data = GLMtab_all1, family=FAMILY)
     sum_fm1 <- summary(fm1)
     print(sum_fm1, corr=F)
     nomfil <- sub(".txt", paste("_", gp, ".txt", sep=""), GLM_DUP_MAX)
     output_glm(sum_fm1, nomfil)
 
-        # 13.3.2) Fit al other models & model averaging
-    cat("\n         # 13.3.2) Fit al other models & model averaging for group ", gp, "\n")
+        # 13.3.2) Fit all other models & model averaging
+    cat("\n         # 13.3.2) Fit all other models & model averaging for group '", gp, "'\n", sep="")
     clusterExport(clust, c("GLMtab_all1", "FAMILY"))
     clusterEvalQ(clust, library(lme4))
     print(system.time(test_trimmed <- pdredge(fm1, cluster=clust, fixed=FIXED_TERMS1, m.max=M_MAX)))
@@ -95,19 +95,19 @@ for (ite in seq(length(groups)))
     cat(capture.output(sum_avg1, nomfil), file=nomfil, sep="\n")
 
         # 13.3.3) draw the results
-    cat("\n         # 13.3.3) Draw predicted probability of duplication for group ", gp,"\n")
+    cat("\n         # 13.3.3) Draw predicted probability of duplication for group '", gp, "'\n", sep="")
     nompdf <- sub(".pdf", paste("_", gp, ".pdf", sep=""), DUP_PDF)
     Draw_pdf(drw_pred(test_trimmed, GLMtab_all1, DELTA1), nompdf)
 
 
     # 13.4) Effect of variables on complete duplication events
-    cat("\n\n     # 13.4) Effect of variables on complete duplication events for group ", gp, "\n")
+    cat("\n\n     # 13.4) Effect of variables on complete duplication events for group '", gp, "'\n", sep="")
         # 13.4.1) data
-    cat("\n         # 13.4.1) Remove non polymorphic genes for group ", gp, "\n")
+    cat("\n         # 13.4.1) Remove non polymorphic genes for group '", gp, "'\n", sep="")
     GLMtab_all2 <- GLMtab_all1[GLMtab_all1$Dup==T,]
 
         # 13.4.2)  Fit the maximal model
-    cat("\n         # 13.4.2) Fit the maximal model for group ", gp, "\n")
+    cat("\n         # 13.4.2) Fit the maximal model for group '", gp, "'\n", sep="")
     fm2 <- glmer(formula=MOD_ALL2, data = GLMtab_all2, family=FAMILY)
     sum_fm2 <- summary(fm2)
     print(sum_fm2, corr=F)
@@ -115,7 +115,7 @@ for (ite in seq(length(groups)))
     output_glm(sum_fm2, nomfil)
 
         # 13.4.3) Fit al other models & model averaging
-    cat("\n         # 13.4.3) Fit al other models & model averaging for group ", gp, "\n")
+    cat("\n         # 13.4.3) Fit al other models & model averaging for group '", gp, "'\n", sep="")
     print("Test all terms")
     clusterExport(clust, c("GLMtab_all2", "FAMILY"))
     clusterEvalQ(clust, library(lme4))
@@ -130,7 +130,7 @@ for (ite in seq(length(groups)))
     cat(capture.output(sum_avg2, nomfil), file=nomfil, sep="\n")
 
         # 13.4.4) draw the results
-    cat("\n         # 13.4.4) Draw predicted probability of complete duplication for group ", gp, "\n")
+    cat("\n         # 13.4.4) Draw predicted probability of complete duplication for group '", gp, "'\n", sep="")
     nompdf <- sub(".pdf", paste("_", gp, ".pdf", sep=""), CPDUP_PDF)
     Draw_pdf(drw_pred(test_trimmed2, GLMtab_all2, DELTA2[ite], draw_CpDup=T), nompdf)
 
