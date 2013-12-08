@@ -1,1 +1,0 @@
-Median sequencing depth over targets and individuals: 384
