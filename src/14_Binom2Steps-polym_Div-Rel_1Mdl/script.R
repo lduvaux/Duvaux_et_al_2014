@@ -102,7 +102,7 @@ output_glm(sum_fm2, nomfil)
     # 14.4.3) Fit al other models & model averaging
 cat("\n         # 14.4.3) Fit al other models & model averaging\n")
 print("Test all terms")
-clusterExport(clust, c("GLMtab_all1", "FAMILY"))
+clusterExport(clust, c("GLMtab_all2", "FAMILY"))
 clusterEvalQ(clust, library(lme4))
 test_trimmed2 <- pdredge(fm2, cluster=clust, fixed=FIXED_TERMS2, m.max=M_MAX)
 
@@ -121,20 +121,15 @@ cat(capture.output(sum_avg2, nomfil), file=nomfil, sep="\n")
 #~Draw_pdf(drw_pred(test_trimmed2, GLMtab_all2, DELTA2[ite], draw_CpDup=T), nompdf)
 
 # 14.5) record results
-#~assign(gp, list(ModelDup=list(max_mdl_Dup=fm1, all_mdl_Dup=test_trimmed, mdl_avg_Dup=mdl_avg),
-#~            ModelCpDup=list(max_mdl_CpDup=fm2, all_mdl_CpDup=test_trimmed2, mdl_avg_CpDup=mdl_avg2)))
-#~res_all_groups[[ite]] <- get(gp)
-
+results <- list(ModelDup=list(max_mdl_Dup=fm1, all_mdl_Dup=test_trimmed, mdl_avg_Dup=mdl_avg),
+            ModelCpDup=list(max_mdl_CpDup=fm2, all_mdl_CpDup=test_trimmed2, mdl_avg_CpDup=mdl_avg2)))
 
 
 #### end of the script
-names(res_all_groups) <- groups
-names(list_samples) <- groups
-######################
 outFileName <- argv[1]
 ver(sprintf("Saving data to %s",outFileName))
 #     dummy <- numeric()
-save(res_all_groups, list_samples, file=outFileName)
+save(results, list_samples, file=outFileName)
 # }
 
 # if(DEBUG)

@@ -1,26 +1,32 @@
 Global model call: glmer(formula = Polymorphism ~ LnGeneLength + LnExonLength + 
     Family + LnGeneLength * Family + LnExonLength * Family + 
-    (1 | Race) + (1 | trimmed) + (1 | Gene), data = GLMtab_all2, 
-    family = FAMILY)
+    (1 | Race) + (1 | trimmed) + (1 | Family/Gene) + (1 | LnGeneLength/LnExonLength), 
+    data = GLMtab_all2, family = FAMILY)
 ---
 Model selection table 
-   (Int)   Fml LEL     LGL      Fml:LEL Fml:LGL df logLik  AICc  delta weight
-32 29.9700 +    -1.860 -2.03800 +       +       15 -67.988 169.5  0.00 0.329 
-4  51.5400 +    -7.501                           8 -76.334 169.7  0.21 0.297 
-24 38.9100 +    -3.461 -1.75200         +       12 -72.755 171.7  2.27 0.106 
-8  48.1200 +    -7.106  0.08984                  9 -76.400 172.0  2.60 0.090 
-3  41.5700      -5.928                           5 -81.176 172.8  3.30 0.063 
-12 82.3400 +   -11.980          +               11 -75.011 173.9  4.43 0.036 
-7  41.4800      -5.870 -0.03767                  6 -81.174 174.9  5.47 0.021 
-2  -8.3120 +                                     7 -80.195 175.2  5.70 0.019 
-22 58.8200 +           -7.27800         +       11 -75.795 175.4  5.99 0.016 
-16 69.6600 +   -10.090 -0.03398 +               12 -74.931 176.1  6.62 0.012 
-6   1.6420 +           -1.09500                  8 -79.765 176.5  7.07 0.010 
-5   9.9080             -1.24100                  5 -89.365 189.1 19.68 0.000 
-1  -0.7681                                       4 -91.985 192.2 22.78 0.000 
+   (Int)  Fml LEL    LGL      Fml:LEL Fml:LGL df logLik  AICc  delta weight
+4  51.540 +   -7.500                          11 -76.334 176.5  0.00 0.290 
+32 30.810 +   -2.037 -1.99000 +       +       18 -68.075 177.2  0.69 0.205 
+24 60.490 +   -5.871 -2.36100         +       15 -72.140 177.8  1.23 0.157 
+3  36.470     -5.225                           8 -80.503 178.0  1.47 0.139 
+8  43.660 +   -6.282 -0.04254                 12 -76.438 179.1  2.56 0.080 
+7  36.210     -5.059 -0.10670                  9 -80.491 180.2  3.70 0.045 
+12 67.710 +   -9.880          +               14 -74.912 180.8  4.32 0.033 
+2  -8.312 +                                   10 -80.195 181.9  5.40 0.019 
+22 57.500 +          -7.14500         +       14 -75.629 182.3  5.75 0.016 
+6   1.642 +          -1.09500                 11 -79.765 183.4  6.86 0.009 
+16 41.330 +   -6.017  0.04871 +               15 -75.651 184.8  8.25 0.005 
+5   8.291            -1.05800                  8 -86.796 190.6 14.06 0.000 
+1  -0.783                                      7 -88.977 192.7 16.19 0.000 
 Random terms (all models): 
-‘1 | Race’, ‘1 | trimmed’, ‘1 | Gene’
+‘1 | Race’, ‘1 | trimmed’, ‘1 | Family/Gene’, ‘1 | LnGeneLength/LnExonLength’
 
-Warning message:
-In (function (fn, par, lower = rep.int(-Inf, n), upper = rep.int(Inf,  ... :
+Warning messages:
+1: In (function (fn, par, lower = rep.int(-Inf, n), upper = rep.int(Inf,  ... :
+  failure to converge in 10000 evaluations (in model 8)
+2: In (function (fn, par, lower = rep.int(-Inf, n), upper = rep.int(Inf,  ... :
+  failure to converge in 10000 evaluations (in model 12)
+3: In (function (fn, par, lower = rep.int(-Inf, n), upper = rep.int(Inf,  ... :
   failure to converge in 10000 evaluations (in model 16)
+4: In (function (fn, par, lower = rep.int(-Inf, n), upper = rep.int(Inf,  ... :
+  failure to converge in 10000 evaluations (in model 24)

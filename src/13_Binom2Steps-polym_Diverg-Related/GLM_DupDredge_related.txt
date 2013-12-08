@@ -1,17 +1,18 @@
 Global model call: glmer(formula = Dup ~ LnGeneLength + LnExonLength + Family + 
     LnGeneLength * Family + LnExonLength * Family + (1 | Race) + 
-    (1 | trimmed) + (1 | Gene), data = GLMtab_all1, family = FAMILY)
+    (1 | trimmed) + (1 | Family/Gene) + (1 | LnGeneLength/LnExonLength), 
+    data = GLMtab_all1, family = FAMILY)
 ---
 Model selection table 
-   (Int)  Fml LEL      LGL      Fml:LEL Fml:LGL df logLik   AICc  delta weight
-6  -7.820 +    0.50470          +               11 -349.847 721.9 0.00  0.407 
-1  -4.177 +                                      7 -354.584 723.3 1.34  0.208 
-8  -7.238 +    0.53510 -0.08736 +               12 -349.840 724.0 2.03  0.148 
-3  -2.873 +            -0.14540                  8 -354.389 724.9 2.98  0.092 
-2  -2.769 +   -0.19180                           8 -354.517 725.2 3.23  0.081 
-4  -2.302 +   -0.09177 -0.13250                  9 -354.378 726.9 4.99  0.034 
-16 -5.856 +    0.52020 -0.22690 +       +       15 -348.784 728.0 6.07  0.020 
-11 -2.840 +            -0.14740         +       11 -353.698 729.6 7.70  0.009 
-12 -2.081 +   -0.11840 -0.13290         +       12 -353.749 731.8 9.85  0.003 
+   (Int)  Fml LEL      LGL     Fml:LEL Fml:LGL df logLik   AICc  delta weight
+6  -6.927 +    0.38610         +               14 -350.167 728.7 0.00  0.336 
+1  -4.175 +                                    10 -354.584 729.4 0.66  0.242 
+8  -6.418 +    0.45700 -0.1134 +               15 -349.929 730.3 1.58  0.153 
+3  -2.872 +            -0.1454                 11 -354.389 731.0 2.31  0.106 
+2  -2.770 +   -0.19140                         11 -354.519 731.3 2.57  0.093 
+4  -2.339 +   -0.09002 -0.1313                 12 -354.376 733.0 4.32  0.039 
+16 -5.230 +    0.44050 -0.2266 +       +       18 -348.922 734.5 5.74  0.019 
+11 -3.104 +            -0.1163         +       14 -353.726 735.8 7.12  0.010 
+12 -2.148 +   -0.14020 -0.1086         +       15 -353.650 737.7 9.02  0.004 
 Random terms (all models): 
-‘1 | Race’, ‘1 | trimmed’, ‘1 | Gene’
+‘1 | Race’, ‘1 | trimmed’, ‘1 | Family/Gene’, ‘1 | LnGeneLength/LnExonLength’

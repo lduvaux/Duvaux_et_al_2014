@@ -11,7 +11,10 @@ GLMs := 12_
 #~ 13_: 11_
 
 #all : 21_ 22_09_ 11_ $(GLMs)
-all : 22_ 24_ 09_ 11_ 12_ 13_
+all : 22_ 24_ 09_ 11_ 12_ 13_ 14_
+
+14_: 11_
+	@$(MAKE) -C 14_Binom2Steps-polym_Div-Rel_1Mdl
 
 13_: 11_
 	@$(MAKE) -C 13_Binom2Steps-polym_Diverg-Related
