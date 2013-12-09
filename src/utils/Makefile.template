@@ -9,4 +9,6 @@ $(OUT): script.R $(LOCALDEPS) $(UTILSDEPS) ./Makefile
 	Rscript $< $@ 2>&1 | tee logfile_$(MYDIR).txt
 
 clean:
-	rm -f *.Rdata *.txt *.pdf *.log result_*.csv TableS*.csv $(OUT)
+	rm -f *.Rdata *.pdf *.log result_*.csv TableS*.csv $(OUT)
+#### some .txt are not to be removed
+#	rm -f *.Rdata *.txt *.pdf *.log result_*.csv TableS*.csv $(OUT) 
