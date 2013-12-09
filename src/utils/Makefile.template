@@ -10,3 +10,7 @@ $(OUT): script.R $(LOCALDEPS) $(UTILSDEPS) ./Makefile
 
 clean:
 	rm -f *.Rdata Res_*.txt Res_*.pdf *.log Res_*.csv TableS*.csv GLM*.txt $(OUT)
+
+#### some .txt are not to be removed
+#	rm -f *.Rdata *.txt *.pdf *.log result_*.csv TableS*.csv $(OUT) 
+
