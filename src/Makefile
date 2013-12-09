@@ -1,17 +1,16 @@
 GLMs := 12_ 
 
-#~ #
-#~ 
-#~ all : 09_ $(GLMs)
-#~ 
-#~ 
-#~ 12_: 11_
-	#~ @$(MAKE) -C 12_GLM00_TEMPLATE
-#~ 
-#~ 13_: 11_
+toclean := $(shell ls [0-9][0-9]_*/Makefile |sed s/Makefile//g)
 
-#all : 21_ 22_09_ 11_ $(GLMs)
 all : 22_ 24_ 09_ 11_ 12_ 13_ 14_
+
+
+clean:
+	rm -f *.Rdata
+
+cleanall: clean
+	echo $(toclean)
+	for i in $(toclean); do $(MAKE) -C $$i clean; done
 
 14_: 11_
 	@$(MAKE) -C 14_Binom2Steps-polym_Div-Rel_1Mdl
@@ -59,5 +58,3 @@ all : 22_ 24_ 09_ 11_ 12_ 13_ 14_
 	@$(MAKE) -C 24_ShowPreProcessingEffic
 
 
-clean:
-	rm -f *.Rdata
