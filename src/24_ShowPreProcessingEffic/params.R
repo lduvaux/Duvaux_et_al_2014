@@ -3,5 +3,5 @@
 PREVIOUS_DATA <- "../02_PreProcessing.Rdata"
 RAW_DATA <- "../01_GetData.Rdata"
 
-
+PDF_NAME <- "Res_PreProcessingEfficiency.pdf"
 

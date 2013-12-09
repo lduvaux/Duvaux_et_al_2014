@@ -29,8 +29,7 @@ main <- function(argv){
 	
 }
 
-
-
+cat("dummy logfile\n")
 
 
 argv <- commandArgs(TRUE)[1]

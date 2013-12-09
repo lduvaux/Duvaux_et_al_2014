@@ -5,5 +5,5 @@ BAD_FILE <- "111214_0267_D067GACXX_1_SA-PE-020"
 BAD_FCELL <- "D0CM0ABXX"
 BAD_INDIV <- c(82, 84, 210)
 
-OUTFIL1 <- "./result_MedianSqcingDepth.txt"
+OUTFIL1 <- "./Res_MedianSqcingDepth.txt"
 OUTFIL2 <- "./TableS4_SequencinqStatistics.csv"

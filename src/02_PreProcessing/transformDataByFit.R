@@ -9,20 +9,20 @@ fitPolyn2ToData <- function(x,y,use_intercept = T){
         return (nls(form,start = list(a = 0, b = 1)))
     }
 }
+
 fitPolyn3ToData <- function(x,y,use_intercept = T){
     if(use_intercept){
         form <- y ~ a * x^3 + b * x^2 + c * x + d
-        return (nls(form,start = list(a = 0, b = 1, c = 0,d =0)))
+        return (nls(form, start = list(a = 0, b = 1, c = 0,d =0)))   # fit the polynom
     }
     else{
         form <- y ~ a * x^3 + b * x^2 + c * x  
-        return (nls(form,start = list(a = 0, b = 1, c = 0)))
+        return (nls(form, start = list(a = 0, b = 1, c = 0)))   # fit the polynom
     }
 }
 
 
-
-makeModelForY <- function(x,y,use_intercept = T, polynDeg = 1){
+makeModelForY <- function(x, y, use_intercept = T, polynDeg = 1){
 	if (polynDeg==1)
 		out <- list(mod = NULL,y =y)    
 	else if(polynDeg == 2)

@@ -4,6 +4,8 @@ source("../utils/globalCtes.R")
 source("params.R")
 source("./ProcessingSegmentationFunctions.R")
 
+cat("dummy log")
+
 main <- function(argv){
 
     load(PREVIOUS_DATA)
@@ -41,7 +43,7 @@ main <- function(argv){
     #############################
     outFileName <- argv[1]
     ver(sprintf("Saving data to %s",outFileName))
-    save (fit,alpha_matrix,gene_per_categ, file=outFileName)
+    save (fit, alpha_matrix, gene_per_categ, file=outFileName)
 }
 
 argv <- commandArgs(TRUE)[1]

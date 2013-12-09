@@ -6,7 +6,7 @@ UTILSDEPS := $(shell ls ../utils/*.R)
 LOCALDEPS := $(shell ls ./*.R | grep -v script.R)
 
 $(OUT): script.R $(LOCALDEPS) $(UTILSDEPS) ./Makefile
-	Rscript $< $@ 2>&1 | tee logfile_$(MYDIR).txt
+	Rscript $< $@ 2>&1 | tee $(MYDIR).log
 
 clean:
-	rm -f *.Rdata *.txt *.pdf *.log result_*.csv TableS*.csv $(OUT)
+	rm -f *.Rdata Res_*.txt Res_*.pdf *.log Res_*.csv TableS*.csv GLM*.txt $(OUT)

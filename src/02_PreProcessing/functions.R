@@ -35,7 +35,6 @@ plotAllFits <- function(models,transformed_data_list,control,plot_mains, thresho
 	mains <- plot_mains$mains
 	col.mains <- plot_mains$col.mains
 
-#	pdf("fit-todel.pdf",width = 16, height = 9)
 	pdf(pdfname,width = 16, height = 9)
 		layout(matrix(1:8,2,4,byrow = T))
 		
@@ -79,7 +78,7 @@ PrePro_prePrecessing <- function(control, data_mat, polyn_deg = 2, use_intercept
 			else
 				intercpt <- "_NoIntercept"
 		}
-		pdfname <- paste("fit-todel_", polyn, intercpt , ".pdf", sep="")
+		pdfname <- paste("Res_FitLm2Data_", polyn, intercpt , ".pdf", sep="")
 		plotAllFits(models,transformed_data_list,control,plot_mains, thresholds, pdfname)
 	}
     #merging the data back into a  matrix
@@ -104,10 +103,10 @@ PrePro_prePrecessing <- function(control, data_mat, polyn_deg = 2, use_intercept
 #~     rownames(rounded_ratio_mat) <- 1:nrow(rounded_ratio_mat)
     
     if(weight_error)
-		out_list <- list(raw_y=data_mat0, new_sqrt_y=data_mat, new_ratio = ratio_mat, error_round = error_mat_weighted, good_baits=val, noInfo=inval_rows)
+		out_list <- list(raw_y=data_mat0, new_sqrt_y=data_mat, new_ratio = ratio_mat, error_round = error_mat_weighted, good_baits=val, noInfo=inval_rows, fit=use_intercept)
 		
 	else
-		out_list <- list(raw_y=data_mat0, new_sqrt_y=data_mat, new_ratio = ratio_mat, error_round = error_mat, good_baits=val, noInfo=inval_rows)
+		out_list <- list(raw_y=data_mat0, new_sqrt_y=data_mat, new_ratio = ratio_mat, error_round = error_mat, good_baits=val, noInfo=inval_rows, fit=use_intercept)
 		
 	if (doInval_row)	# if we have removed colums with no variation
 	{
@@ -116,6 +115,7 @@ PrePro_prePrecessing <- function(control, data_mat, polyn_deg = 2, use_intercept
 		out_list$new_ratio <- out_list$new_ratio[!inval_rows,]
 		out_list$error_round <- out_list$error_round[!inval_rows,]
 		out_list$good_baits <- out_list$good_baits[!inval_rows]
+		out_list$fit <- use_intercept
     }
     return(out_list)
 }

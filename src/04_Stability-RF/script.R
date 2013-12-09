@@ -56,16 +56,14 @@ main <- function(argv){
 	print(system.time(lrf_unsuperv <- Imptce_Stability_unsuperv(N_RF, NTREES, x, y, xtest, ytest, SAMP_SIZE2)))
 	
 	
-	
-	
 	print("Combine small supervised Rfs in Bigger supervised RFs")
 	print(system.time(gradNtree_lrf_superv <- set_combis_nRF(lrf_superv, lg=100, by=10)))
 	print("Combine small unsupervised Rfs in Bigger unsupervised RFs")
 	print(system.time(gradNtree_lrf_unsuperv <- set_combis_nRF(lrf_unsuperv, lg=100, by=10)))
 
 
-    plot_10_bestvar(gradNtree_lrf_superv, lrf_superv, ysup=0.02, pdf_name="10_bestvariables_superv.pdf")
-    plot_10_bestvar(gradNtree_lrf_unsuperv, lrf_unsuperv, ysup=0.02, pdf_name="10_bestvariables_unsuperv.pdf")
+    plot_10_bestvar(gradNtree_lrf_superv, lrf_superv, ysup=0.02, pdf_name=PDF_NAME1)
+    plot_10_bestvar(gradNtree_lrf_unsuperv, lrf_unsuperv, ysup=0.02, pdf_name=PDF_NAME2)
 			# 1.2) stability ~ reference pools
 	best20_superv <- sort_VarPerImp(gradNtree_lrf_superv)[1:20]
 	best20_unsuperv <- sort_VarPerImp(gradNtree_lrf_unsuperv)[1:20]

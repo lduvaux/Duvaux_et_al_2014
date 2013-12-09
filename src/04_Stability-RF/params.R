@@ -12,4 +12,5 @@ RACE_UNKNOWN <- c("Medicago_204_T60","Pisum_248_T98","Pisum_193_T94","Lathyrus_1
 SAMP_SIZE1 <- c(5, rep(12, 7))
 SAMP_SIZE2 <- c(5, rep(10, 5), 9, 10)
 
-
+PDF_NAME1 <- "Res_10_bestVariab_superv.pdf"
+PDF_NAME2 <- "Res_10_bestVariab_unsuperv.pdf"

@@ -9,10 +9,3 @@ POLY_DEG <- 3
 
 # weather nls will model a non-zero intersept
 USE_INTERCEPT  <- T
-
-
-
-#~ INPUT <- ../rawData.Rdata
-
-
-

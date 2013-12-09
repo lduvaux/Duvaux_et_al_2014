@@ -18,7 +18,7 @@ main <- function(argv){
     
     ratio_mat <- apply(data_mat,2,function(x,ctrl,cte){x/(ctrl + cte)},ctrl = control_vec, cte = 0)
 	max <- 6
-	pdf("figure.pdf",width=12,height=8)
+	pdf(PDF_NAME, width=12,height=8)
 	par(layout(matrix(1:12,4,3)))
 	par(mar=c(1,1,1,1))
 	for(i in 1:ncol(ratio_mat)){

@@ -11,7 +11,7 @@ CLUSTERS <- list(divergent=c("Cytisus", "Lathyrus", "L.corn.", "L.ped.", "Ononis
 MODP2 <- Polymorphism ~ LnGeneLength + LnExonLength + Family + trimmed
 
 # 3) outputs
-PAIRS_ALL_EXON_LENGTH <- "./Pair_Polym_ExLgCovar_AllGenes.pdf"
-INTERACTION_HIST <- "./Hist_FactInteract_AllGenes.pdf"
-BOXPLOTS_PDF <- "./PolymDistribution.pdf"
-GLM_RES_BEST_TRIMMED <- "./GLM_CNVpolym_All_Best_trimmed.txt"
+PAIRS_ALL_EXON_LENGTH <- "./Res_Pair_Polym_ExLgCovar_AllGenes.pdf"
+INTERACTION_HIST <- "./Res_Hist_FactInteract_AllGenes.pdf"
+BOXPLOTS_PDF <- "./Res_PolymDistribution.pdf"
+GLM_RES_BEST_TRIMMED <- "./Res_GLM_CNVpolym_All_Best_trimmed.txt"

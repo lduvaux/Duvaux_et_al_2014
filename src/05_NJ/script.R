@@ -38,7 +38,7 @@ main <- function(argv){
     gene_categ <- PreProNJ_GetGeneCateg(All_bait_categ)
     
 	# 2) build figures
-	outpdf <- paste("NJ_Polyn", fit$polyn_deg, "_", inter, "_", METHOD, ".pdf", sep="")
+	outpdf <- paste(PREFIX4PDF_NAME, fit$polyn_deg, "_", inter, "_", METHOD, ".pdf", sep="")
 	pdf(file=outpdf, width=11, height=14)
 	lapply(1:length(gene_categ), processing_NJ, gene_categ, alpha_matrix, METHOD, ROOT, LANE, col_races, col_lib, libraries, races_uniq, col_lib_raw, race_colo_raw, baits)
 	dev.off()

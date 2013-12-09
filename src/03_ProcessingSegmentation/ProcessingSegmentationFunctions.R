@@ -150,7 +150,7 @@ Pro_used_in_lapply <- function(individual, tab, x, nk, contig, logf)
 }
 
 # perform a segmentation analysis for all individuals of a given contig
-Pro_runSegPerContig <- function(ite0, contigs_uniq, contigs=bait_info$chrom, new_sqrt_y, control_vec, nkmax=12, logf="Segmentation.log")
+Pro_runSegPerContig <- function(ite0, contigs_uniq, contigs=bait_info$chrom, new_sqrt_y, control_vec, nkmax=12, logf="OptimalSegmentations.log")
 {
 	# 1) prepare data to run the 'findOptimalSegmentations' function
 	contig=contigs_uniq[ite0]

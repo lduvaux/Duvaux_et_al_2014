@@ -327,7 +327,7 @@ check_baits4CN_gene <- function(nom, x_prim,y_prim, contig_rf, mat_imp_NmaxTrees
 		all_baits <- names(other_baits_imp)
 
     rg <- max(sapply(all_baits, plot_CN_contigous_baits,x_prim, y_prim, races_3, races_uniq, mat_imptce=mat_imp_NmaxTrees, best_score=best_score, nom=nom, test=T))
-    pdf(paste(outdir, pref_nompdf, "CNV_DistrPerRace-", nom, ".pdf", sep=""))
+    pdf(paste(outdir, "Res_", pref_nompdf, "CNV_DistrPerRace-", nom, ".pdf", sep=""))
 	layout(matrix(1:6, 3, 2, byrow = TRUE))
 
 	par(las=2)
@@ -371,7 +371,7 @@ check_baits4CN_PMT <- function(nom, x_prim,y_prim, contig_rf, mat_imp_NmaxTrees,
     all_baits2 <- paste(all_baits, corresp_alias3, sep="/")
     
     rg <- max(sapply(all_baits, plot_CN_contigous_baits,x_prim, y_prim, races_3, races_uniq, mat_imptce=mat_imp_NmaxTrees, best_score=best_score, nom=nom, test=T))
-    pdf(paste(outdir, pref_nompdf, "CNV_DistrPerRace-", nom, ".pdf", sep=""))
+    pdf(paste(outdir, "Res_", pref_nompdf, "CNV_DistrPerRace-", nom, ".pdf", sep=""))
 	layout(matrix(1:6, 3, 2, byrow = TRUE))
 	par(las=2)
 	sapply(1:length(all_baits), function(x) plot_CN_contigous_baits(bait=all_baits[x],x_prim, y_prim, races_3, races_uniq, ylim=c(0, rg), mat_imptce=mat_imp_NmaxTrees, best_score=best_score, nom=nom, locmain=all_baits2[x]))
