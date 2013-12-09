@@ -51,6 +51,7 @@ PrePro_prePrecessing <- function(control, data_mat, polyn_deg = 2, use_intercept
 # thresholds -> has to be expressed as the same order as the square root of x
 {
     control <- sqrt(control)
+    fit <- list(use_intercept=use_intercept, polyn_deg=polyn_deg)
     
     val <- (control  > thresholds[1] & control  < thresholds[2])	# keep baits where control is reliable only
     control <- control[val]
@@ -103,10 +104,10 @@ PrePro_prePrecessing <- function(control, data_mat, polyn_deg = 2, use_intercept
 #~     rownames(rounded_ratio_mat) <- 1:nrow(rounded_ratio_mat)
     
     if(weight_error)
-		out_list <- list(raw_y=data_mat0, new_sqrt_y=data_mat, new_ratio = ratio_mat, error_round = error_mat_weighted, good_baits=val, noInfo=inval_rows, fit=use_intercept)
+		out_list <- list(raw_y=data_mat0, new_sqrt_y=data_mat, new_ratio = ratio_mat, error_round = error_mat_weighted, good_baits=val, noInfo=inval_rows, fit=fit)
 		
 	else
-		out_list <- list(raw_y=data_mat0, new_sqrt_y=data_mat, new_ratio = ratio_mat, error_round = error_mat, good_baits=val, noInfo=inval_rows, fit=use_intercept)
+		out_list <- list(raw_y=data_mat0, new_sqrt_y=data_mat, new_ratio = ratio_mat, error_round = error_mat, good_baits=val, noInfo=inval_rows, fit=fit)
 		
 	if (doInval_row)	# if we have removed colums with no variation
 	{
@@ -115,7 +116,7 @@ PrePro_prePrecessing <- function(control, data_mat, polyn_deg = 2, use_intercept
 		out_list$new_ratio <- out_list$new_ratio[!inval_rows,]
 		out_list$error_round <- out_list$error_round[!inval_rows,]
 		out_list$good_baits <- out_list$good_baits[!inval_rows]
-		out_list$fit <- use_intercept
+		out_list$fit <- fit
     }
     return(out_list)
 }

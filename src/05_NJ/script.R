@@ -17,7 +17,7 @@ source("./functions.R")
 main <- function(argv){
 	load(PREVIOUS_DATA)
 	print(ls())
-	inter <- ifelse (fit$use_intercept, "Interc", "NoInterc")
+	inter <- ifelse (fit$use_intercept, "Intercept", "NoIntercept")
 	raw_data_file <- RAW_DATA
 	
 	# 1) setup data and colors
