@@ -19,14 +19,14 @@ set.seed(0)
 Pre_GLMtab0 <- set_Pre_GLMtable(ListGenes, BaitsGeneNames, alpha_matrix
 , Genes_Info, CATEG_FOR_GLM, NonTrimGenes, test_blocks=T, list_groups=SUBCLUSTERS, fqcy=F)
 Pre_GLMtab0 <- add_Phylog_lvl(Pre_GLMtab0, CLUSTERS)
-Pre_GLMtab0 <- add_DupField(Pre_GLMtab0)
+Pre_GLMtab0 <- add_PolymField(Pre_GLMtab0)
 
-vec_polym <- Pre_GLMtab0$Polymorphism
+vec_polym <- Pre_GLMtab0$Duplicationlication
 table(vec_polym)
 sum(table(vec_polym))
 
 GLMtab_all1 <- set_GLMtab(Pre_GLMtab0, NonTrim_only=F, covar="LnExonLength")
-table(GLMtab_all1$Polymorphism)
+table(GLMtab_all1$Duplicationlication)
 
 
 Pre_GLMtab0_2 <- set_Pre_GLMtable(ListGenes, BaitsGeneNames, alpha_matrix

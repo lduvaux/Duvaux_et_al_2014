@@ -223,7 +223,7 @@ test_pro_fqcy <- function(tab, gp, gene, CpDup_Only, blk)
 
     # compute fqcy of complete duplication only
     else {
-#~        print("Complete Dup only")
+#~        print("Complete Duplication only")
         if (is.matrix(tab)) {
             vec_test <- apply(tab, 2, sub_test_partialVect)
             lg_CpDup <- length(grep("^3_CpDup$", vec_test))

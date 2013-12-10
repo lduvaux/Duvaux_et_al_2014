@@ -25,6 +25,9 @@ groups <- names(CLUSTERS)
 print(groups)
 Pre_GLMtab0 <- set_Pre_GLMtable(ListGenes, BaitsGeneNames, alpha_matrix
 , Genes_Info, CATEG_FOR_GLM, NonTrimGenes, test_blocks=T, list_groups=CLUSTERS)
+
+print(head(Pre_GLMtab0))
+
 res_all_groups <- list()
 v_samples <- paste("sample_size_", groups, sep=""); list_samples <- list()
 for (ite in seq(length(groups)))
@@ -34,9 +37,9 @@ for (ite in seq(length(groups)))
     
     # 1) Check data
     GLMtab_all2 <- set_GLMtab(Pre_GLMtab, NonTrim_only=F, covar="LnExonLength")
-    print(sample_size1 <- table(GLMtab_all2$Polymorphism, GLMtab_all2$Family))
+    print(sample_size1 <- table(GLMtab_all2$Duplication, GLMtab_all2$Family))
     print(sample_size2 <- table(GLMtab_all2$Family, GLMtab_all2$trimmed))
-    print(sample_size3 <- table(GLMtab_all2$Polymorphism, interaction(GLMtab_all2$Family, GLMtab_all2$trimmed)))
+    print(sample_size3 <- table(GLMtab_all2$Duplication, interaction(GLMtab_all2$Family, GLMtab_all2$trimmed)))
     assign(v_samples[ite], list(sample_size1=sample_size1, sample_size2=sample_size2, sample_size3=sample_size3))
     list_samples[[ite]] <- get(v_samples[ite])
     nompdf <- sub(".pdf", paste("_", gp, ".pdf", sep=""), PAIRS_ALL_EXON_LENGTH)
@@ -44,14 +47,14 @@ for (ite in seq(length(groups)))
 
         # 1.c) draw histograms per class of interactions
     vec_int <- with(Pre_GLMtab, interaction(trimmed, Family))
-    tab_draw <- cbind(Pre_GLMtab[,c("Polymorphism", "Family", "Race", "GeneLength")], LnGeneLength=log(Pre_GLMtab[,"GeneLength"]), TotExonLength=Pre_GLMtab[,"TotExonLength"], LnExonLength=log(Pre_GLMtab[,"TotExonLength"]))
+    tab_draw <- cbind(Pre_GLMtab[,c("Duplication", "Family", "Race", "GeneLength")], LnGeneLength=log(Pre_GLMtab[,"GeneLength"]), TotExonLength=Pre_GLMtab[,"TotExonLength"], LnExonLength=log(Pre_GLMtab[,"TotExonLength"]))
     nompdf <- sub(".pdf", paste("_", gp, ".pdf", sep=""), INTERACTION_HIST)
     Draw_pdf(Draw_distrib(tab_draw, Vec_int1=vec_int, Vec_int2=tab_draw$trimmed, numeric_var=4:7, nrow=4), nompdf)
 
     # 2) Investigate the effect of trimmed on CNV
     print("Fit the main model")
     fm1 <- multinom(formula=MOD_ALL1, data = GLMtab_all2)
-    MOD_ALL2 <- Polymorphism ~ LnGeneLength + LnExonLength + Family + trimmed + Family * trimmed
+    MOD_ALL2 <- Duplication ~ LnGeneLength + LnExonLength + Family + trimmed + Family * trimmed
 
     print("Test all terms")
     test_trimmed <- dredge(fm1, fixed=FIXED_TERMS, m.max=M_MAX)

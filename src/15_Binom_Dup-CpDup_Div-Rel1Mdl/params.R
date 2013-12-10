@@ -9,7 +9,7 @@ SUBCLUSTERS <- list(Cytisus="Cytisus", Lathyrus="Lathyrus", L.corn.="L.corn.", L
 
 
 # 2) models for pair plots
-MODP2 <- Polymorphism ~ LnGeneLength + LnExonLength + Family + trimmed + Dup + Race + Phylog_lvl
+MODP2 <- Duplication ~ LnGeneLength + LnExonLength + Family + trimmed + Polymorphic + Race + Phylog_lvl
 
 # 3) outputs
 PAIRS_ALL_EXON_LENGTH <- "./Res_Pair_Polym_ExLgCovar_AllGenes_DRall.pdf"

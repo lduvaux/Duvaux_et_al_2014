@@ -11,11 +11,11 @@ set_GLMtab <- function(tab0, NonTrim_only=F, covar)
 		tab0 <- tab0[tab0$trimmed=="Yes",]
 
 	if (covar=="LnExonLength") {
-		tab <- with(tab0, data.frame(Polymorphism, Dup, Phylog_lvl, Race, Gene, Family, trimmed=as.factor(trimmed), LnGeneLength=log(GeneLength), LnExonLength=log(TotExonLength)))
+		tab <- with(tab0, data.frame(Duplication, Polymorphic, Phylog_lvl, Race, Gene, Family, trimmed=as.factor(trimmed), LnGeneLength=log(GeneLength), LnExonLength=log(TotExonLength)))
 		bad <- which(is.na(tab$LnGeneLength) | is.na(tab$LnExonLength))}
 
 	if (covar=="ratioLength") {
-		tab <- with(tab0, data.frame(Polymorphism, Dup, Phylog_lvl, Race, Gene, Family, trimmed=as.factor(trimmed), LnGeneLength=log(GeneLength), ratioLength=qlogis(ratioLength)))
+		tab <- with(tab0, data.frame(Duplication, Polymorphic, Phylog_lvl, Race, Gene, Family, trimmed=as.factor(trimmed), LnGeneLength=log(GeneLength), ratioLength=qlogis(ratioLength)))
 		bad <- which(is.na(tab$LnGeneLength) | is.na(tab$ratioLength))}
 
     rownames(tab) <- rownames(tab0)
@@ -32,7 +32,7 @@ drw_pred <- function(dredge_objt, tab_data, delta_dredge, draw_CpDup=F)
     # 1) temporary data
     print("Model averaging for prediction")
     fitted_mdl <- model.avg(dredge_objt, subset = delta < delta_dredge, fit=T)
-    tmpdat <- tab_data[,c("LnGeneLength","LnExonLength", "Family", "Race", "trimmed", "Dup")]
+    tmpdat <- tab_data[,c("LnGeneLength", "LnExonLength", "Family", "Race", "trimmed", "Polymorphic")]
     v_cont <- c("LnGeneLength","LnExonLength")
 
 #~    g <- list()
@@ -47,11 +47,11 @@ drw_pred <- function(dredge_objt, tab_data, delta_dredge, draw_CpDup=F)
 
 
         if (draw_CpDup) {
-            CpDup <- ifelse(tab_data$Polymorphism=="3_CpDup",1,0)
+            CpDup <- ifelse(tab_data$Duplication=="3_CpDup",1,0)
             tab_p <- cbind(tmpdat[,c(v_cont[i],"Family")], CpDup, p)
         } else {
-            Dup <- as.numeric(tab_data$Dup)
-            tab_p <- cbind(tmpdat[,c(v_cont[i],"Family")], Dup, p)
+            Polymorphic <- as.numeric(tab_data$Polymorphic)
+            tab_p <- cbind(tmpdat[,c(v_cont[i],"Family")], Polymorphic, p)
         }
         
         # 3) plot
@@ -59,7 +59,7 @@ drw_pred <- function(dredge_objt, tab_data, delta_dredge, draw_CpDup=F)
 #~                geom_point() + # plot the real data
 #~                stat_smooth(aes(colour = Family), method = 'glm', family = 'binomial', size = 2) + # plot the fit
 #~                facet_wrap( ~ Family)
-        y_var <- ifelse(draw_CpDup, "CpDup", "Dup")
+        y_var <- ifelse(draw_CpDup, "CpDup", "Polymorphic")
         gplot <- ggplot(tab_p, aes_string(x = v_cont[i], y = y_var)) +
                 facet_wrap( ~ Family) + # split by families
                 geom_point() + # plot the real data

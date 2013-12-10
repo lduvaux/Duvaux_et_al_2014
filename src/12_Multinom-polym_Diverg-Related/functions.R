@@ -11,11 +11,11 @@ set_GLMtab <- function(tab0, NonTrim_only=F, covar)
 		tab0 <- tab0[tab0$trimmed=="Yes",]
 
 	if (covar=="LnExonLength") {
-		tab <- with(tab0, data.frame(Polymorphism, Family, trimmed=as.factor(trimmed), LnGeneLength=log(GeneLength), LnExonLength=log(TotExonLength)))
+		tab <- with(tab0, data.frame(Duplication, Family, trimmed=as.factor(trimmed), LnGeneLength=log(GeneLength), LnExonLength=log(TotExonLength)))
         bad <- which(is.na(tab$LnGeneLength) | is.na(tab$LnExonLength))}
 
 	if (covar=="ratioLength") {
-		tab <- with(tab0, data.frame(Polymorphism, Family, trimmed=as.factor(trimmed), LnGeneLength=log(GeneLength), ratioLength=qlogis(ratioLength)))
+		tab <- with(tab0, data.frame(Duplication, Family, trimmed=as.factor(trimmed), LnGeneLength=log(GeneLength), ratioLength=qlogis(ratioLength)))
 		bad <- which(is.na(tab$LnGeneLength) | is.na(tab$ratioLength))}
 
     rownames(tab) <- rownames(tab0)
@@ -30,7 +30,7 @@ set_GLMtab <- function(tab0, NonTrim_only=F, covar)
 drw_pred <- function(fitted_mdl, tab_data)
 {
     fac <- with(tab_data, interaction(Family, trimmed))
-    fac1 <- with(tab_data, interaction(Polymorphism, Family, trimmed))
+    fac1 <- with(tab_data, interaction(Duplication, Family, trimmed))
 
 
     # 1) prediction

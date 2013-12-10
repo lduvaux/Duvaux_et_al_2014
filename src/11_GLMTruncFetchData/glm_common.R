@@ -35,7 +35,7 @@ set_Pre_GLMtable <- function(list_gen, Baits_Gn_Name, alpha_mat,
             ftab$Race <- as.factor(group)
             ftab <- ftab [, c(1:3, 8, 4:7)]}
         else {
-            ftab <- cbind(Polymorphism=vec_gen_polym0, gene_Res, ratioLength=ratiolength)
+            ftab <- cbind(Duplication=vec_gen_polym0, gene_Res, ratioLength=ratiolength)
             ftab$trimmed <- as.factor(ifelse(repgens%in%NonTrimGenes, "No", "Yes"))
             ftab$Race <- as.factor(group)
             ftab <- ftab [, c(1, 2, 7, 3:6)]}
@@ -63,7 +63,7 @@ set_Pre_GLMtable <- function(list_gen, Baits_Gn_Name, alpha_mat,
             ftab <- cbind(Fqcy_all=vec_gen_polym0, Fqcy_CpDup=vec_gen_polym1, gene_Res, ratioLength=ratiolength)
             ftab$trimmed <- as.factor(ifelse(rownames(ftab)%in%NonTrimGenes, "No", "Yes"))}
         else {
-            ftab <- cbind(Polymorphism=vec_gen_polym0, gene_Res, ratioLength=ratiolength)
+            ftab <- cbind(Duplication=vec_gen_polym0, gene_Res, ratioLength=ratiolength)
             ftab$trimmed <- as.factor(ifelse(rownames(ftab)%in%NonTrimGenes, "No", "Yes"))}
 		}
 	return(ftab)
@@ -186,10 +186,10 @@ add_Phylog_lvl <- function(tab, clusters)
     return(tab)
 }
 
-add_DupField <- function (tab)
+add_PolymField <- function (tab)
 {
-    Dup <- tab$Polymorphism!="1_NoDup"
-    tab <- cbind(tab, Dup)
+    Polymorphic <- tab$Duplication!="1_NoDup"
+    tab <- cbind(tab, Polymorphic)
     return(tab)
 }
 

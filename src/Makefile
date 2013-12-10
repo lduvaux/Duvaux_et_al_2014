@@ -13,7 +13,7 @@ cleanall: clean
 	for i in $(toclean); do $(MAKE) -C $$i clean; done
 
 14_: 11_
-	@$(MAKE) -C 14_Binom2Steps-polym_Div-Rel_1Mdl
+	@$(MAKE) -C 14_Binom_Polym_Div-Rel-1Mdl
 
 13_: 11_
 	@$(MAKE) -C 13_Binom2Steps-polym_Diverg-Related

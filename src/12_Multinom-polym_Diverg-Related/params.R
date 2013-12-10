@@ -8,7 +8,7 @@ CLUSTERS <- list(divergent=c("Cytisus", "Lathyrus", "L.corn.", "L.ped.", "Ononis
 
 
 # 2) models for pair plots
-MODP2 <- Polymorphism ~ LnGeneLength + LnExonLength + Family + trimmed
+MODP2 <- Duplication ~ LnGeneLength + LnExonLength + Family + trimmed
 
 # 3) outputs
 PAIRS_ALL_EXON_LENGTH <- "./Res_Pair_Polym_ExLgCovar_AllGenes.pdf"

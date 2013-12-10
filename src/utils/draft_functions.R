@@ -1,7 +1,7 @@
 Draw_prediction <- function(fitted_mdl, tab_data)
 {
 
-    tmpdat <- tab_data[,c("LnExonLength", "Family", "Race", "trimmed", "Dup")]
+    tmpdat <- tab_data[,c("LnExonLength", "Family", "Race", "trimmed", "Duplication")]
 
     # calculate predicted probabilities and store in a list
     LnExon <- with(tmpdat, seq(from = min(LnExonLength), to = max(LnExonLength), length.out = 100))

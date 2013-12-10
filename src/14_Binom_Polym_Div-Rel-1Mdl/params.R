@@ -9,17 +9,12 @@ SUBCLUSTERS <- list(Cytisus="Cytisus", Lathyrus="Lathyrus", L.corn.="L.corn.", L
 
 
 # 2) models for pair plots
-MODP2 <- Duplication ~ LnGeneLength + LnExonLength + Family + trimmed + Polymorphic + Race
+MODP2 <- Polymorphic ~ LnGeneLength + LnExonLength + Family + trimmed + Race + Phylog_lvl
 
 # 3) outputs
-PAIRS_ALL_EXON_LENGTH <- "./Res_Pair_Polym_ExLgCovar_AllGenes.pdf"
+PAIRS_ALL_EXON_LENGTH <- "./Res_Pair_Polym_ExLgCovar_AllGenes_DRall.pdf"
 
-GLM_POL_MAX <- "./Res_GLM01_PolMax.txt"
-GLM_POL_DREDGE <- "./Res_GLM_01PolDredge.txt"
-GLM_POL_AVG <- "./Res_GLM_01PolAvg.txt"
-POL_PDF <- "./Res_PredictProbaOfPollication.pdf"
-
-GLM_CPDUP_MAX <- "./Res_GLM_02CpDupMax.txt"
-GLM_CPDUP_DREDGE <- "./Res_GLM_02CpDupDredge.txt"
-GLM_CPDUP_AVG <- "./Res_GLM_02CpDupAvg.txt"
-CPDUP_PDF <- "./Res_PredictProbaOfCpDuplication.pdf"
+GLM_POL_MAX <- "./GLM_PolMax_DRall.txt"
+GLM_POL_DREDGE <- "./GLM_PolDredge_DRall.txt"
+GLM_POL_AVG <- "./GLM_PolAvg_DRall.txt"
+POL_PDF <- "./Res_PredictProbaOfPollication_DRall.pdf"
