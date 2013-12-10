@@ -12,9 +12,9 @@ SUBCLUSTERS <- list(Cytisus="Cytisus", Lathyrus="Lathyrus", L.corn.="L.corn.", L
 MODP2 <- Polymorphic ~ LnGeneLength + LnExonLength + Family + trimmed + Race + Phylog_lvl
 
 # 3) outputs
-PAIRS_ALL_EXON_LENGTH <- "./Res_Pair_Polym_ExLgCovar_AllGenes_DRall.pdf"
+PAIRS_ALL_EXON_LENGTH <- "./Res14-0_PairPlot_Polym.pdf"
 
-GLM_POL_MAX <- "./GLM_PolMax_DRall.txt"
-GLM_POL_DREDGE <- "./GLM_PolDredge_DRall.txt"
-GLM_POL_AVG <- "./GLM_PolAvg_DRall.txt"
-POL_PDF <- "./Res_PredictProbaOfPollication_DRall.pdf"
+GLM_POL_MAX <- "./GLM14-1_PolMax.txt"
+GLM_POL_DREDGE <- "./GLM14-2_PolDredge.txt"
+GLM_POL_AVG <- "./GLM14-3_PolAvg.txt"
+POL_PDF <- "./Res14-4_PredictPrPolymorph.pdf"

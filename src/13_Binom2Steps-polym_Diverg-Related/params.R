@@ -9,17 +9,17 @@ SUBCLUSTERS <- list(Cytisus="Cytisus", Lathyrus="Lathyrus", L.corn.="L.corn.", L
 
 
 # 2) models for pair plots
-MODP2 <- Duplication ~ LnGeneLength + LnExonLength + Family + trimmed + Polymorphic + Race
+MODP2 <- Duplication ~ LnGeneLength + LnExonLength + Family + trimmed + Polymorphic + Race + Phylog_lvl
 
 # 3) outputs
-PAIRS_ALL_EXON_LENGTH <- "./Res_Pair_Polym_ExLgCovar_AllGenes.pdf"
+PAIRS_ALL_EXON_LENGTH <- "./Res13-0_PairPlot_Dup.pdf"
 
-GLM_POL_MAX <- "./Res_GLM01_PolMax.txt"
-GLM_POL_DREDGE <- "./Res_GLM_01PolDredge.txt"
-GLM_POL_AVG <- "./Res_GLM_01PolAvg.txt"
-POL_PDF <- "./Res_PredictProbaOfPollication.pdf"
+GLM_POL_MAX <- "./GLM13-1_PolMax.txt"
+GLM_POL_DREDGE <- "./GLM13-2_PolDredge.txt"
+GLM_POL_AVG <- "./GLM13-3_PolAvg.txt"
+POL_PDF <- "./Res13-4_PredictPrPolymorph.pdf"
 
-GLM_CPDUP_MAX <- "./Res_GLM_02CpDupMax.txt"
-GLM_CPDUP_DREDGE <- "./Res_GLM_02CpDupDredge.txt"
-GLM_CPDUP_AVG <- "./Res_GLM_02CpDupAvg.txt"
-CPDUP_PDF <- "./Res_PredictProbaOfCpDuplication.pdf"
+GLM_CPDUP_MAX <- "./GLM_13-5_CpDupMax.txt"
+GLM_CPDUP_DREDGE <- "./GLM_13-6_CpDupDredge.txt"
+GLM_CPDUP_AVG <- "./GLM_13-7_CpDupAvg.txt"
+CPDUP_PDF <- "./Res13-8_PredictPrCpDup.pdf"

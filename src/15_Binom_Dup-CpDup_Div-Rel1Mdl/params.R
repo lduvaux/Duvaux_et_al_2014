@@ -9,17 +9,12 @@ SUBCLUSTERS <- list(Cytisus="Cytisus", Lathyrus="Lathyrus", L.corn.="L.corn.", L
 
 
 # 2) models for pair plots
-MODP2 <- Duplication ~ LnGeneLength + LnExonLength + Family + trimmed + Polymorphic + Race + Phylog_lvl
+MODP2 <- Duplication ~ LnGeneLength + LnExonLength + Family + trimmed + Race + Phylog_lvl
 
 # 3) outputs
-PAIRS_ALL_EXON_LENGTH <- "./Res_Pair_Polym_ExLgCovar_AllGenes_DRall.pdf"
+PAIRS_ALL_EXON_LENGTH <- "./Res15_PairPlot_DupType.pdf"
 
-GLM_DUP_MAX <- "./Res_GLM_DupMax_DRall.txt"
-GLM_DUP_DREDGE <- "./Res_GLM_DupDredge_DRall.txt"
-GLM_DUP_AVG <- "./Res_GLM_DupAvg_DRall.txt"
-DUP_PDF <- "./Res_PredictProbaOfDuplication_DRall.pdf"
-
-GLM_CPDUP_MAX <- "./Res_GLM_CpDupMax_DRall.txt"
-GLM_CPDUP_DREDGE <- "./Res_GLM_CpDupDredge_DRall.txt"
-GLM_CPDUP_AVG <- "./Res_GLM_CpDupAvg_DRall.txt"
-CPDUP_PDF <- "./Res_PredictProbaOfCpDuplication_DRall.pdf"
+GLM_DUP_MAX <- "./GLM15-1_DupMax.txt"
+GLM_DUP_DREDGE <- "./GLM15-2_DupDredge.txt"
+GLM_DUP_AVG <- "./GLM15-3_DupAvg.txt"
+DUP_PDF <- "./Res15-4_PredictPrCpDup.pdf"

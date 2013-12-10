@@ -30,7 +30,7 @@ set.seed(0)
 ######################
 cat("
 ##########################################
-14_Binom2Steps-polym_Diverg-Related: test the effect of gene features on Pr(polymorphic)
+14_Binom_Polym_Div-Rel-1Mdl: test the effect of gene features on Pr(polymorphic)
 ##########################################\n")
 
 # 14.1) Set up GLM data table
@@ -87,13 +87,13 @@ cat(capture.output(sum_avg1, nomfil), file=nomfil, sep="\n")
 #~Draw_pdf(drw_pred(test_trimmed, GLMtab_all1, DELTA1), nompdf)
 
 # 14.5) record results
-results <- list(GLMPolymorphic=list(max_mdl_Pol=fm1, all_mdl_Pol=test_trimmed, mdl_avg_Pol=mdl_avg))
+Res_Polymorph <- list(GLMPolymorphic=list(max_mdl_Pol=fm1, all_mdl_Pol=test_trimmed, mdl_avg_Pol=mdl_avg))
 
 #### end of the script
 outFileName <- argv[1]
 ver(sprintf("Saving data to %s",outFileName))
 #     dummy <- numeric()
-save(results, list_samples, file=outFileName)
+save(Res_Polymorph, list_samples, file=outFileName)
 # }
 
 # if(DEBUG)
