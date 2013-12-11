@@ -49,6 +49,9 @@ print(head(Pre_GLMtab0))
 cat("\n\n     # 14.2) Check data distrisbution\n")
 GLMtab_all1 <- set_GLMtab(Pre_GLMtab0, NonTrim_only=F, covar="LnExonLength")
 
+cat("\n             # Dimension of GLMtab_all1\n")
+print(dim(GLMtab_all1))
+
 print(sample_size1 <- table(GLMtab_all1$Family, GLMtab_all1$trimmed))
 print(sample_size2 <- table(GLMtab_all1$Family, GLMtab_all1$Polymorphic))
 print(sample_size3 <- table(GLMtab_all1$Family, with(GLMtab_all1, interaction(Polymorphic, trimmed))))
@@ -60,7 +63,7 @@ Draw_pdf(pairs_glm(MODP2, data=GLMtab_all1), PAIRS_ALL_EXON_LENGTH)
     # 14.3.1) fit the models
 cat("\n\n     # 14.3) Effect of variables on Pr(Polymorphic)\n")
 cat("\n         # 14.3.1) Fit the maximal model\n")
-fm1 <- glmer(formula=MOD_ALL1, data = GLMtab_all1, family=FAMILY)
+fm1 <- glmer(formula=MOD_ALL1, data = GLMtab_all1, family=FAMILY, control=glmerControl(optCtrl=list(maxfun=15000)))
 sum_fm1 <- summary(fm1)
 print(sum_fm1, corr=F)
 nomfil <- GLM_POL_MAX
@@ -68,13 +71,24 @@ output_glm(sum_fm1, nomfil)
 
     # 14.3.2) Fit al other models & model averaging
 cat("\n         # 14.3.2) Fit al other models & model averaging\n")
+cat("\n             # Test all terms\n")
 clusterExport(clust, c("GLMtab_all1", "FAMILY"))
 clusterEvalQ(clust, library(lme4))
 print(system.time(test_trimmed <- pdredge(fm1, cluster=clust, fixed=FIXED_TERMS1, m.max=M_MAX)))
 
+print(test_trimmed)
+
 nomfil <-  GLM_POL_DREDGE
 cat(capture.output(test_trimmed), file=nomfil, sep="\n")
 
+cat("\n\n             # get deviance of the best model\n")
+best_fma <- formula(attributes(test_trimmed)$calls[[1]])
+best_fm <- glmer(formula=best_fma, data = GLMtab_all1, family=FAMILY, control=glmerControl(optCtrl=list(maxfun=15000)))
+sum_best_fm <- summary(best_fm)
+print(sum_best_fm, corr=F)
+output_glm(sum_best_fm, GLM_POL_BEST)
+
+cat("\n             # model averaging\n", sep="")
 mdl_avg <- model.avg(test_trimmed, subset = delta < DELTA1)
 sum_avg1 <- summary(mdl_avg)
 print(sum_avg1) # save in a file
@@ -87,13 +101,13 @@ cat(capture.output(sum_avg1, nomfil), file=nomfil, sep="\n")
 #~Draw_pdf(drw_pred(test_trimmed, GLMtab_all1, DELTA1), nompdf)
 
 # 14.5) record results
-Res_Polymorph <- list(GLMPolymorphic=list(max_mdl_Pol=fm1, all_mdl_Pol=test_trimmed, mdl_avg_Pol=mdl_avg))
+GLMPolymorphic <- list(max_mdl_Pol=fm1, all_mdl_Pol=test_trimmed, mdl_avg_Pol=mdl_avg)
 
 #### end of the script
 outFileName <- argv[1]
 ver(sprintf("Saving data to %s",outFileName))
 #     dummy <- numeric()
-save(Res_Polymorph, list_samples, file=outFileName)
+save(GLMPolymorphic, list_samples, file=outFileName)
 # }
 
 # if(DEBUG)

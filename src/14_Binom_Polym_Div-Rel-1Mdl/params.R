@@ -16,5 +16,6 @@ PAIRS_ALL_EXON_LENGTH <- "./Res14-0_PairPlot_Polym.pdf"
 
 GLM_POL_MAX <- "./GLM14-1_PolMax.txt"
 GLM_POL_DREDGE <- "./GLM14-2_PolDredge.txt"
-GLM_POL_AVG <- "./GLM14-3_PolAvg.txt"
+GLM_POL_BEST <- "./GLM14-3_PolbestMdl.txt"
+GLM_POL_AVG <- "./GLM14-4_PolAvg.txt"
 POL_PDF <- "./Res14-4_PredictPrPolymorph.pdf"

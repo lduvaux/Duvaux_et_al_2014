@@ -61,6 +61,9 @@ for (ite in seq(length(groups)))
     cat("\n\n     # 13.2) Check data distrisbution for group '", gp, "'\n", sep="")
     GLMtab_all1 <- set_GLMtab(Pre_GLMtab, NonTrim_only=F, covar="LnExonLength")
 
+    cat("\n             # Dimension of GLMtab_all1\n")
+    print(dim(GLMtab_all1))
+
     print(sample_size1 <- table(GLMtab_all1$Family, GLMtab_all1$trimmed))
     print(sample_size2 <- table(GLMtab_all1$Family, GLMtab_all1$Duplication))
     print(sample_size3 <- table(GLMtab_all1$Family, with(GLMtab_all1, interaction(Duplication, trimmed))))
@@ -73,7 +76,7 @@ for (ite in seq(length(groups)))
         # 13.3.1) fit the models
     cat("\n\n     # 13.3) Effect of variables on Pr(Polymorphic) for group '", gp, "'\n", sep="")
     cat("\n         # 13.3.1) Fit the maximal model for group", gp, "\n")
-    fm1 <- glmer(formula=MOD_ALL1, data = GLMtab_all1, family=FAMILY)
+    fm1 <- glmer(formula=MOD_ALL1, data = GLMtab_all1, family=FAMILY, control=glmerControl(optCtrl=list(maxfun=15000)))
     sum_fm1 <- summary(fm1)
     print(sum_fm1, corr=F)
     nomfil <- sub(".txt", paste("_", gp, ".txt", sep=""), GLM_POL_MAX)
@@ -81,12 +84,22 @@ for (ite in seq(length(groups)))
 
         # 13.3.2) Fit all other models & model averaging
     cat("\n         # 13.3.2) Fit all other models & model averaging for group '", gp, "'\n", sep="")
+    cat("\n             # test all terms\n", sep="")
     clusterExport(clust, c("GLMtab_all1", "FAMILY"))
     clusterEvalQ(clust, library(lme4))
     print(system.time(test_trimmed <- pdredge(fm1, cluster=clust, fixed=FIXED_TERMS1, m.max=M_MAX)))
+
+    print(test_trimmed)
     
     nomfil <- sub(".txt", paste("_", gp, ".txt", sep=""), GLM_POL_DREDGE)
     cat(capture.output(test_trimmed), file=nomfil, sep="\n")
+
+    cat("\n\n             # get deviance of the best model\n")
+    best_fma <- formula(attributes(test_trimmed)$calls[[1]])
+    best_fm <- glmer(formula=best_fma, data = GLMtab_all1, family=FAMILY, control=glmerControl(optCtrl=list(maxfun=15000)))
+    sum_best_fm <- summary(best_fm)
+    print(sum_best_fm, corr=F)
+    output_glm(sum_best_fm, GLM_POL_BEST)
 
     cat("\n             # model averaging\n", sep="")
     mdl_avg <- model.avg(test_trimmed, subset = delta < DELTA1)
@@ -106,10 +119,13 @@ for (ite in seq(length(groups)))
         # 13.4.1) data
     cat("\n         # 13.4.1) Remove non Polymorphic genes for group '", gp, "'\n", sep="")
     GLMtab_all2 <- GLMtab_all1[GLMtab_all1$Polymorphic==T,]
+    
+    cat("\n             # Dimension of GLMtab_all2\n")
+    print(dim(GLMtab_all2))
 
         # 13.4.2)  Fit the maximal model
     cat("\n         # 13.4.2) Fit the maximal model for group '", gp, "'\n", sep="")
-    fm2 <- glmer(formula=MOD_ALL2, data = GLMtab_all2, family=FAMILY)
+    fm2 <- glmer(formula=MOD_ALL2, data = GLMtab_all2, family=FAMILY, control=glmerControl(optCtrl=list(maxfun=15000)))
     sum_fm2 <- summary(fm2)
     print(sum_fm2, corr=F)
     nomfil <- sub(".txt", paste("_", gp, ".txt", sep=""), GLM_CPDUP_MAX)
@@ -117,12 +133,22 @@ for (ite in seq(length(groups)))
 
         # 13.4.3) Fit al other models & model averaging
     cat("\n         # 13.4.3) Fit al other models & model averaging for group '", gp, "'\n", sep="")
-    print("Test all terms")
+    cat("\n             # Test all terms\n")
     clusterExport(clust, c("GLMtab_all2", "FAMILY"))
     clusterEvalQ(clust, library(lme4))
-    test_trimmed2 <- pdredge(fm2, cluster=clust, fixed=FIXED_TERMS2, m.max=M_MAX)
+    print(system.time(test_trimmed2 <- pdredge(fm2, cluster=clust, fixed=FIXED_TERMS2, m.max=M_MAX)))
+
+    print(test_trimmed2)
+    
     nomfil <- sub(".txt", paste("_", gp, ".txt", sep=""), GLM_CPDUP_DREDGE)
     cat(capture.output(test_trimmed2), file=nomfil, sep="\n")
+
+    cat("\n             # get deviance of the best model\n")
+    best_fma2 <- formula(attributes(test_trimmed2)$calls[[1]])
+    best_fm2 <- glmer(formula=best_fma2, data = GLMtab_all2, family=FAMILY, control=glmerControl(optCtrl=list(maxfun=15000)))
+    sum_best_fm2 <- summary(best_fm2)
+    print(sum_best_fm2, corr=F)
+    output_glm(sum_best_fm2, GLM_CPDUP_BEST)
 
     cat("\n             # model averaging\n", sep="")
     mdl_avg2 <- model.avg(test_trimmed2, subset = delta < DELTA2[ite])

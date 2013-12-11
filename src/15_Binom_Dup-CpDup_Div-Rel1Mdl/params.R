@@ -16,5 +16,6 @@ PAIRS_ALL_EXON_LENGTH <- "./Res15_PairPlot_DupType.pdf"
 
 GLM_DUP_MAX <- "./GLM15-1_DupMax.txt"
 GLM_DUP_DREDGE <- "./GLM15-2_DupDredge.txt"
-GLM_DUP_AVG <- "./GLM15-3_DupAvg.txt"
-DUP_PDF <- "./Res15-4_PredictPrCpDup.pdf"
+GLM_DUP_BEST <- "./GLM15-3_CpDupbestMdl.txt"
+GLM_DUP_AVG <- "./GLM15-4_DupAvg.txt"
+DUP_PDF <- "./Res15-5_PredictPrCpDup.pdf"

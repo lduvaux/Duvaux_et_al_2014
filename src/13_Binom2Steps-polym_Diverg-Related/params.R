@@ -14,12 +14,14 @@ MODP2 <- Duplication ~ LnGeneLength + LnExonLength + Family + trimmed + Polymorp
 # 3) outputs
 PAIRS_ALL_EXON_LENGTH <- "./Res13-0_PairPlot_Dup.pdf"
 
-GLM_POL_MAX <- "./GLM13-1_PolMax.txt"
-GLM_POL_DREDGE <- "./GLM13-2_PolDredge.txt"
-GLM_POL_AVG <- "./GLM13-3_PolAvg.txt"
-POL_PDF <- "./Res13-4_PredictPrPolymorph.pdf"
+GLM_POL_MAX <- "./GLM13-01_PolMax.txt"
+GLM_POL_DREDGE <- "./GLM13-02_PolDredge.txt"
+GLM_POL_BEST <- "./GLM13-03_PolbestMdl.txt"
+GLM_POL_AVG <- "./GLM13-04_PolAvg.txt"
+POL_PDF <- "./Res13-05_PredictPrPolymorph.pdf"
 
-GLM_CPDUP_MAX <- "./GLM_13-5_CpDupMax.txt"
-GLM_CPDUP_DREDGE <- "./GLM_13-6_CpDupDredge.txt"
-GLM_CPDUP_AVG <- "./GLM_13-7_CpDupAvg.txt"
-CPDUP_PDF <- "./Res13-8_PredictPrCpDup.pdf"
+GLM_CPDUP_MAX <- "./GLM_13-06_CpDupMax.txt"
+GLM_CPDUP_DREDGE <- "./GLM_13-07_CpDupDredge.txt"
+GLM_CPDUP_BEST <- "./GLM13-08_CpDupbestMdl.txt"
+GLM_CPDUP_AVG <- "./GLM_13-09_CpDupAvg.txt"
+CPDUP_PDF <- "./Res13-10_PredictPrCpDup.pdf"

@@ -54,6 +54,9 @@ cat("\n         # 15.2.1) Remove non polymorphic genes\n")
 GLMtab_all2 <- GLMtab_all1[GLMtab_all1$Polymorphic==T,]
 GLMtab_all2$Duplication <- factor(GLMtab_all2$Duplication)
 
+cat("\n             # Dimension of GLMtab_all2\n")
+print(dim(GLMtab_all2))
+
 print(sample_size1 <- table(GLMtab_all2$Family, GLMtab_all2$trimmed))
 print(sample_size2 <- table(GLMtab_all2$Family, GLMtab_all2$Duplication))
 print(sample_size3 <- table(GLMtab_all2$Family, with(GLMtab_all2, interaction(Polymorphic, trimmed))))
@@ -65,23 +68,33 @@ Draw_pdf(pairs_glm(MODP2, data=GLMtab_all2), PAIRS_ALL_EXON_LENGTH)
 cat("\n\n     # 15.3) Effect of variables on complete duplication events\n")
 
     # 15.3.1)  Fit the maximal model
-cat("\n         # 15.3.2) Fit the maximal model\n")
-fm2 <- glmer(formula=MOD_ALL2, data = GLMtab_all2, family=FAMILY)
+cat("\n         # 15.3.1) Fit the maximal model\n")
+fm2 <- glmer(formula=MOD_ALL2, data = GLMtab_all2, family=FAMILY, control=glmerControl(optCtrl=list(maxfun=15000)))
 sum_fm2 <- summary(fm2)
 print(sum_fm2, corr=F)
 nomfil <- GLM_DUP_MAX
 output_glm(sum_fm2, nomfil)
 
     # 15.3.2) Fit al other models & model averaging
-cat("\n         # 15.3.3) Fit al other models & model averaging\n")
-print("Test all terms")
+cat("\n         # 15.3.2) Fit al other models & model averaging\n")
+cat("\n             # Test all terms\n")
 clusterExport(clust, c("GLMtab_all2", "FAMILY"))
 clusterEvalQ(clust, library(lme4))
 test_trimmed2 <- pdredge(fm2, cluster=clust, fixed=FIXED_TERMS2, m.max=M_MAX)
 
+print(test_trimmed2)
+
 nomfil <- GLM_DUP_DREDGE
 cat(capture.output(test_trimmed2), file=nomfil, sep="\n")
 
+cat("\n\n             # get deviance of the best model\n")
+best_fma2 <- formula(attributes(test_trimmed2)$calls[[1]])
+best_fm2 <- glmer(formula=best_fma2, data = GLMtab_all2, family=FAMILY, control=glmerControl(optCtrl=list(maxfun=15000)))
+sum_best_fm2 <- summary(best_fm2)
+print(sum_best_fm2, corr=F)
+output_glm(sum_best_fm2, GLM_DUP_BEST)
+
+cat("\n             # model averaging\n", sep="")
 mdl_avg2 <- model.avg(test_trimmed2, subset = delta < DELTA2)
 sum_avg2 <- summary(mdl_avg2)
 print(sum_avg2)
