@@ -47,7 +47,7 @@ print(head(Pre_GLMtab0))
 ##### main script
 # 14.2) Check data
 cat("\n\n     # 14.2) Check data distrisbution\n")
-GLMtab_all1 <- set_GLMtab(Pre_GLMtab0, NonTrim_only=F, covar="LnExonLength")
+GLMtab_all1 <- set_GLMtab(Pre_GLMtab0, NonTrim_only=F)
 
 cat("\n             # Dimension of GLMtab_all1\n")
 print(dim(GLMtab_all1))

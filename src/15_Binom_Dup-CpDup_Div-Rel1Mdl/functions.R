@@ -1,29 +1,10 @@
 source("./10_GeneralStats_functions.R")
 source("./glm_common.R")
 
-############### set_GLMtab
-set_GLMtab <- function(tab0, NonTrim_only=F, covar)
+####################
+pairs_glm <- function(model, data_tab)
 {
-	if (covar!="LnExonLength" & covar!="ratioLength")
-		stop("Covariate is not given")
-
-	if (NonTrim_only)
-		tab0 <- tab0[tab0$trimmed=="Yes",]
-
-	if (covar=="LnExonLength") {
-		tab <- with(tab0, data.frame(Duplication, Polymorphic, Phylog_lvl, Race, Gene, Family, trimmed=as.factor(trimmed), LnGeneLength=log(GeneLength), LnExonLength=log(TotExonLength)))
-		bad <- which(is.na(tab$LnGeneLength) | is.na(tab$LnExonLength))}
-
-	if (covar=="ratioLength") {
-		tab <- with(tab0, data.frame(Duplication, Polymorphic, Phylog_lvl, Race, Gene, Family, trimmed=as.factor(trimmed), LnGeneLength=log(GeneLength), ratioLength=qlogis(ratioLength)))
-		bad <- which(is.na(tab$LnGeneLength) | is.na(tab$ratioLength))}
-
-    rownames(tab) <- rownames(tab0)
-    nambad <- rownames(tab)[bad]
-    tab <- tab[-bad,]
-
-	print(paste ("Because of Nas, the following locus have been removed from the analysis:", nambad, sep=" "))
-	return(tab)
+	pairs(model, data_tab, upper.panel = panel.smooth, lower.panel = panel.cor, diag.panel =panel.hist)
 }
 
 ############### draw predictions 
@@ -72,12 +53,6 @@ set_GLMtab <- function(tab0, NonTrim_only=F, covar)
 #~        }
 #~#~        return(g)
 #~}
-
-####################
-pairs_glm <- function(model, data_tab)
-{
-	pairs(model, data_tab, upper.panel = panel.smooth, lower.panel = panel.cor, diag.panel =panel.hist)
-}
 
 ############
 

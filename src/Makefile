@@ -2,7 +2,7 @@ GLMs := 12_
 
 toclean := $(shell ls [0-9][0-9]_*/Makefile |sed s/Makefile//g)
 
-all : 22_ 24_ 09_ 11_ 12_ 13_ 14_ 15_ 
+all : 22_ 24_ 09_ 11_ 12_ 14_ 15_ 
 
 
 clean:
@@ -18,8 +18,8 @@ cleanall: clean
 14_: 11_
 	@$(MAKE) -C 14_Binom_Polym_Div-Rel-1Mdl
 
-13_: 11_
-	@$(MAKE) -C 13_Binom2Steps-polym_Diverg-Related
+#13_: 11_
+	#@$(MAKE) -C 13_Binom2Steps-polym_Diverg-Related
 
 12_: 11_
 	@$(MAKE) -C 12_Multinom-polym_Diverg-Related

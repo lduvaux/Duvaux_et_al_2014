@@ -27,18 +27,18 @@ set_Pre_GLMtable <- function(list_gen, Baits_Gn_Name, alpha_mat,
 		gene_Res <- gene_Res[ind, ]
 		
 		ratiolength <- gene_Res$TotExonLength/gene_Res$GeneLength
+        IntronLength <- gene_Res$GeneLength-gene_Res$TotExonLength
 
         # 4) prepare the table
         if (fqcy) {
-            ftab <- cbind(Fqcy_all=vec_gen_polym0, Fqcy_CpDup=vec_gen_polym1, gene_Res, ratioLength=ratiolength)
+            ftab <- cbind(Fqcy_all=vec_gen_polym0, Fqcy_CpDup=vec_gen_polym1, gene_Res, ratioLength=ratiolength, IntronLength=IntronLength)
             ftab$trimmed <- as.factor(ifelse(repgens%in%NonTrimGenes, "No", "Yes"))
             ftab$Race <- as.factor(group)
             ftab <- ftab [, c(1:3, 8, 4:7)]}
         else {
-            ftab <- cbind(Duplication=vec_gen_polym0, gene_Res, ratioLength=ratiolength)
+            ftab <- cbind(Duplication=vec_gen_polym0, gene_Res, ratioLength=ratiolength, IntronLength=IntronLength)
             ftab$trimmed <- as.factor(ifelse(repgens%in%NonTrimGenes, "No", "Yes"))
-            ftab$Race <- as.factor(group)
-            ftab <- ftab [, c(1, 2, 7, 3:6)]}
+            ftab$Race <- as.factor(group)}
 		}
 	else {
 		# 2) estimate CNV polymorphism
@@ -57,13 +57,14 @@ set_Pre_GLMtable <- function(list_gen, Baits_Gn_Name, alpha_mat,
 		gene_Res <- gene_Res[ind, ]
 
 		ratiolength <- gene_Res$TotExonLength/gene_Res$GeneLength
+        IntronLength <- gene_Res$GeneLength-gene_Res$TotExonLength
 
         # 4) prepare the table
         if (fqcy) {
-            ftab <- cbind(Fqcy_all=vec_gen_polym0, Fqcy_CpDup=vec_gen_polym1, gene_Res, ratioLength=ratiolength)
+            ftab <- cbind(Fqcy_all=vec_gen_polym0, Fqcy_CpDup=vec_gen_polym1, gene_Res, ratioLength=ratiolength, IntronLength=IntronLength)
             ftab$trimmed <- as.factor(ifelse(rownames(ftab)%in%NonTrimGenes, "No", "Yes"))}
         else {
-            ftab <- cbind(Duplication=vec_gen_polym0, gene_Res, ratioLength=ratiolength)
+            ftab <- cbind(Duplication=vec_gen_polym0, gene_Res, ratioLength=ratiolength, IntronLength=IntronLength)
             ftab$trimmed <- as.factor(ifelse(rownames(ftab)%in%NonTrimGenes, "No", "Yes"))}
 		}
 	return(ftab)
@@ -111,6 +112,25 @@ computeGeneLength <- function(Gene_Info){
 		ExonSize <- sum(ExonSize0)}
 	res <- c(famille, GeneSize, ExonSize)
 	return(res)
+}
+###############
+set_GLMtab <- function(tab0, NonTrim_only=F)
+{
+	if (NonTrim_only)
+		tab0 <- tab0[tab0$trimmed=="Yes",]
+
+    vzero <- which(tab0$IntronLength==0)
+    tab0$IntronLength[vzero] <- tab0$IntronLength[vzero] + 1.1  # remove zero length introns from data sets
+
+    tab <- with(tab0, data.frame(Polymorphic, Duplication, Phylog_lvl, Race, Gene, Family, trimmed=as.factor(trimmed), LnGeneLength=log(GeneLength), LnExonLength=log(TotExonLength), LnIntronLength=log(IntronLength), ratioLength=qlogis(ratioLength)))
+    bad <- is.na(tab$LnGeneLength)
+
+    rownames(tab) <- rownames(tab0)
+    nambad <- rownames(tab)[bad]
+    tab <- tab[-bad,]
+
+	print(paste ("Because of Nas, the following locus have been removed from the analysis:", nambad, sep=" "))
+	return(tab)
 }
 
 ###############
