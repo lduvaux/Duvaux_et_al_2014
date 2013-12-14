@@ -8,20 +8,20 @@ CLUSTERS <- list(divergent=c("Cytisus", "Lathyrus", "L.corn.", "L.ped.", "Ononis
 SUBCLUSTERS <- list(Cytisus="Cytisus", Lathyrus="Lathyrus", L.corn.="L.corn.", L.ped.="L.ped.", Ononis="Ononis", Medicago="Medicago", Pisum="Pisum", Trifolium="Trifolium")
 
 # 2) models for pair plots
-MODP2 <- Duplication ~ LnIntronLength + LnExonLength + Family + trimmed + Race + Phylog_lvl
+MODP2 <- Fqcy_all ~ LnIntronLength + LnExonLength + Family + trimmed + Race + Phylog_lvl + CpDup
 
 # 3) model binomial step 2 (complete duplication?)
-MOD_ALL2 <- Duplication ~ LnIntronLength + LnExonLength + Family + trimmed + LnIntronLength * Family + LnExonLength * Family + (1|Race) + (1|Gene) # Phylog_lvl removed as never ever significant
+MOD_ALL2 <- Fqcy_all ~ LnExonLength + Family + CpDup + Phylog_lvl + Family * LnExonLength + Family * CpDup + (1|Race) + (1|Gene)  # trimmed removed as never significant ; LnIntronLength removed as never significant ; FamilyGr:Phylog_lvl removed as never significant 
 FAMILY <- "binomial"
 DELTA2 <- 10
 FIXED_TERMS2 <- NULL
-M_MAX <- 8
+M_MAX <- 10
 
 # 3) outputs
-PAIRS_ALL_EXON_LENGTH <- "./Res15_PairPlot_DupType.pdf"
+PAIRS_ALL_EXON_LENGTH <- "./Res16_PairPlot_DupFqcy.pdf"
 
-GLM_DUP_MAX <- "./GLM15-1_DupMax.txt"
-GLM_DUP_DREDGE <- "./GLM15-2_DupDredge.txt"
-GLM_DUP_BEST <- "./GLM15-3_CpDupbestMdl.txt"
-GLM_DUP_AVG <- "./GLM15-4_DupAvg.txt"
-DUP_PDF <- "./Res15-5_PredictPrCpDup.pdf"
+GLM_DUPFQCY_MAX <- "./GLM16-1_FqcyMax.txt"
+GLM_DUPFQCY_DREDGE <- "./GLM16-2_DupFqcyDredge.txt"
+GLM_DUPFQCY_BEST <- "./GLM16-3_CpDupFqcybestMdl.txt"
+GLM_DUPFQCY_AVG <- "./GLM16-4_DupFqcyAvg.txt"
+DUPFQCY_PDF <- "./Res16-5_PredictPrCpDupFqcy.pdf"

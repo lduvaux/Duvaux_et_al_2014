@@ -11,7 +11,7 @@ SUBCLUSTERS <- list(Cytisus="Cytisus", Lathyrus="Lathyrus", L.corn.="L.corn.", L
 MODP2 <- Polymorphic ~ LnIntronLength + LnExonLength + Family + trimmed + Race + Phylog_lvl
 
 # 3) model binomial 1 (polymorphic or not polymorphic?)
-MOD_ALL1 <- Polymorphic ~ LnIntronLength + LnExonLength + Family + Phylog_lvl + trimmed + Family * Phylog_lvl + LnIntronLength * LnExonLength + (1|Race) + (1|Gene)
+MOD_ALL1 <- Polymorphic ~ LnIntronLength + LnExonLength + Family + Phylog_lvl + trimmed + Family * Phylog_lvl + LnIntronLength * LnExonLength + (1|Race) + (1|Gene) # 'lengthX:family' interactions removed as 'lengthX' never significant
 FAMILY <- "binomial"
 DELTA1 <- 10
 FIXED_TERMS1 <- NULL

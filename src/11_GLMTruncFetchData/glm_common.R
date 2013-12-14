@@ -33,8 +33,7 @@ set_Pre_GLMtable <- function(list_gen, Baits_Gn_Name, alpha_mat,
         if (fqcy) {
             ftab <- cbind(Fqcy_all=vec_gen_polym0, Fqcy_CpDup=vec_gen_polym1, gene_Res, ratioLength=ratiolength, IntronLength=IntronLength)
             ftab$trimmed <- as.factor(ifelse(repgens%in%NonTrimGenes, "No", "Yes"))
-            ftab$Race <- as.factor(group)
-            ftab <- ftab [, c(1:3, 8, 4:7)]}
+            ftab$Race <- as.factor(group)}
         else {
             ftab <- cbind(Duplication=vec_gen_polym0, gene_Res, ratioLength=ratiolength, IntronLength=IntronLength)
             ftab$trimmed <- as.factor(ifelse(repgens%in%NonTrimGenes, "No", "Yes"))
