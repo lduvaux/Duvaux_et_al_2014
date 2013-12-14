@@ -18,14 +18,13 @@ source("../utils/globalCtes.R")
 
 source("./params.R")
 source("./functions.R")
-source("./Models_trimmed.R")
 
 argv <- commandArgs(TRUE)[1]
 
 # main <- function(argv){
 
 load(PREVIOUS_DATA)
-set.seed(0)
+#~set.seed(0)
 
 ######################
 cat("
@@ -47,7 +46,7 @@ print(head(Pre_GLMtab0))
 ##### main script
 # 15.2) Check data
 cat("\n\n     # 15.2) Check data distrisbution\n")
-GLMtab_all1 <- set_GLMtab(Pre_GLMtab0, NonTrim_only=F, covar="LnExonLength")
+GLMtab_all1 <- set_GLMtab(Pre_GLMtab0, NonTrim_only=F)
 
     # 15.2.1) data
 cat("\n         # 15.2.1) Remove non polymorphic genes\n")

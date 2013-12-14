@@ -18,14 +18,13 @@ source("../utils/globalCtes.R")
 
 source("./params.R")
 source("./functions.R")
-source("./Models_trimmed.R")
 
 argv <- commandArgs(TRUE)[1]
 
 # main <- function(argv){
 
 load(PREVIOUS_DATA)
-set.seed(0)
+#~set.seed(0)
 
 ######################
 cat("
