@@ -11,7 +11,7 @@ SUBCLUSTERS <- list(Cytisus="Cytisus", Lathyrus="Lathyrus", L.corn.="L.corn.", L
 MODP2 <- Fqcy_all ~ LnIntronLength + LnExonLength + Family + trimmed + Race + Phylog_lvl + CpDup
 
 # 3) model binomial step 2 (complete duplication?)
-MOD_ALL2 <- Fqcy_all ~ LnExonLength + Family + CpDup + Phylog_lvl + Family * LnExonLength + Family * CpDup + (1|Race) + (1|Gene)  # trimmed removed as never significant ; LnIntronLength removed as never significant ; FamilyGr:Phylog_lvl removed as never significant 
+MOD_ALL2 <- Fqcy_all ~ LnExonLength + Family + CpDup + Phylog_lvl + trimmed + Family * LnExonLength + Family * CpDup + (1|Race) + (1|Gene)  # trimmed interactions removed as never significant ; LnIntronLength removed as never significant ; FamilyGr:Phylog_lvl removed as never significant 
 FAMILY <- "binomial"
 DELTA2 <- 10
 FIXED_TERMS2 <- NULL
