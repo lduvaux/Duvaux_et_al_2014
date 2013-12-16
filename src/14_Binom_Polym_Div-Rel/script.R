@@ -48,9 +48,6 @@ print(head(Pre_GLMtab0))
 cat("\n\n     # 14.2) Check data distrisbution\n")
 GLMtab_all1 <- set_GLMtab(Pre_GLMtab0, NonTrim_only=F)
 
-cat("\n             # Dimension of GLMtab_all1\n")
-print(dim(GLMtab_all1))
-
 print(sample_size1 <- table(GLMtab_all1$Family, GLMtab_all1$trimmed))
 print(sample_size2 <- table(GLMtab_all1$Family, GLMtab_all1$Polymorphic))
 print(sample_size3 <- table(GLMtab_all1$Family, with(GLMtab_all1, interaction(Polymorphic, trimmed))))
@@ -62,6 +59,10 @@ Draw_pdf(pairs_glm(MODP2, data=GLMtab_all1), PAIRS_ALL_EXON_LENGTH)
     # 14.3.1) fit the models
 cat("\n\n     # 14.3) Effect of variables on Pr(Polymorphic)\n")
 cat("\n         # 14.3.1) Fit the maximal model\n")
+cat("\n             # Dimension of GLMtab_all1\n")
+print(dim(GLMtab_all1))
+cat("\n")
+
 fm1 <- glmer(formula=MOD_ALL1, data = GLMtab_all1, family=FAMILY, control=glmerControl(optCtrl=list(maxfun=15000)))
 sum_fm1 <- summary(fm1)
 print(sum_fm1, corr=F)
