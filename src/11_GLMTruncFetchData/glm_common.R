@@ -126,7 +126,7 @@ set_GLMtab <- function(tab0, NonTrim_only=F)
 
     rownames(tab) <- rownames(tab0)
     nambad <- rownames(tab)[bad]
-    tab <- tab[bad,]
+    tab <- tab[!bad,]
 
 	print(paste ("Because of Nas, the following locus have been removed from the analysis:", nambad, sep=" "))
 	return(tab)
