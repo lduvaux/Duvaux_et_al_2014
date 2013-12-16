@@ -53,9 +53,6 @@ GLMtab_all1 <- set_GLMtab_fqcy(Pre_GLMtab0, NonTrim_only=F)
 cat("\n         # 16.2.1) Remove non polymorphic genes\n")
 GLMtab_all2 <- GLMtab_all1[GLMtab_all1$Polymorphic==T,]
 
-cat("\n             # Dimension of GLMtab_all2\n")
-print(dim(GLMtab_all2))
-
 print(sample_size1 <- table(GLMtab_all2$Family, GLMtab_all2$trimmed))
 print(sample_size2 <- table(GLMtab_all2$Family, GLMtab_all2$CpDup))
 print(sample_size3 <- table(GLMtab_all2$Family, with(GLMtab_all2, interaction(CpDup, trimmed))))
@@ -68,6 +65,10 @@ cat("\n\n     # 16.3) Effect of variables on complete duplication events\n")
 
     # 16.3.1)  Fit the maximal model
 cat("\n         # 16.3.1) Fit the maximal model\n")
+cat("\n             # Dimension of GLMtab_all2\n")
+print(dim(GLMtab_all2))
+cat("\n")
+
 fm2 <- glmer(formula=MOD_ALL2, data = GLMtab_all2, family=FAMILY, control=glmerControl(optCtrl=list(maxfun=15000)))
 sum_fm2 <- summary(fm2)
 print(sum_fm2, corr=F)
