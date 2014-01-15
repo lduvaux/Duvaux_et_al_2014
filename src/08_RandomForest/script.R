@@ -11,6 +11,56 @@ source("../utils/randomForest_helperFuns.R")
 source("./params.R")
 source("./functions.R")
 
+nullDistrib <- function(dummy, first_bad,x){
+	bad <- sample(1:ncol(x),length(first_bad),replace=F)
+	new_x <- x[,-bad]
+	#random importance
+	gini_NmaxTrees1 <- runif(ncol(new_x))
+	names(gini_NmaxTrees1) <- colnames(new_x)
+	
+    data_PerExons <- Keep_MaxBait(gini_NmaxTrees1, new_x)
+    new_x1 <- data_PerExons$new_xf
+	gini_exon_rf0 <- runif(ncol(new_x1))
+	names(gini_exon_rf0) <- colnames(new_x1)
+	
+	data_PerGene <- Keep_MaxBait_PerGene(gini_exon_rf0, new_x1)
+    new_x2 <- data_PerGene$mat_x
+    gini_gene_rf <- runif(ncol(new_x2))
+	names(gini_gene_rf) <- colnames(new_x2)
+   
+
+
+	all_targ <- sapply(names(gini_gene_rf), Pro_ExonName)
+	infoTargGene <- get_info_AllTargGene(INFO_TARGENE_FILE, all_targ)
+	bestBait_PerContig <- as.character(get_1baitPerContig(infoTargGene, gini_gene_rf))
+
+	ind <- PrePro_findIndex(bestBait_PerContig, colnames(new_x2))
+	new_x3 <- new_x2[,ind]
+
+	gini_contig_rf <- runif(ncol(new_x3))
+	names(gini_contig_rf) <- colnames(new_x3)
+
+   all_contigs <- unique(sapply(colnames(x),function(x){
+		st <- strsplit(x,"_")[[1]][1:2]
+		return(paste(st[1],st[2],sep="_"))
+		}))
+
+	vec <- sapply(colnames(new_x3),function(x){return(strsplit(x,"_")[[1]][1])})
+	classes <- unique(sapply(colnames(x),function(x){return(strsplit(x,"_")[[1]][1])}))
+	
+	uvec <- unique(vec)
+	rank <- (length(vec):1) / sum(length(vec):1)
+	df <- data.frame(group = vec,rank=rank)
+	sum_ranks <- aggregate(rank ~ group,df,sum)
+	if(length(uvec) < length(classes))
+		sum_ranks <- rbind(sum_ranks, data.frame(group = classes[-1*match(uvec,classes)],rank=0))
+	
+	nam <- sort(as.character(sum_ranks$group))
+	out <- sum_ranks[order(as.character(sum_ranks$group)),"rank"]
+	names(out) <- nam
+	return(out)
+}
+
 main <- function(argv){
 
 	load(PREVIOUS_DATA)
@@ -32,6 +82,11 @@ main <- function(argv){
 
 			# 1.2) remove uninformative variables (i.e. baits)
 	bad <- which(gini_NmaxTrees==0)
+	
+	
+
+
+	
     gini_NmaxTrees1 <- gini_NmaxTrees[-bad]
     new_x <- x[,-bad]
 
@@ -48,6 +103,7 @@ main <- function(argv){
 
 			# 1.5) extract best baits per exon
     gini_exon_rf0 <- exon_rf$importance[,"MeanDecreaseGini"]
+
     gini_exon_rf <- sort(gini_exon_rf0, decreasing=T)
     gini_exon_rf_ind <- order(gini_exon_rf0, decreasing=T)
     best50_ExonPromot <- names(gini_exon_rf[1:50])
@@ -76,6 +132,8 @@ main <- function(argv){
     
 			# 2.3) extract best baits per gene
     gini_gene_rf <- sort(gene_rf$importance[,10], decreasing=T)
+#~     print(gene_rf$importance[,10])
+#~     stop()
     gini_gene_rf_ind <- order(gene_rf$importance[,10], decreasing=T)
     best20_GenePromot <- names(gini_gene_rf[1:20])
     tab_best20_genes <- (gene_rf$importance[gini_gene_rf_ind,])[1:20,]
@@ -122,6 +180,39 @@ main <- function(argv){
     tab <-  cbind(tvotes, c(indiv_predic, test_indiv_predic))
     write.table(tab, ASSIGN_TAB, quote=F, sep="\t", row.names=F)
     
+    
+    ## 
+    
+    vec <- sapply(colnames(new_x3),function(x){return(strsplit(x,"_")[[1]][1])})
+	df <- data.frame(group = vec,rank = (length(vec):1) / sum(length(vec):1))
+	
+	
+	
+	
+	
+	sum_ranks <- aggregate(rank ~ group,df,sum)
+	
+	##### null distribution computation:
+	# on multicore
+	cl <- makeCluster(8)
+	test <- mclapply(1:1000, nullDistrib,bad,x)
+	stopCluster(cl)
+	test <- do.call("cbind",test)
+	
+	# plot distrib and show actual result
+	pdf("test.pdf")
+	for(i in rownames(test)){
+		hist(test[i,],main=i,xlim =c(0,0.4))
+		r <- sum_ranks$rank[which(sum_ranks$group==i)]
+		print (r)
+		print (i)
+		abline(v = r,col="red",lwd=3)
+	}
+	dev.off()
+	
+	print(df)
+	print(sum_ranks)
+	
     # 4) check CN for best baits and their contigous baits
     print("###### 4) check CN for best baits and their contigous baits ######")
 		# 4.1) chose relevant individuals
@@ -140,6 +231,10 @@ main <- function(argv){
 		# 4.4) the 4 best loci per race
 	contig_rf_imp <- contig_rf$importance[,-(9:10)]
 	check_baits4CN_perRace(contig_rf_imp, x_prim, y_prim=y_prim, contig_rf, mat_imp_NmaxTrees, INFO_TARGENE_FILE, ind_races, outdir="./", n_best=4,races_uniq)
+	
+	
+	
+	
 	
 		# 5) chisq on most important contig
 	load(RAW_DATA)
