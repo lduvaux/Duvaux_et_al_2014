@@ -10,66 +10,104 @@ source("../utils/globalCtes.R")
 source("../utils/randomForest_helperFuns.R")
 source("./params.R")
 source("./functions.R")
-
-nullDistrib <- function(dummy, first_bad,x){
-	bad <- sample(1:ncol(x),length(first_bad),replace=F)
-	new_x <- x[,-bad]
-	#random importance
-	gini_NmaxTrees1 <- runif(ncol(new_x))
-	names(gini_NmaxTrees1) <- colnames(new_x)
+{
+#~ nullDistrib <- function(dummy, first_bad,x){
+#~ 	bad <- sample(1:ncol(x),length(first_bad),replace=F)
+#~ 	new_x <- x[,-bad]
+#~ 	#random importance
+#~ 	gini_NmaxTrees1 <- runif(ncol(new_x))
+#~ 	names(gini_NmaxTrees1) <- colnames(new_x)
+#~ 	
+#~     data_PerExons <- Keep_MaxBait(gini_NmaxTrees1, new_x)
+#~     new_x1 <- data_PerExons$new_xf
+#~ 	gini_exon_rf0 <- runif(ncol(new_x1))
+#~ 	names(gini_exon_rf0) <- colnames(new_x1)
+#~ 	
+#~ 	data_PerGene <- Keep_MaxBait_PerGene(gini_exon_rf0, new_x1)
+#~     new_x2 <- data_PerGene$mat_x
+#~     gini_gene_rf <- runif(ncol(new_x2))
+#~ 	names(gini_gene_rf) <- colnames(new_x2)
+#~    
+#~ 
+#~ 
+#~ 	all_targ <- sapply(names(gini_gene_rf), Pro_ExonName)
+#~ 	infoTargGene <- get_info_AllTargGene(INFO_TARGENE_FILE, all_targ)
+#~ 	bestBait_PerContig <- as.character(get_1baitPerContig(infoTargGene, gini_gene_rf))
+#~ 
+#~ 	ind <- PrePro_findIndex(bestBait_PerContig, colnames(new_x2))
+#~ 	new_x3 <- new_x2[,ind]
+#~ 
+#~ 	gini_contig_rf <- runif(ncol(new_x3))
+#~ 	names(gini_contig_rf) <- colnames(new_x3)
+#~ 
+#~    all_contigs <- unique(sapply(colnames(x),function(x){
+#~ 		st <- strsplit(x,"_")[[1]][1:2]
+#~ 		return(paste(st[1],st[2],sep="_"))
+#~ 		}))
+#~ 
+#~ 	vec <- sapply(colnames(new_x3),function(x){return(strsplit(x,"_")[[1]][1])})
+#~ 	classes <- unique(sapply(colnames(x),function(x){return(strsplit(x,"_")[[1]][1])}))
+#~ 	
+#~ 	uvec <- unique(vec)
+#~ 	rank <- (length(vec):1) / sum(length(vec):1)
+#~ 	df <- data.frame(group = vec,rank=rank)
+#~ 	sum_ranks <- aggregate(rank ~ group,df,sum)
+#~ 	if(length(uvec) < length(classes))
+#~ 		sum_ranks <- rbind(sum_ranks, data.frame(group = classes[-1*match(uvec,classes)],rank=0))
+#~ 	
+#~ 	nam <- sort(as.character(sum_ranks$group))
+#~ 	out <- sum_ranks[order(as.character(sum_ranks$group)),"rank"]
+#~ 	names(out) <- nam
+#~ 	return(out)
+#~ }
+}
+nullHDraw <- function(g){
+	imp <- runif(length(g))
+	df <- data.frame(rnk = rank(imp), grp = g)
+	res <- aggregate(rnk ~ grp,df,sum)
+	v <- res$rnk
+	names(v) <- res$grp
+	return(v)
 	
-    data_PerExons <- Keep_MaxBait(gini_NmaxTrees1, new_x)
-    new_x1 <- data_PerExons$new_xf
-	gini_exon_rf0 <- runif(ncol(new_x1))
-	names(gini_exon_rf0) <- colnames(new_x1)
-	
-	data_PerGene <- Keep_MaxBait_PerGene(gini_exon_rf0, new_x1)
-    new_x2 <- data_PerGene$mat_x
-    gini_gene_rf <- runif(ncol(new_x2))
-	names(gini_gene_rf) <- colnames(new_x2)
-   
+}
 
-
-	all_targ <- sapply(names(gini_gene_rf), Pro_ExonName)
-	infoTargGene <- get_info_AllTargGene(INFO_TARGENE_FILE, all_targ)
-	bestBait_PerContig <- as.character(get_1baitPerContig(infoTargGene, gini_gene_rf))
-
-	ind <- PrePro_findIndex(bestBait_PerContig, colnames(new_x2))
-	new_x3 <- new_x2[,ind]
-
-	gini_contig_rf <- runif(ncol(new_x3))
-	names(gini_contig_rf) <- colnames(new_x3)
-
-   all_contigs <- unique(sapply(colnames(x),function(x){
+getAllGeneNames <- function(){
+    load(PREVIOUS_DATA2)
+    data_mat <- alpha_matrix
+	out <- unique(sapply(rownames(data_mat),function(x){
 		st <- strsplit(x,"_")[[1]][1:2]
 		return(paste(st[1],st[2],sep="_"))
 		}))
-
-	vec <- sapply(colnames(new_x3),function(x){return(strsplit(x,"_")[[1]][1])})
-	classes <- unique(sapply(colnames(x),function(x){return(strsplit(x,"_")[[1]][1])}))
-	
-	uvec <- unique(vec)
-	rank <- (length(vec):1) / sum(length(vec):1)
-	df <- data.frame(group = vec,rank=rank)
-	sum_ranks <- aggregate(rank ~ group,df,sum)
-	if(length(uvec) < length(classes))
-		sum_ranks <- rbind(sum_ranks, data.frame(group = classes[-1*match(uvec,classes)],rank=0))
-	
-	nam <- sort(as.character(sum_ranks$group))
-	out <- sum_ranks[order(as.character(sum_ranks$group)),"rank"]
-	names(out) <- nam
 	return(out)
 }
+
+addZeroImpGenes <- function(xx){
+
+	import_genes <- sapply(names(xx),function(x){
+		st <- strsplit(x,"_")[[1]][1:2]
+		return(paste(st[1],st[2],sep="_"))
+		})
+
+	all_genes <- getAllGeneNames()
+	zero_imp <- all_genes[!(all_genes %in% import_genes)]
+	v <- rep(0,length(zero_imp))
+	names(v) <- zero_imp
+	out <- c(xx,v)
+	return(out)
+}
+
 
 main <- function(argv){
 
 	load(PREVIOUS_DATA)
 
+	
+	
     races <- PrePro_fetchRaces(RAW_DATA, CTRL_GUYS , BAD_GUYS)
     races[races=="Medicago_ctrl"] <- "Medicago"
 	races_uniq <- PrePro_fetchUniqRaces(races)
 
-	set.seed(0)
+	set.seed(1)
 	pure_indiv <- names(y)
 	ind_pure_indiv <- PrePro_findIndex(pure_indiv, indiv)
 
@@ -181,37 +219,28 @@ main <- function(argv){
     write.table(tab, ASSIGN_TAB, quote=F, sep="\t", row.names=F)
     
     
-    ## 
-    
-    vec <- sapply(colnames(new_x3),function(x){return(strsplit(x,"_")[[1]][1])})
-	df <- data.frame(group = vec,rank = (length(vec):1) / sum(length(vec):1))
+	genes <- addZeroImpGenes(gini_contig_rf)
+    group <- sapply(names(genes),function(x){return(strsplit(x,"_")[[1]][1])})
+	df <- data.frame(grp = group,rnk = rank(genes))
+
+#~ 	
+#~ 	
+	sum_ranks <- aggregate(rnk ~ grp,df,sum)
+	print(sum_ranks)
+	r <- replicate(5000, nullHDraw(df$grp))
 	
-	
-	
-	
-	
-	sum_ranks <- aggregate(rank ~ group,df,sum)
-	
-	##### null distribution computation:
-	# on multicore
-	cl <- makeCluster(8)
-	test <- mclapply(1:1000, nullDistrib,bad,x)
-	stopCluster(cl)
-	test <- do.call("cbind",test)
-	
-	# plot distrib and show actual result
 	pdf("test.pdf")
-	for(i in rownames(test)){
-		hist(test[i,],main=i,xlim =c(0,0.4))
-		r <- sum_ranks$rank[which(sum_ranks$group==i)]
-		print (r)
-		print (i)
-		abline(v = r,col="red",lwd=3)
+	for(i in sum_ranks$grp){
+		hist(r[i,],main=i,nclass=100)
+		obs <- sum_ranks$rnk[which(sum_ranks$grp==i)]
+		srtd <- sort(r[i,])
+		print(obs)
+		abline(v = obs,col="red",lwd=3)
 	}
 	dev.off()
-	
-	print(df)
-	print(sum_ranks)
+#~ 	
+#~ 	print(df)
+#~ 	print(sum_ranks)
 	
     # 4) check CN for best baits and their contigous baits
     print("###### 4) check CN for best baits and their contigous baits ######")
@@ -232,10 +261,7 @@ main <- function(argv){
 	contig_rf_imp <- contig_rf$importance[,-(9:10)]
 	check_baits4CN_perRace(contig_rf_imp, x_prim, y_prim=y_prim, contig_rf, mat_imp_NmaxTrees, INFO_TARGENE_FILE, ind_races, outdir="./", n_best=4,races_uniq)
 	
-	
-	
-	
-	
+
 		# 5) chisq on most important contig
 	load(RAW_DATA)
 
@@ -272,11 +298,10 @@ main <- function(argv){
 	labells[seq(1, length(tab_barp), by=2)] <-  colnames(tab_barp)
 	text(0.5+barp, par("usr")[3], labels = labells, srt = 45, adj = c(1.1,1.1), xpd = TRUE, cex=1.4, font=2)
 	dev.off()
-
+	
 	outFileName <- argv[1]
     ver(sprintf("Saving data to %s",outFileName))
     save(contig_rf,file=outFileName)
-
 }
 
 
