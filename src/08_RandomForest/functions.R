@@ -3,34 +3,45 @@
 #~ library(parallel)
 
 ################ new functions for rank test ################ 
-nullHDraw <- function(ite, g, n_info, bait_names, infoTargGene){
+nullHDraw <- function(ite, g, n_info, bait_names, info_TargGene, verbose=F){
 
     # 1) setup ranking to account for ties
         # (the number of informative baits should be the same as for the data set 'one bait per gene')
     n <- length(g)
-    imp <- runif(n)
+    imp <- sample(1:n, n)
     names(imp) <- bait_names
-    v_rk0 <- rank(imp)
 
     # 2) keep only a rankable importance for the best bait of non discarded genes only
-        # attribute an EQUAL low importance of -0.1 for all other baits
+        # attribute an EQUAL low importance of 0 for all other baits
         # corresponds to step 2.1) in the main script
-    imp[v_rk0>n_info] <- -0.1   
+    imp[imp<(n+1-n_info)] <- 0   # should stay 240 genes with some importance
+    imp <- sort(imp, decreasing=T)  # has to be sorted for the function 'get_BestBaitperContig'
 
     # 3) select best bait per contig
-    bestBait_PerContig <- as.character(get_1baitPerContig(infoTargGene, imp, verbose=F))
-    ind <- PrePro_findIndex(bestBait_PerContig, bait_names)
+    imp1 <- imp[imp!=0]
+    if (verbose) cat(imp1, sep="\n", file="importance.txt")
+    all_targ <- sapply(names(imp1), function(x) paste(unlist(strsplit(x, "_"))[1:3], collapse="_"))
+    
+#~    info_TargGene <- info_TargGene[infoTarg$NewTargetName%in%all_targ,]
+    info_TargGene <- get_info_AllTargGene(info_TargGene, all_targ)
+    
+    if (verbose) cat(names(imp1), sep="\n", file="genes.txt")
+    bestBait_PerContig <- as.character(get_1baitPerContig(info_TargGene, imp1, verbose=F))
+    if (verbose) print(bestBait_PerContig)
+    ind <- PrePro_findIndex(bestBait_PerContig, names(imp))
+#~    if (verbose) print(ind)
     
     # 4) keep only a rankable importance for the best bait best bait per contig
-        # attribute an EQUAL low importance of -0.1 for all other baits
+        # attribute an EQUAL low importance of 0 for all other baits
         # corresponds to step 3.1) in the main script
-    imp[-ind] <- -0.1
+    imp[-ind] <- 0
 
     # 5) compute sum of ranks per grp
-    df <- data.frame(rnk = rank(imp), grp = g)
-    res <- aggregate(rnk ~ grp,df,sum)
+    df_fc <- data.frame(rnk = rank(imp), grp = g)
+    res <- aggregate(rnk ~ grp,df_fc,sum)
     v <- res$rnk
     names(v) <- res$grp
+    
     if (ite%%100==0) print(paste(ite, "iterations done"))
     return(v)
 }
@@ -68,6 +79,18 @@ get_pval <- function(observ, dist_exp, two_sided=F)
         pval2 <- abs(1-pval)
         pval <- ifelse(pval<=pval2, pval, pval2)*2}
     return(pval)
+}
+
+get_1rdom_bait_per_gn <- function (gene_names){
+    
+    load(PREVIOUS_DATA2)
+    noms <- rownames(alpha_matrix)
+    res <- sapply(gene_names, grep_first, noms, value=T)
+    return(res)
+}
+
+grep_first <- function(patt, vec, value=T){
+    return(grep(paste("^", patt, sep=""), vec, value=value)[1])
 }
 
 ############################################################# 

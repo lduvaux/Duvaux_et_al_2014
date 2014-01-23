@@ -6,6 +6,7 @@ GENE_GER_CATEG_DATA <- "../07_GenesPerCateg.Rdata"
 RAW_DATA <- "../01_GetData.Rdata"
 
 NTREES <- 5000
+TWOSIDED <- F
 
 # outputs
 TAB50EXON <- "./Res_Tab_best50_exons.csv"

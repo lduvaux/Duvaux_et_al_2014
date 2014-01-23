@@ -16,8 +16,6 @@ main <- function(argv){
 
 	load(PREVIOUS_DATA)
 
-	
-	
     races <- PrePro_fetchRaces(RAW_DATA, CTRL_GUYS , BAD_GUYS)
     races[races=="Medicago_ctrl"] <- "Medicago"
 	races_uniq <- PrePro_fetchUniqRaces(races)
@@ -27,6 +25,7 @@ main <- function(argv){
 	ind_pure_indiv <- PrePro_findIndex(pure_indiv, indiv)
 
     # 1) run a RF by removing all noisy loci
+        cat("\n")
 	print("###### 1) run a RF by removing all noisy loci ######")
 			# 1.1) extract locus importance from the biggest RF
     temp_tab <- sapply(gradNtree_lrf_unsuperv, function(x) x$importance[,"MeanDecreaseGini"])
@@ -35,8 +34,6 @@ main <- function(argv){
 
         # 1.2) remove uninformative variables (i.e. baits)
 	bad <- which(gini_NmaxTrees==0)
-	
-	
 
     gini_NmaxTrees1 <- gini_NmaxTrees[-bad]
     new_x <- x[,-bad]
@@ -69,6 +66,7 @@ main <- function(argv){
 
 
     # 2) run a RF with one bait per gene
+        cat("\n")
 	print("###### 2) run a RF with one bait per gene ######")
 			# 2.1) rm non interesting baits
 	data_PerGene <- Keep_MaxBait_PerGene(gini_exon_rf0, new_x1)
@@ -97,6 +95,7 @@ main <- function(argv){
 
 
     # 3) run a RF with one bait per contig (either PMT either exon)
+        cat("\n")
 	print("###### 3) run a RF with one bait per contig (either PMT either exon) ######")
         # 3.1) rm non interesting baits
 	all_targ <- sapply(names(gini_gene_rf), Pro_ExonName)
@@ -132,7 +131,9 @@ main <- function(argv){
     write.table(tab, ASSIGN_TAB, quote=F, sep="\t", row.names=F)
 
 
-    # 4) perform test to detect gene category with significant effect to distinguish races 
+    # 4) perform test to detect gene category with significant effect to distinguish races
+    cat("\n")
+    print("###### 4) perform test to detect gene category with significant effect to distinguish races ######")
         # 4.1) observed sum of ranks
 	genes <- addZeroImpGenes(gini_contig_rf)
     group <- sapply(names(genes),function(x){return(strsplit(x,"_")[[1]][1])})
@@ -142,15 +143,18 @@ main <- function(argv){
 	print(sum_ranks)
 
         # 4.2) compute the expected distribution per gene category
-	system.time(r0 <- mclapply(1:5000, nullHDraw, df$grp, length(gini_gene_rf), bait_names=names(gini_gene_rf), infoTargGene, mc.cores=8))
+    nn <- paste(sapply(names(genes), function(x) paste(unlist(strsplit(x, "_"))[1:2], collapse="_")), "_", sep="")
+    bait_nam <- get_1rdom_bait_per_gn(nn)
+    info_Targ <- read.delim(INFO_TARGENE_FILE)
+    print(system.time(r0 <- mclapply(1:5000, nullHDraw, df$grp, length(gini_gene_rf), bait_names=bait_nam, info_TargGene=INFO_TARGENE_FILE, mc.cores=8)))
     r <- t(matrix(unlist(r0), ncol = length(levels(df$grp)), byrow = TRUE, dimnames=list(1:5000, levels(df$grp))))
     
 	pdf("test.pdf")
 	for(i in sum_ranks$grp){
         obs <- sum_ranks$rnk[which(sum_ranks$grp==i)]
         rg <- range(c(obs, r[i,]))
-        p_val <- get_pval(obs, r[i,], two_sided=F)
-        tit <- paste(i, ifelse(twoside, " (two sided", " (one sided"), " P= ", p_val, ")", sep="")
+        p_val <- get_pval(obs, r[i,], two_sided=TWOSIDED)
+        tit <- paste(i, ifelse(TWOSIDED, " (two sided", " (one sided"), " P= ", p_val, ")", sep="")
 		hist(r[i,], main=tit, nclass=50, xlab="Sum of the ranks", cex.main=0.9, xlim=c(rg[1], rg[2]))
 		srtd <- sort(r[i,])
 		print(obs)
@@ -162,7 +166,7 @@ main <- function(argv){
 #~ 	print(sum_ranks)
 	
     # 5) check CN for best baits and their contigous baits
-    print("###### 4) check CN for best baits and their contigous baits ######")
+    print("###### 5) check CN for best baits and their contigous baits ######")
 		# 5.1) chose relevant individuals
     good_indiv <- which(as.character(y)==contig_rf$predicted)
     x_prim <- x[good_indiv,]
@@ -174,11 +178,12 @@ main <- function(argv){
 		# 5.3) check the best 20 baits
 	bests20 <- rownames(tab_best20_contig)
 
-    sapply(1:length(bests20), function(x) check_baits4CN(bests20[x], x_prim=x_prim, y_prim=y_prim, contig_rf=contig_rf, mat_imp_NmaxTrees=mat_imp_NmaxTrees, info_TarGene_file=INFO_TARGENE_FILE, ind_races=ind_races, outdir="./", rang=x,races_uniq = races_uniq))
+    system("mkdir -p Res_RF_bestGenes/")
+    sapply(1:length(bests20), function(x) check_baits4CN(bests20[x], x_prim=x_prim, y_prim=y_prim, contig_rf=contig_rf, mat_imp_NmaxTrees=mat_imp_NmaxTrees, info_TarGene_file=INFO_TARGENE_FILE, ind_races=ind_races, outdir="./Res_RF_bestGenes/", rang=x,races_uniq = races_uniq))
 
 		# 5.4) the 4 best loci per race
 	contig_rf_imp <- contig_rf$importance[,-(9:10)]
-	check_baits4CN_perRace(contig_rf_imp, x_prim, y_prim=y_prim, contig_rf, mat_imp_NmaxTrees, INFO_TARGENE_FILE, ind_races, outdir="./", n_best=4,races_uniq)
+	check_baits4CN_perRace(contig_rf_imp, x_prim, y_prim=y_prim, contig_rf, mat_imp_NmaxTrees, INFO_TARGENE_FILE, ind_races, outdir="./Res_RF_bestGenes/", n_best=4,races_uniq)
 	
 
 		# 6) chisq on most important contig

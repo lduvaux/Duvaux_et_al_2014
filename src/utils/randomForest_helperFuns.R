@@ -191,6 +191,34 @@ get_info_AllTargGene <- function(info_TarGene_file, all_targ)
 		stop("problem indexing")
 }
 
+get_1baitPerContig <- function(infoTargGene, gini_gene_rf, verbose=F)
+{  
+    vcontigs <- unique(infoTargGene$contigV2)
+	if (verbose) print(paste("Number of contigs:", length(vcontigs)))
+	all_bests <- sapply(vcontigs, get_BestBaitperContig, infoTargGene, gini_gene_rf, verb=F)
+	if (verbose) print(paste("Number of best baits:", length(all_bests)))
+	return(all_bests)
+}
+
+get_BestBaitperContig <- function(contig, infoTargGene, gini_gene_rf, verb=F)
+{
+    if (verb) print(contig)
+    tab <- subset(infoTargGene, contigV2==contig)
+	if (nrow(tab)>1) {
+		baits <- tab$NewTargetName
+		ind <- sapply(baits, grep_bait, names(gini_gene_rf))
+		if (!is.integer(ind) | length(ind) != length(baits)) stop("Indexing problem")
+#		best <- baits[which.min(ind)]
+		best <- names(gini_gene_rf)[min(ind)]
+		}
+	else {
+#~		ind <- grep(paste("^", tab$NewTargetName, "_", sep=""), names(gini_gene_rf))
+		ind <- grep_bait(tab$NewTargetName, names(gini_gene_rf))
+		if (!is.integer(ind)) stop("Indexing problem")
+		best <- names(gini_gene_rf)[ind]}
+	return(best)
+}
+
 grep_bait <- function(pattern, x)
 {
 	ind <- which(pattern==x)
@@ -201,32 +229,6 @@ grep_bait <- function(pattern, x)
 		if (length(ind)==0) ind <- grep(paste("\\|", pattern, "$", sep=""), x)
 	}
 	return(ind)
-}
-
-get_1baitPerContig <- function(infoTargGene, gini_gene_rf, verbose=T)
-{
-	vcontigs <- unique(infoTargGene$contigV2)
-	if (verbose) print(paste("Number of contigs:", length(vcontigs)))
-	all_bests <- sapply(vcontigs, get_BestBaitperContig, infoTargGene, gini_gene_rf)
-	if (verbose) print(paste("Number of best baits:", length(all_bests)))
-	return(all_bests)
-}
-
-get_BestBaitperContig <- function(contig, infoTargGene, gini_gene_rf)
-{
-	tab <- subset(infoTargGene, contigV2==contig)
-	if (nrow(tab)>1) {
-		baits <- tab$NewTargetName
-		ind <- sapply(baits, grep_bait, names(gini_gene_rf))
-		if (!is.integer(ind) | length(ind) != length(baits)) stop("Indexing problem")
-#		best <- baits[which.min(ind)]
-		best <- names(gini_gene_rf)[min(ind)]
-		}
-	else {
-		ind <- grep(tab$NewTargetName, names(gini_gene_rf))
-		if (!is.integer(ind)) stop("Indexing problem")
-		best <- names(gini_gene_rf)[ind]}
-	return(best)
 }
 
 plot_CN_contigous_baits <- function(bait,x_prim, y_prim, races_3, races_uniq, ylim=NULL, mat_imptce, best_score, nom, test=F, locmain=NULL)
