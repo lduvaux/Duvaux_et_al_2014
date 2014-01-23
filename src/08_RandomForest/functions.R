@@ -2,6 +2,74 @@
 #~ source("./00_Accessory_Scripts/getter_functions.R")
 #~ library(parallel)
 
+################ new functions for rank test ################ 
+nullHDraw <- function(g, n_info, bait_names, infoTargGene){
+
+    # 1) setup ranking to account for ties
+        # (the number of informative baits should be the same as for the data set 'one bait per gene')
+    n <- length(g)
+    imp <- runif(n)
+    names(imp) <- bait_names
+    v_rk0 <- rank(imp)
+
+    # 2) keep only a rankable importance for the best bait of non discarded genes only
+        # attribute an EQUAL low importance of -0.1 for all other baits
+        # corresponds to step 2.1) in the main script
+    imp[v_rk0>n_info] <- -0.1   
+
+    # 3) select best bait per contig
+    bestBait_PerContig <- as.character(get_1baitPerContig(infoTargGene, imp))
+    ind <- PrePro_findIndex(bestBait_PerContig, bait_names)
+    
+    # 4) keep only a rankable importance for the best bait best bait per contig
+        # attribute an EQUAL low importance of -0.1 for all other baits
+        # corresponds to step 3.1) in the main script
+    imp[-ind] <- -0.1
+
+    # 5) compute sum of ranks per grp
+    df <- data.frame(rnk = rank(imp), grp = g)
+    res <- aggregate(rnk ~ grp,df,sum)
+    v <- res$rnk
+    names(v) <- res$grp
+    return(v)
+}
+
+addZeroImpGenes <- function(xx){
+
+	import_genes <- sapply(names(xx),function(x){
+		st <- strsplit(x,"_")[[1]][1:2]
+		return(paste(st[1],st[2],sep="_"))
+		})
+
+	all_genes <- getAllGeneNames()
+	zero_imp <- all_genes[!(all_genes %in% import_genes)]
+	v <- rep(0,length(zero_imp))
+	names(v) <- zero_imp
+	out <- c(xx,v)
+	return(out)
+}
+
+getAllGeneNames <- function(){
+    load(PREVIOUS_DATA2)
+    data_mat <- alpha_matrix
+	out <- unique(sapply(rownames(data_mat),function(x){
+		st <- strsplit(x,"_")[[1]][1:2]
+		return(paste(st[1],st[2],sep="_"))
+		}))
+	return(out)
+}
+
+get_pval <- function(observ, dist_exp, two_sided=F)
+# if two_sided=F, P is always P(observ>expected)
+{
+    pval <- round(1-length(subset(dist_exp, observ>dist_exp))/length(dist_exp), 3)
+    if (two_sided) {
+        pval2 <- abs(1-pval)
+        pval <- ifelse(pval<=pval2, pval, pval2)*2}
+    return(pval)
+}
+
+############################################################# 
 
 getGenePerCategTable <- function(){
 	load(PREVIOUS_DATA2)
