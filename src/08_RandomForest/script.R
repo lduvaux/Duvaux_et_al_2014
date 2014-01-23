@@ -2,6 +2,7 @@
 
 library(ape)
 library(randomForest)
+library(parallel)
 
 source("../utils/functions.R")
 source("../utils/getter_functions.R")
@@ -141,8 +142,9 @@ main <- function(argv){
 	print(sum_ranks)
 
         # 4.2) compute the expected distribution per gene category
-	r <- replicate(5000, nullHDraw(df$grp, length(gini_gene_rf), bait_names=names(gini_gene_rf), infoTargGene))
-
+	system.time(r0 <- mclapply(1:5000, nullHDraw, df$grp, length(gini_gene_rf), bait_names=names(gini_gene_rf), infoTargGene, mc.cores=8))
+    r <- t(matrix(unlist(r0), ncol = length(levels(df$grp)), byrow = TRUE, dimnames=list(1:5000, levels(df$grp))))
+    
 	pdf("test.pdf")
 	for(i in sum_ranks$grp){
         obs <- sum_ranks$rnk[which(sum_ranks$grp==i)]

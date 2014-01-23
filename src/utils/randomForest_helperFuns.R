@@ -203,6 +203,15 @@ grep_bait <- function(pattern, x)
 	return(ind)
 }
 
+get_1baitPerContig <- function(infoTargGene, gini_gene_rf, verbose=T)
+{
+	vcontigs <- unique(infoTargGene$contigV2)
+	if (verbose) print(paste("Number of contigs:", length(vcontigs)))
+	all_bests <- sapply(vcontigs, get_BestBaitperContig, infoTargGene, gini_gene_rf)
+	if (verbose) print(paste("Number of best baits:", length(all_bests)))
+	return(all_bests)
+}
+
 get_BestBaitperContig <- function(contig, infoTargGene, gini_gene_rf)
 {
 	tab <- subset(infoTargGene, contigV2==contig)
@@ -218,15 +227,6 @@ get_BestBaitperContig <- function(contig, infoTargGene, gini_gene_rf)
 		if (!is.integer(ind)) stop("Indexing problem")
 		best <- names(gini_gene_rf)[ind]}
 	return(best)
-}
-
-get_1baitPerContig <- function(infoTargGene, gini_gene_rf)
-{
-	vcontigs <- unique(infoTargGene$contigV2)
-	print(paste("Number of contigs:", length(vcontigs)))
-	all_bests <- sapply(vcontigs, get_BestBaitperContig, infoTargGene, gini_gene_rf)
-	print(paste("Number of best baits:", length(all_bests)))
-	return(all_bests)
 }
 
 plot_CN_contigous_baits <- function(bait,x_prim, y_prim, races_3, races_uniq, ylim=NULL, mat_imptce, best_score, nom, test=F, locmain=NULL)

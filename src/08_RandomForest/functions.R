@@ -3,7 +3,7 @@
 #~ library(parallel)
 
 ################ new functions for rank test ################ 
-nullHDraw <- function(g, n_info, bait_names, infoTargGene){
+nullHDraw <- function(ite, g, n_info, bait_names, infoTargGene){
 
     # 1) setup ranking to account for ties
         # (the number of informative baits should be the same as for the data set 'one bait per gene')
@@ -18,7 +18,7 @@ nullHDraw <- function(g, n_info, bait_names, infoTargGene){
     imp[v_rk0>n_info] <- -0.1   
 
     # 3) select best bait per contig
-    bestBait_PerContig <- as.character(get_1baitPerContig(infoTargGene, imp))
+    bestBait_PerContig <- as.character(get_1baitPerContig(infoTargGene, imp, verbose=F))
     ind <- PrePro_findIndex(bestBait_PerContig, bait_names)
     
     # 4) keep only a rankable importance for the best bait best bait per contig
@@ -31,6 +31,7 @@ nullHDraw <- function(g, n_info, bait_names, infoTargGene){
     res <- aggregate(rnk ~ grp,df,sum)
     v <- res$rnk
     names(v) <- res$grp
+    if (ite%%100==0) print(paste(ite, "iterations done"))
     return(v)
 }
 
