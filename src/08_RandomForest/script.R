@@ -51,12 +51,13 @@ main <- function(argv){
 
         # 1.5) extract best baits per exon
     gini_exon_rf0 <- exon_rf$importance[,"MeanDecreaseGini"]
+    N_cate_rfEx <- table(sapply(names(gini_exon_rf0), get_elements))
 
     gini_exon_rf <- sort(gini_exon_rf0, decreasing=T)
     gini_exon_rf_ind <- order(gini_exon_rf0, decreasing=T)
     best50_ExonPromot <- names(gini_exon_rf[1:50])
     tab_best50 <- (exon_rf$importance[gini_exon_rf_ind,])[1:50,]
-    geneOfbest50 <- unique(sapply(best50_ExonPromot, function(x) unlist(strsplit(x, "\\."))[1]))
+    geneOfbest50 <- unique(sapply(best50_ExonPromot, get_elements, sep="\\."))
 	
 	tem_tab <- cbind(rownames(tab_best50), round(tab_best50,4))
 	write.table(tem_tab, TAB50EXON, quote=T, sep="\t", row.names=F)
@@ -70,7 +71,7 @@ main <- function(argv){
 	print("###### 2) run a RF with one bait per gene ######")
 			# 2.1) rm non interesting baits
 	data_PerGene <- Keep_MaxBait_PerGene(gini_exon_rf0, new_x1)
-
+    
         # 2.2) run the RF
     new_x2 <- data_PerGene$mat_x
 	new_xtest2 <- xtest[,PrePro_findIndex(colnames(new_x2), colnames(xtest))]
@@ -81,8 +82,8 @@ main <- function(argv){
     
         # 2.3) extract best baits per gene
     gini_gene_rf <- sort(gene_rf$importance[,10], decreasing=T)
-#~     print(gene_rf$importance[,10])
-#~     stop()
+    N_cate_rfGn <- table(sapply(names(gini_gene_rf), get_elements)) # give the total number of gene baits and promoter baits to be used in the bootstrap analysis
+
     gini_gene_rf_ind <- order(gene_rf$importance[,10], decreasing=T)
     best20_GenePromot <- names(gini_gene_rf[1:20])
     tab_best20_genes <- (gene_rf$importance[gini_gene_rf_ind,])[1:20,]
@@ -136,16 +137,56 @@ main <- function(argv){
     print("###### 4) perform test to detect gene category with significant effect to distinguish races ######")
         # 4.1) observed sum of ranks
 	genes <- addZeroImpGenes(gini_contig_rf)
-    group <- sapply(names(genes),function(x){return(strsplit(x,"_")[[1]][1])})
+    group <- sapply(names(genes), get_elements)
 	df <- data.frame(grp = group, rnk = rank(genes))
 	sum_ranks <- aggregate(rnk ~ grp, df, sum)
     rownames(sum_ranks) <- sum_ranks[,1]
 	print(sum_ranks)
 
-        # 4.2) compute the expected distribution per gene category
-    nn <- paste(sapply(names(genes), function(x) paste(unlist(strsplit(x, "_"))[1:2], collapse="_")), "_", sep="")
+        # 4.2) P being same contig
+    nn <- paste(sapply(names(genes), collapse_elements, sep="_", what=1:2, colla="_"), "_", sep="")
     bait_nam <- get_1rdom_bait_per_gn(nn)
-    info_Targ <- read.delim(INFO_TARGENE_FILE)
+            # 4.2.1) gene bait on same contig as another gene bait
+    # best bait per genes, all uninformative genes removed
+    Gns_gene_rf <- names(gini_gene_rf)[-grep("^PMT_", names(gini_gene_rf))] 
+  P_Gn_cont_Gn_obs <- get_P_same_contig(Gns_gene_rf, Gns_gene_rf, INFO_TARGENE_FILE)
+    
+    distr_rdom_P_Gn_cont_Gn <- unlist(mclapply(1:1000, get_distr_rdom_P_same_contig, bait_nam, Gn=T, PMT=F, INFO_TARGENE_FILE, mc.cores=8))
+    
+    rg <- range(c(P_Gn_cont_Gn_obs, distr_rdom_P_Gn_cont_Gn))
+    hist(distr_rdom_P_Gn_cont_Gn, breaks=50, xlim=c(rg[1], rg[2]))
+    abline(v=P_Gn_cont_Gn_obs, col='red')
+    pval_Gn_cont_Gn_obs <- get_pval(P_Gn_cont_Gn_obs,distr_rdom_P_Gn_cont_Gn, two_sided=T)
+    
+            # 4.2.2) pmt bait on same contig as another pmt bait
+    PMTs_gene_rf <- names(gini_gene_rf)[grep("^PMT_", names(gini_gene_rf))] 
+  P_PMT_cont_PMT_obs <- get_P_same_contig(PMTs_gene_rf, PMTs_gene_rf, INFO_TARGENE_FILE)
+    
+    distr_rdom_P_PMT_cont_PMT <- unlist(mclapply(1:1000, get_distr_rdom_P_same_contig, bait_nam, Gn=F, PMT=T, INFO_TARGENE_FILE, mc.cores=8))
+    
+    rg <- range(c(P_PMT_cont_PMT_obs, distr_rdom_P_PMT_cont_PMT))
+    ds <- sd(distr_rdom_P_PMT_cont_PMT)
+    hist(distr_rdom_P_PMT_cont_PMT, breaks=50, xlim=c(rg[1], rg[2]))
+    abline(v=P_PMT_cont_PMT_obs, col='red')
+    pval_PMT_cont_PMT_obs <- get_pval(P_PMT_cont_PMT_obs, distr_rdom_P_PMT_cont_PMT, two_sided=T)
+    
+        # 4.2.3) gene bait on same contig as a pmt bait
+  P_Gn_cont_PMT_obs <- get_P_same_contig(Gns_gene_rf, PMTs_gene_rf, INFO_TARGENE_FILE)
+    
+    distr_rdom_P_Gn_cont_PMT <- unlist(mclapply(1:1000, get_distr_rdom_P_same_contig, bait_nam, Gn=T, PMT=T, INFO_TARGENE_FILE, mc.cores=8))
+    
+    rg <- range(c(P_Gn_cont_PMT_obs, distr_rdom_P_Gn_cont_PMT))
+    hist(distr_rdom_P_Gn_cont_PMT, breaks=50, xlim=c(rg[1], rg[2]))
+    abline(v=P_Gn_cont_PMT_obs, col='red')
+    pval_PMT_cont_PMT_obs <- get_pval(P_Gn_cont_PMT_obs, distr_rdom_P_Gn_cont_PMT, two_sided=T)
+
+
+
+
+
+        # 4.3) compute the expected distribution per gene category
+    N_bait_alpMat <- count_categ()
+#~    info_Targ <- read.delim(INFO_TARGENE_FILE)
     print(system.time(r0 <- mclapply(1:5000, nullHDraw, df$grp, length(gini_gene_rf), bait_names=bait_nam, info_TargGene=INFO_TARGENE_FILE, mc.cores=8)))
     r <- t(matrix(unlist(r0), ncol = length(levels(df$grp)), byrow = TRUE, dimnames=list(1:5000, levels(df$grp))))
     
