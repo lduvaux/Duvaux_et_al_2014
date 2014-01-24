@@ -39,7 +39,7 @@ get_P_same_contig <- function(noms1, noms2, info_TargGene_fil, verbose=T){
         res[2] <- res[2]-length(vcontigs1) # remove diagonal
         res <- res/2    # discard one half of the matrix (since it is symetric)
     } else if (verbose) print('Asymetrical matrix')
-    P <- res[2]/sum(res)
+    P <- as.numeric(res[2]/sum(res))
 
     return(P)
 }
@@ -99,67 +99,107 @@ get_rdom_PMT_rk <- function(bait_names, pmts, N_cate_rfGn, bait_names){
     return(imp)
 }
 
-get_baits_per_pairs <- function(bait_names, P_PMT, P_Gn, P_Gn_PMT, info_TargGene_fil, gini_gene_rf, ds)
+get_baits_per_pairs <- function(bait_names, P_PMT, P_Gn, P_Gn_PMT, info_TargGene_fil, gini_gene_rf, ds, verbose=T, inc=4)
 #draw pairs of baits randomly but by respecting the probabilities of being on the same contig
 {
-    # 1) set up the number of PMTs and Gns
+    # I) set up the number of PMTs and Gns
         # informative
     info_TargGene <- read.delim(info_TargGene_fil, stringsAsFactors=F)
-    ind_inf_PMT <- grep("^PMT_", names(gini_gene_rf))
-    inf_PMT <- names(gini_gene_rf)[ind_inf_PMT]
+    inf_PMT <- names(gini_gene_rf)[grep("^PMT_", names(gini_gene_rf))]
     inf_PMT_exon <- sapply(inf_PMT, collapse_elements, sep="_", what=1:3, colla="_")
-    Ninf_PMT <- length(ind_inf_PMT)
-    N_inf_Gns <- length(gini_gene_rf) - Ninf_PMT
+    Ninf_PMT <- length(grep("^PMT_", names(gini_gene_rf)))
+    Ninf_Gns <- length(gini_gene_rf) - Ninf_PMT
 
         # total
-    ind_all_PMT <- grep("^PMT_", bait_names)
-    all_PMT <- bait_names[ind_all_PMT]
+    all_PMT <- bait_names[grep("^PMT_", bait_names)]
     all_PMT_exon <- sapply(all_PMT, collapse_elements, sep="_", what=1:3, colla="_")
     N_all_PMT <- length(all_PMT)
-    all_Gns <- bait_names[-ind_all_PMT]
+    all_Gns <- bait_names[-grep("^PMT_", bait_names)]
+    all_Gn_exon <- sapply(all_Gns, collapse_elements, sep="_", what=1:3, colla="_")
     N_all_Gns <- length(all_Gns)
 
-    # 2) draw some initial random PMTs
+    # II) chose the PMTs
+        # II.1) draw some initial random PMTs
     n_init <- round(1/5*Ninf_PMT)
     PMTs <- all_PMT[sample(1:N_all_PMT, n_init)]
 
-    # 3) check % same contigs
+        # II.2) check % same contigs
     while (length(PMTs) != Ninf_PMT) {
         PMT_exons <- sapply(PMTs, collapse_elements, sep="_", what=1:3, colla="_")
-        vcontigs_PMT <- sapply(PMT_exons, get_contig, info_TargGene)
-        m_pairtest_PMT <- outer(vcontigs_PMT, vcontigs_PMT, "==")
-        v_pairtest_PMT <- m_pairtest_PMT[upper.tri(m_pairtest_PMT, diag = FALSE)]
-        count <- table(v_pairtest_PMT)
-        test <- as.numeric(count[2]/sum(count))
-        print(round(test, 4))
+        test <- get_P_same_contig(PMTs, PMTs, info_TargGene_fil, verbose=F)
+        if (verbose) print(round(test, 4))
 
-        if (test < (P_PMT- ds*0.5)) {
-            print(paste("# test=", round(test,4), ", so draw baits from common contigs"))
+        if (test < (P_PMT + ds*0.25)) {
+            if (verbose) print(paste("# test=", round(test,4), ", so draw baits from common contigs"))
             # pick 5 baits from the same contigs the baits already selected
             contig_test <- unique(subset(info_TargGene, NewTargetName%in%PMT_exons)[,"contigV2"])
             tab <- info_TargGene[info_TargGene$contigV2%in%contig_test,]
-            tab <- subset(tab, NewTargetName%in%all_PMT_exon)
-            tab <- subset(tab, !NewTargetName%in%PMT_exons)
+            tab <- subset(tab, NewTargetName%in%all_PMT_exon & !NewTargetName%in%PMT_exons)
 
             if (nrow(tab)!=0){
-                new_exons <- tab$NewTargetName[sample(1:nrow(tab), 5)]
+                new_exons <- tab$NewTargetName[sample(1:nrow(tab), inc)]
                 new_baits <- all_PMT[sapply(new_exons, function(x) grep(paste("^", x, "_", sep=""), all_PMT))]
             } else {
-                print("#### no other bait available on common contigs, so draw baits at random")
+                if (verbose) print("#### no other bait available on common contigs, so draw baits at random")
                 veve <- all_PMT[!all_PMT%in%PMTs]
-                new_baits <- veve[sample(1:length(veve), 5)]
+                new_baits <- veve[sample(1:length(veve), inc)]
             }
         } else {
-            print("# draw baits at random")
+            if (verbose) print(paste("# test=", round(test,4), ", so draw baits at random",sep=""))
             veve <- all_PMT[!all_PMT%in%PMTs]
-            new_baits <- veve[sample(1:length(veve), 5)]
-        }
-        if (length(PMTs)> Ninf_PMT-5){
+            new_baits <- veve[sample(1:length(veve), inc)]}
+
+        if (length(PMTs)> Ninf_PMT-inc){
             ins <- Ninf_PMT-length(PMTs)
             PMTs <- c(PMTs, new_baits[1:ins])
-        } else {
-            PMTs <- c(PMTs, new_baits)}
+        } else {PMTs <- c(PMTs, new_baits)}
     }
+
+    # III) chose the Gns
+        # III.1) draw some initial random Gns
+    n_init <- round(1/5*Ninf_Gns)
+    Gns <- all_Gns[sample(1:N_all_Gns, n_init)]
+
+        # III.2) check % same contigs
+    while (length(Gns) != Ninf_Gns) {
+            # III.2.1) test towards other genes
+        Gn_exons <- sapply(Gns, collapse_elements, sep="_", what=1:3, colla="_")
+        test <- get_P_same_contig(Gns, Gns, info_TargGene_fil, verbose=F)
+        if (verbose) print(round(test, 4))
+
+            # III.2.2) test towards PMTs
+        test2 <- get_P_same_contig(Gns, PMTs, info_TargGene_fil, verbose=F)
+        if (verbose) print(round(test2, 4))  
+
+        if (test < (P_Gn - ds*0.5)){
+            if (verbose) print(paste("# test=", round(test,4), ", so draw baits from common contigs"))
+            # pick 5 baits from the same contigs the baits already selected
+            contig_test <- unique(subset(info_TargGene, NewTargetName%in%Gn_exons)[,"contigV2"])
+            tab <- info_TargGene[info_TargGene$contigV2%in%contig_test,]
+            tab <- subset(tab, NewTargetName%in%all_Gn_exon & !NewTargetName%in%Gn_exons)
+
+            if (nrow(tab)!=0){
+                new_exons <- tab$NewTargetName[sample(1:nrow(tab), inc2)]
+                new_baits <- all_Gns[sapply(new_exons, function(x) grep(paste("^", x, "_", sep=""), all_Gns))]
+            } else {
+                if (verbose) print("#### no other bait available on common contigs, so draw baits at random")
+                veve <- all_Gns[!all_Gns%in%Gns]
+                new_baits <- veve[sample(1:length(veve), inc2)]
+            }
+        } else {
+            if (verbose) print(paste("# test=", round(test,4), ", so draw baits at random",sep=""))
+            veve <- all_Gns[!all_Gns%in%Gns]
+            new_baits <- veve[sample(1:length(veve), inc2)]}
+
+        if (length(Gns)> Ninf_Gns-inc2){
+            ins <- Ninf_Gns-length(Gns)
+            Gns <- c(Gns, new_baits[1:ins])
+        } else {Gns <- c(Gns, new_baits)}
+    }
+
+
+    
+    return(PMTs)
 }
 
 

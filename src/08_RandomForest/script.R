@@ -149,7 +149,7 @@ main <- function(argv){
             # 4.2.1) gene bait on same contig as another gene bait
     # best bait per genes, all uninformative genes removed
     Gns_gene_rf <- names(gini_gene_rf)[-grep("^PMT_", names(gini_gene_rf))] 
-  P_Gn_cont_Gn_obs <- get_P_same_contig(Gns_gene_rf, Gns_gene_rf, INFO_TARGENE_FILE)
+  P_Gn_cont_Gn_obs <- as.numeric(get_P_same_contig(Gns_gene_rf, Gns_gene_rf, INFO_TARGENE_FILE))
     
     distr_rdom_P_Gn_cont_Gn <- unlist(mclapply(1:1000, get_distr_rdom_P_same_contig, bait_nam, Gn=T, PMT=F, INFO_TARGENE_FILE, mc.cores=8))
     
@@ -160,7 +160,7 @@ main <- function(argv){
     
             # 4.2.2) pmt bait on same contig as another pmt bait
     PMTs_gene_rf <- names(gini_gene_rf)[grep("^PMT_", names(gini_gene_rf))] 
-  P_PMT_cont_PMT_obs <- get_P_same_contig(PMTs_gene_rf, PMTs_gene_rf, INFO_TARGENE_FILE)
+  P_PMT_cont_PMT_obs <- as.numeric(get_P_same_contig(PMTs_gene_rf, PMTs_gene_rf, INFO_TARGENE_FILE))
     
     distr_rdom_P_PMT_cont_PMT <- unlist(mclapply(1:1000, get_distr_rdom_P_same_contig, bait_nam, Gn=F, PMT=T, INFO_TARGENE_FILE, mc.cores=8))
     
@@ -171,7 +171,7 @@ main <- function(argv){
     pval_PMT_cont_PMT_obs <- get_pval(P_PMT_cont_PMT_obs, distr_rdom_P_PMT_cont_PMT, two_sided=T)
     
         # 4.2.3) gene bait on same contig as a pmt bait
-  P_Gn_cont_PMT_obs <- get_P_same_contig(Gns_gene_rf, PMTs_gene_rf, INFO_TARGENE_FILE)
+  P_Gn_cont_PMT_obs <- as.numeric(get_P_same_contig(Gns_gene_rf, PMTs_gene_rf, INFO_TARGENE_FILE))
     
     distr_rdom_P_Gn_cont_PMT <- unlist(mclapply(1:1000, get_distr_rdom_P_same_contig, bait_nam, Gn=T, PMT=T, INFO_TARGENE_FILE, mc.cores=8))
     
