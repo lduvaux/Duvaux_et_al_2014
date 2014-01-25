@@ -151,7 +151,7 @@ main <- function(argv){
     Gns_gene_rf <- names(gini_gene_rf)[-grep("^PMT_", names(gini_gene_rf))] 
   P_Gn_cont_Gn_obs <- as.numeric(get_P_same_contig(Gns_gene_rf, Gns_gene_rf, INFO_TARGENE_FILE))
     
-    distr_rdom_P_Gn_cont_Gn <- unlist(mclapply(1:1000, get_distr_rdom_P_same_contig, bait_nam, Gn=T, PMT=F, INFO_TARGENE_FILE, mc.cores=8))
+    print(system.time(distr_rdom_P_Gn_cont_Gn <- unlist(mclapply(1:1000, get_distr_rdom_P_same_contig, bait_nam, Gn=T, PMT=F, INFO_TARGENE_FILE, mc.cores=8))))
     
     rg <- range(c(P_Gn_cont_Gn_obs, distr_rdom_P_Gn_cont_Gn))
     hist(distr_rdom_P_Gn_cont_Gn, breaks=50, xlim=c(rg[1], rg[2]))
@@ -162,7 +162,7 @@ main <- function(argv){
     PMTs_gene_rf <- names(gini_gene_rf)[grep("^PMT_", names(gini_gene_rf))] 
   P_PMT_cont_PMT_obs <- as.numeric(get_P_same_contig(PMTs_gene_rf, PMTs_gene_rf, INFO_TARGENE_FILE))
     
-    distr_rdom_P_PMT_cont_PMT <- unlist(mclapply(1:1000, get_distr_rdom_P_same_contig, bait_nam, Gn=F, PMT=T, INFO_TARGENE_FILE, mc.cores=8))
+    print(system.time(distr_rdom_P_PMT_cont_PMT <- unlist(mclapply(1:1000, get_distr_rdom_P_same_contig, bait_nam, Gn=F, PMT=T, INFO_TARGENE_FILE, mc.cores=8))))
     
     rg <- range(c(P_PMT_cont_PMT_obs, distr_rdom_P_PMT_cont_PMT))
     ds <- sd(distr_rdom_P_PMT_cont_PMT)
@@ -173,7 +173,7 @@ main <- function(argv){
         # 4.2.3) gene bait on same contig as a pmt bait
   P_Gn_cont_PMT_obs <- as.numeric(get_P_same_contig(Gns_gene_rf, PMTs_gene_rf, INFO_TARGENE_FILE))
     
-    distr_rdom_P_Gn_cont_PMT <- unlist(mclapply(1:1000, get_distr_rdom_P_same_contig, bait_nam, Gn=T, PMT=T, INFO_TARGENE_FILE, mc.cores=8))
+    print(system.time(distr_rdom_P_Gn_cont_PMT <- unlist(mclapply(1:1000, get_distr_rdom_P_same_contig, bait_nam, Gn=T, PMT=T, INFO_TARGENE_FILE, mc.cores=8))))
     
     rg <- range(c(P_Gn_cont_PMT_obs, distr_rdom_P_Gn_cont_PMT))
     hist(distr_rdom_P_Gn_cont_PMT, breaks=50, xlim=c(rg[1], rg[2]))

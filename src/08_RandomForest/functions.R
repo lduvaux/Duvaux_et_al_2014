@@ -28,9 +28,9 @@ get_P_same_contig <- function(noms1, noms2, info_TargGene_fil, verbose=T){
 
     v1 <- sapply(noms1, collapse_elements, sep="_", what=1:3, colla="_") 
     v2 <- sapply(noms2, collapse_elements, sep="_", what=1:3, colla="_") 
-    info_TargGene <- read.delim(info_TargGene_fil)
-    vcontigs1 <- sapply(v1, get_contig, info_TargGene)
-    vcontigs2 <- sapply(v2, get_contig, info_TargGene)
+    info_TargGene <- read.delim(info_TargGene_fil,stringsAsFactors=F)
+    system.time(vcontigs1 <- subset(info_TargGene, NewTargetName%in%v1)[,"contigV2"])
+    system.time(vcontigs2 <- subset(info_TargGene, NewTargetName%in%v2)[,"contigV2"])
 
     res0 <- outer(vcontigs1, vcontigs2, "==")
     res <- table(res0)
@@ -40,11 +40,10 @@ get_P_same_contig <- function(noms1, noms2, info_TargGene_fil, verbose=T){
         res <- res/2    # discard one half of the matrix (since it is symetric)
     } else if (verbose) print('Asymetrical matrix')
     P <- as.numeric(res[2]/sum(res))
-
     return(P)
 }
 
-get_distr_rdom_P_same_contig <- function(ite, bait_names, info_TargGene_fil, Gn=T, PMT=T) {
+get_distr_rdom_P_same_contig <- function(ite, bait_names, Gn=T, PMT=T, info_TargGene_fil) {
     PMTs_ind <- grep("^PMT_", bait_names)
 
     # 1) randomly chose the remaining genes before contig selection
@@ -85,7 +84,7 @@ get_rdom_Gn_rk <- function(gns, N_cate_rfGn, bait_names){
     return(imp)
 }
 
-get_rdom_PMT_rk <- function(bait_names, pmts, N_cate_rfGn, bait_names){
+get_rdom_PMT_rk <- function(pmts, N_cate_rfGn, bait_names){
     # 1) set up global and informative set of PMTs
     N_pmts <- length(pmts)    # the number of informative PMTs from the 'best baits per gene' data set
     N_inf_pmts <- as.numeric(N_cate_rfGn["PMT"])
@@ -138,7 +137,7 @@ get_baits_per_pairs <- function(bait_names, P_PMT, P_Gn, P_Gn_PMT, info_TargGene
 
             if (nrow(tab)!=0){
                 new_exons <- tab$NewTargetName[sample(1:nrow(tab), inc)]
-                new_baits <- all_PMT[sapply(new_exons, function(x) grep(paste("^", x, "_", sep=""), all_PMT))]
+                new_baits <- all_PMT[sapply(new_exons, function(x) grep(paste("^", x, "_", sep=""), all_PMT))]  #### to optimize???
             } else {
                 if (verbose) print("#### no other bait available on common contigs, so draw baits at random")
                 veve <- all_PMT[!all_PMT%in%PMTs]
