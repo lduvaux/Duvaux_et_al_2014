@@ -154,6 +154,7 @@ main <- function(argv){
     print(system.time(distr_rdom_P_Gn_cont_Gn <- unlist(mclapply(1:1000, get_distr_rdom_P_same_contig, bait_nam, Gn=T, PMT=F, INFO_TARGENE_FILE, mc.cores=8))))
     
     rg <- range(c(P_Gn_cont_Gn_obs, distr_rdom_P_Gn_cont_Gn))
+    ds_Gn <- sd(distr_rdom_P_Gn_cont_Gn)
     hist(distr_rdom_P_Gn_cont_Gn, breaks=50, xlim=c(rg[1], rg[2]))
     abline(v=P_Gn_cont_Gn_obs, col='red')
     pval_Gn_cont_Gn_obs <- get_pval(P_Gn_cont_Gn_obs,distr_rdom_P_Gn_cont_Gn, two_sided=T)
@@ -165,7 +166,7 @@ main <- function(argv){
     print(system.time(distr_rdom_P_PMT_cont_PMT <- unlist(mclapply(1:1000, get_distr_rdom_P_same_contig, bait_nam, Gn=F, PMT=T, INFO_TARGENE_FILE, mc.cores=8))))
     
     rg <- range(c(P_PMT_cont_PMT_obs, distr_rdom_P_PMT_cont_PMT))
-    ds <- sd(distr_rdom_P_PMT_cont_PMT)
+    ds_PMT <- sd(distr_rdom_P_PMT_cont_PMT)
     hist(distr_rdom_P_PMT_cont_PMT, breaks=50, xlim=c(rg[1], rg[2]))
     abline(v=P_PMT_cont_PMT_obs, col='red')
     pval_PMT_cont_PMT_obs <- get_pval(P_PMT_cont_PMT_obs, distr_rdom_P_PMT_cont_PMT, two_sided=T)
@@ -176,9 +177,14 @@ main <- function(argv){
     print(system.time(distr_rdom_P_Gn_cont_PMT <- unlist(mclapply(1:1000, get_distr_rdom_P_same_contig, bait_nam, Gn=T, PMT=T, INFO_TARGENE_FILE, mc.cores=8))))
     
     rg <- range(c(P_Gn_cont_PMT_obs, distr_rdom_P_Gn_cont_PMT))
+    ds_Gn_PMT <- sd(distr_rdom_P_Gn_cont_PMT)
     hist(distr_rdom_P_Gn_cont_PMT, breaks=50, xlim=c(rg[1], rg[2]))
     abline(v=P_Gn_cont_PMT_obs, col='red')
     pval_PMT_cont_PMT_obs <- get_pval(P_Gn_cont_PMT_obs, distr_rdom_P_Gn_cont_PMT, two_sided=T)
+
+
+
+
 
 
 
@@ -202,10 +208,19 @@ main <- function(argv){
 		abline(v = obs,col="red",lwd=3)
 	}
 	dev.off()
-#~ 	
-#~ 	print(df)
-#~ 	print(sum_ranks)
-	
+
+
+
+
+
+
+
+
+
+
+
+
+
     # 5) check CN for best baits and their contigous baits
     print("###### 5) check CN for best baits and their contigous baits ######")
 		# 5.1) chose relevant individuals
