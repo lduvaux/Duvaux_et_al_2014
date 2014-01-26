@@ -12,7 +12,7 @@ source("../utils/randomForest_helperFuns.R")
 source("./params.R")
 source("./functions.R")
 
-main <- function(argv){
+#~main <- function(argv){
 
 	load(PREVIOUS_DATA)
 
@@ -170,7 +170,7 @@ main <- function(argv){
         # 4.3) P being same contig new random algo
     system.time({
         sims2 <- mclapply(1:1000, function (x)
-            get_baits_per_pairs(x, bait_names=bait_nam, P_PMT=P_PMT_cont_PMT_obs, P_Gn=P_Gn_cont_Gn_obs, P_Gn_PMT=P_Gn_cont_PMT_obs, info_TargGene_fil=INFO_TARGENE_FILE, gini_gene_rf=gini_gene_rf, ds_pmt=ds_PMT, ds_gns=ds_Gn, inc=10, inc2=5, inc3=5, verbose=0)
+            get_baits_per_pairs(x, bait_names=bait_nam, P_PMT=P_PMT_cont_PMT_obs, P_Gn=P_Gn_cont_Gn_obs, P_Gn_PMT=P_Gn_cont_PMT_obs, info_TargGene_fil=INFO_TARGENE_FILE, gini_gene_rf=gini_gene_rf, ds_pmt=ds_PMT, ds_gns=ds_Gn, ds_gns_pmt=ds_Gn_PMT, inc=10, inc2=5, inc3=5, verbose=0)
         , mc.cores=8)
     })
 
@@ -207,24 +207,24 @@ main <- function(argv){
 
 
 
-        # 4.3) compute the expected distribution per gene category
-    N_bait_alpMat <- count_categ()
-#~    info_Targ <- read.delim(INFO_TARGENE_FILE)
-    print(system.time(r0 <- mclapply(1:5000, nullHDraw, df$grp, length(gini_gene_rf), bait_names=bait_nam, info_TargGene=INFO_TARGENE_FILE, mc.cores=8)))
-    r <- t(matrix(unlist(r0), ncol = length(levels(df$grp)), byrow = TRUE, dimnames=list(1:5000, levels(df$grp))))
+#~        # 4.3) compute the expected distribution per gene category
+#~    N_bait_alpMat <- count_categ()
+#~#~    info_Targ <- read.delim(INFO_TARGENE_FILE)
+#~    print(system.time(r0 <- mclapply(1:5000, nullHDraw, df$grp, length(gini_gene_rf), bait_names=bait_nam, info_TargGene=INFO_TARGENE_FILE, mc.cores=8)))
+#~    r <- t(matrix(unlist(r0), ncol = length(levels(df$grp)), byrow = TRUE, dimnames=list(1:5000, levels(df$grp))))
     
-	pdf("test.pdf")
-	for(i in sum_ranks$grp){
-        obs <- sum_ranks$rnk[which(sum_ranks$grp==i)]
-        rg <- range(c(obs, r[i,]))
-        p_val <- get_pval(obs, r[i,], two_sided=TWOSIDED)
-        tit <- paste(i, ifelse(TWOSIDED, " (two sided", " (one sided"), " P= ", p_val, ")", sep="")
-		hist(r[i,], main=tit, nclass=50, xlab="Sum of the ranks", cex.main=0.9, xlim=c(rg[1], rg[2]))
-		srtd <- sort(r[i,])
-		print(obs)
-		abline(v = obs,col="red",lwd=3)
-	}
-	dev.off()
+#~	pdf("test.pdf")
+#~	for(i in sum_ranks$grp){
+#~        obs <- sum_ranks$rnk[which(sum_ranks$grp==i)]
+#~        rg <- range(c(obs, r[i,]))
+#~        p_val <- get_pval(obs, r[i,], two_sided=TWOSIDED)
+#~        tit <- paste(i, ifelse(TWOSIDED, " (two sided", " (one sided"), " P= ", p_val, ")", sep="")
+#~		hist(r[i,], main=tit, nclass=50, xlab="Sum of the ranks", cex.main=0.9, xlim=c(rg[1], rg[2]))
+#~		srtd <- sort(r[i,])
+#~		print(obs)
+#~		abline(v = obs,col="red",lwd=3)
+#~	}
+#~	dev.off()
 
 
 
@@ -238,75 +238,75 @@ main <- function(argv){
 
 
 
-    # 5) check CN for best baits and their contigous baits
-    print("###### 5) check CN for best baits and their contigous baits ######")
-		# 5.1) chose relevant individuals
-    good_indiv <- which(as.character(y)==contig_rf$predicted)
-    x_prim <- x[good_indiv,]
-    y_prim <- y[good_indiv]
+#~    # 5) check CN for best baits and their contigous baits
+#~    print("###### 5) check CN for best baits and their contigous baits ######")
+#~		# 5.1) chose relevant individuals
+#~    good_indiv <- which(as.character(y)==contig_rf$predicted)
+#~    x_prim <- x[good_indiv,]
+#~    y_prim <- y[good_indiv]
     
-		# 5.2) index for races
-	ind_races <- mclapply(races_uniq, grep, rownames(x_prim))
-	names(ind_races) <- races_uniq
-		# 5.3) check the best 20 baits
-	bests20 <- rownames(tab_best20_contig)
+#~		# 5.2) index for races
+#~	ind_races <- mclapply(races_uniq, grep, rownames(x_prim))
+#~	names(ind_races) <- races_uniq
+#~		# 5.3) check the best 20 baits
+#~	bests20 <- rownames(tab_best20_contig)
 
-    system("mkdir -p Res_RF_bestGenes/")
-    sapply(1:length(bests20), function(x) check_baits4CN(bests20[x], x_prim=x_prim, y_prim=y_prim, contig_rf=contig_rf, mat_imp_NmaxTrees=mat_imp_NmaxTrees, info_TarGene_file=INFO_TARGENE_FILE, ind_races=ind_races, outdir="./Res_RF_bestGenes/", rang=x,races_uniq = races_uniq))
+#~    system("mkdir -p Res_RF_bestGenes/")
+#~    sapply(1:length(bests20), function(x) check_baits4CN(bests20[x], x_prim=x_prim, y_prim=y_prim, contig_rf=contig_rf, mat_imp_NmaxTrees=mat_imp_NmaxTrees, info_TarGene_file=INFO_TARGENE_FILE, ind_races=ind_races, outdir="./Res_RF_bestGenes/", rang=x,races_uniq = races_uniq))
 
-		# 5.4) the 4 best loci per race
-	contig_rf_imp <- contig_rf$importance[,-(9:10)]
-	check_baits4CN_perRace(contig_rf_imp, x_prim, y_prim=y_prim, contig_rf, mat_imp_NmaxTrees, INFO_TARGENE_FILE, ind_races, outdir="./Res_RF_bestGenes/", n_best=4,races_uniq)
+#~		# 5.4) the 4 best loci per race
+#~	contig_rf_imp <- contig_rf$importance[,-(9:10)]
+#~	check_baits4CN_perRace(contig_rf_imp, x_prim, y_prim=y_prim, contig_rf, mat_imp_NmaxTrees, INFO_TARGENE_FILE, ind_races, outdir="./Res_RF_bestGenes/", n_best=4,races_uniq)
 	
 
-		# 6) chisq on most important contig
-	load(RAW_DATA)
+#~		# 6) chisq on most important contig
+#~	load(RAW_DATA)
 
-	N_gene_categ <- getGenePerCategTable()
+#~	N_gene_categ <- getGenePerCategTable()
 	
-	bait_name_info <- rownames(tem_tab[1:30,])
-	categ_bait_info <- sapply(bait_name_info, function(x) unlist(strsplit(x, "_"))[1])
-	N_baitInfo_categ <- table(categ_bait_info)
+#~	bait_name_info <- rownames(tem_tab[1:30,])
+#~	categ_bait_info <- sapply(bait_name_info, function(x) unlist(strsplit(x, "_"))[1])
+#~	N_baitInfo_categ <- table(categ_bait_info)
 
-	bad <- !names(N_gene_categ)%in%names(N_baitInfo_categ)
-	bad <- names(N_gene_categ)[bad]
-	N_baitInfo_categ <- c(N_baitInfo_categ, rep(0, length(bad)))
-	names(N_baitInfo_categ)[(length(N_baitInfo_categ)+1-length(bad)):length(N_baitInfo_categ)] <- bad
+#~	bad <- !names(N_gene_categ)%in%names(N_baitInfo_categ)
+#~	bad <- names(N_gene_categ)[bad]
+#~	N_baitInfo_categ <- c(N_baitInfo_categ, rep(0, length(bad)))
+#~	names(N_baitInfo_categ)[(length(N_baitInfo_categ)+1-length(bad)):length(N_baitInfo_categ)] <- bad
 
-	ind <- PrePro_findIndex(names(N_gene_categ), names(N_baitInfo_categ))
+#~	ind <- PrePro_findIndex(names(N_gene_categ), names(N_baitInfo_categ))
 
-	N_baitInfo_categ <- N_baitInfo_categ[ind]
+#~	N_baitInfo_categ <- N_baitInfo_categ[ind]
 
-	tab_chi <- rbind(All_gene=N_gene_categ, Informative_gene=N_baitInfo_categ)
-	chi_info <- chisq.test(tab_chi)
+#~	tab_chi <- rbind(All_gene=N_gene_categ, Informative_gene=N_baitInfo_categ)
+#~	chi_info <- chisq.test(tab_chi)
 
-	ratio <- sum(N_baitInfo_categ)/sum(N_gene_categ)
-	vect_exp <- N_gene_categ*ratio
+#~	ratio <- sum(N_baitInfo_categ)/sum(N_gene_categ)
+#~	vect_exp <- N_gene_categ*ratio
 
-		# barplot
-	tab_barp <- rbind(vect_exp,N_baitInfo_categ)
-	tab_barp <- tab_barp[,c(1:3, 5:9, 4, 10:11)]
+#~		# barplot
+#~	tab_barp <- rbind(vect_exp,N_baitInfo_categ)
+#~	tab_barp <- tab_barp[,c(1:3, 5:9, 4, 10:11)]
 
-	pdf(PLOTDIAGGn)
-	colos <- rep(c("black", "darkmagenta", rep("blue",6), rep("darkgreen", 3)), each=2)
-	dens <- c(22, -1)
-	barp <- barplot(tab_barp, main="Best genes to distinguish races", axisnames = FALSE, cex.axis=1.5, beside=T, col=colos, density=dens, cex.main=2, legend=c("# expected", "# observed"), args.legend=list(density=dens, cex=1.8, fill="darkgrey"))
-	labells <- rep("", length(tab_barp))
-	labells[seq(1, length(tab_barp), by=2)] <-  colnames(tab_barp)
-	text(0.5+barp, par("usr")[3], labels = labells, srt = 45, adj = c(1.1,1.1), xpd = TRUE, cex=1.4, font=2)
-	dev.off()
+#~	pdf(PLOTDIAGGn)
+#~	colos <- rep(c("black", "darkmagenta", rep("blue",6), rep("darkgreen", 3)), each=2)
+#~	dens <- c(22, -1)
+#~	barp <- barplot(tab_barp, main="Best genes to distinguish races", axisnames = FALSE, cex.axis=1.5, beside=T, col=colos, density=dens, cex.main=2, legend=c("# expected", "# observed"), args.legend=list(density=dens, cex=1.8, fill="darkgrey"))
+#~	labells <- rep("", length(tab_barp))
+#~	labells[seq(1, length(tab_barp), by=2)] <-  colnames(tab_barp)
+#~	text(0.5+barp, par("usr")[3], labels = labells, srt = 45, adj = c(1.1,1.1), xpd = TRUE, cex=1.4, font=2)
+#~	dev.off()
 	
-	outFileName <- argv[1]
-    ver(sprintf("Saving data to %s",outFileName))
-    save(contig_rf,file=outFileName)
-}
+#~	outFileName <- argv[1]
+#~    ver(sprintf("Saving data to %s",outFileName))
+#~    save(contig_rf,file=outFileName)
+#~}
 
 
-argv <- commandArgs(TRUE)[1]
-if(DEBUG)
-	traceback(main(argv));
-if(!DEBUG)
-	main(argv);
+#~argv <- commandArgs(TRUE)[1]
+#~if(DEBUG)
+#~	traceback(main(argv));
+#~if(!DEBUG)
+#~	main(argv);
 
 
 
