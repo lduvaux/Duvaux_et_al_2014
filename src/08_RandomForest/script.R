@@ -178,6 +178,7 @@ source("./functions.R")
     P_Gns <- sapply(sims2, function(sol) sol$P_Gn)
     P_Gns_PMTs <- sapply(sims2, function(sol) sol$PGn_PMT)
 
+    pdf("distrib_Proba_sameContig_3.pdf")
     layout(matrix(1:4, 2,2, byrow=T))
     rg <- range(c(P_Gn_cont_Gn_obs, distr_rdom_P_Gn_cont_Gn, P_Gns))
     pval_Gn_cont_Gn_obs <- get_pval(P_Gn_cont_Gn_obs,distr_rdom_P_Gn_cont_Gn, two_sided=T)
@@ -202,7 +203,7 @@ source("./functions.R")
         par(new=T)
         plot(density(P_Gns_PMTs), xlim=c(rg[1], rg[2]), col="red", ylim=c(0,600), xlab="", main=paste("Gns_PMTs: Prdom=", pval_Gn_cont_PMT_obs, " ; P-new=", pval_Gns_PMTs, sep=""))
         abline(v=P_Gn_cont_PMT_obs, col='green')
-
+    dev.off()
 
 
 

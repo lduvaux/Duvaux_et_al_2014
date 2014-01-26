@@ -105,7 +105,7 @@ get_rdom_Gn_rk <- function(gns, N_cate_rfGn, bait_names){
     return(imp)
 }
 
-get_baits_per_pairs <- function(indic, bait_names, P_PMT, P_Gn, P_Gn_PMT, info_TargGene_fil, gini_gene_rf, ds_pmt, ds_gns, ds_gns_pmt, verbose=2, inc=10, inc2=5, inc3=5)
+get_baits_per_pairs <- function(indic, bait_names, P_PMT, P_Gn, P_Gn_PMT, info_TargGene_fil, gini_gene_rf, ds_pmt, ds_gns, ds_gns_pmt, verbose=2, inc=10, inc2=5, inc3=5, coef_sd1=2, coef_sd2=-0.5, coef_sd3=-1)
 #draw pairs of baits randomly but by respecting the probabilities of being on the same contig
 # verbose can be 0 (no comments), 1(only comments outside the loops), or 2 (all comments), note that verbose==F and verbose==T results in verbose==0 and verbose==1 respectively
 {
@@ -144,7 +144,7 @@ get_baits_per_pairs <- function(indic, bait_names, P_PMT, P_Gn, P_Gn_PMT, info_T
         test <- get_P_same_contig(PMTs[1:ite], PMTs[1:ite], info_TargGene_fil, verbose=F)
         if (verbose==2) print(round(test, 4))
 
-        if (test < (P_PMT + ds_pmt*0.75)) {
+        if (test < (P_PMT + ds_pmt * coef_sd1)) {
             if (verbose==2) print(paste("# test=", round(test,4), ", so draw baits from common contigs"))
             # pick 5 baits from the same contigs the baits already selected
             contig_test <- unique(subset(info_TargGene, NewTargetName%in%PMT_exons)[,"contigV2"])
@@ -191,7 +191,7 @@ get_baits_per_pairs <- function(indic, bait_names, P_PMT, P_Gn, P_Gn_PMT, info_T
         test2 <- get_P_same_contig(Gns[1:ite], Gns[1:ite], info_TargGene_fil, verbose=F)
         if (verbose==2) print(round(test2, 4))
 
-        if (test2 < (P_Gn - ds_gns*0.5)){
+        if (test2 < (P_Gn + ds_gns * coef_sd2)){
             if (verbose==2) print(paste("# test2=", round(test2,4), ", so draw baits from common contigs"))
             # pick 5 baits from the same contigs the baits already selected
             contig_test <- unique(subset(info_TargGene, NewTargetName%in%Gn_exons)[,"contigV2"])
@@ -233,7 +233,7 @@ get_baits_per_pairs <- function(indic, bait_names, P_PMT, P_Gn, P_Gn_PMT, info_T
 #~            print(test3)
             if (verbose==2) print(round(test3, 4))  
 
-            if (test3 < (P_Gn_PMT - ds_gns_pmt)){
+            if (test3 < (P_Gn_PMT + ds_gns_pmt * coef_sd3)){
                 if (verbose==2) print(paste("# test3=", round(test3,4), ", so draw baits from common contigs"))
                 # pick 5 baits from the same contigs the baits already selected
                 contig_test <- unique(subset(info_TargGene, NewTargetName%in%PMT_exons)[,"contigV2"])
