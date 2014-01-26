@@ -25,21 +25,28 @@ get_contig <- function(target, info_TargGene){
 
 get_P_same_contig <- function(noms1, noms2, info_TargGene_fil, verbose=T){
 
-
     v1 <- sapply(noms1, collapse_elements, sep="_", what=1:3, colla="_") 
     v2 <- sapply(noms2, collapse_elements, sep="_", what=1:3, colla="_") 
     info_TargGene <- read.delim(info_TargGene_fil,stringsAsFactors=F)
+    
     vcontigs1 <- subset(info_TargGene, NewTargetName%in%v1)[,"contigV2"]
     vcontigs2 <- subset(info_TargGene, NewTargetName%in%v2)[,"contigV2"]
+    test_contig <- identical(vcontigs1, vcontigs2)
+    if (verbose) {
+        if (test_contig) print('Symetrical matrix')
+        else print('Asymetrical matrix')}
 
     res0 <- outer(vcontigs1, vcontigs2, "==")
     res <- table(res0)
-    if (identical(vcontigs1, vcontigs2)) {
-        if (verbose) print('Symetrical matrix')
-        res[2] <- res[2]-length(vcontigs1) # remove diagonal
-        res <- res/2    # discard one half of the matrix (since it is symetric)
-    } else if (verbose) print('Asymetrical matrix')
-    P <- as.numeric(res[2]/sum(res))
+
+    if (length(res)==1)
+        P <- 0
+    else {
+        if (test_contig) {
+            res[2] <- res[2]-length(vcontigs1) # remove diagonal
+            res <- res/2}    # discard one half of the matrix (since it is symetric)
+        P <- as.numeric(res[2]/sum(res))
+    }
     return(P)
 }
 
@@ -70,20 +77,6 @@ get_distr_rdom_P_same_contig <- function(ite, bait_names, Gn=T, PMT=T, info_Targ
     return(get_P_same_contig(noms1, noms2, info_TargGene_fil, verbose=F))
 }
 
-get_rdom_Gn_rk <- function(gns, N_cate_rfGn, bait_names){
-    # 1) set up global and informative set of genes
-    N_gns <- length(gns)    # the number of informative genes from the 'best baits per gene' data set (step 2.3)
-    N_inf_gns <- sum(N_cate_rfGn) - as.numeric(N_cate_rfGn["PMT"])
-
-    # 2) set up importance vector
-    imp <- sample(1:N_gns, N_gns)
-    names(imp) <- gns
-    
-    imp[imp<(N_gns+1-N_inf_gns)] <- 0   # should stay ~120 genes with some importance
-    imp <- sort(imp, decreasing=T)  # has to be sorted for the function 'get_BestBaitperContig'
-    return(imp)
-}
-
 get_rdom_PMT_rk <- function(pmts, N_cate_rfGn, bait_names){
     # 1) set up global and informative set of PMTs
     N_pmts <- length(pmts)    # the number of informative PMTs from the 'best baits per gene' data set
@@ -98,11 +91,25 @@ get_rdom_PMT_rk <- function(pmts, N_cate_rfGn, bait_names){
     return(imp)
 }
 
-get_baits_per_pairs <- function(bait_names, P_PMT, P_Gn, P_Gn_PMT, info_TargGene_fil, gini_gene_rf, ds_pmt, ds_gns, verbose=2, inc=10, inc2=5, inc3=5)
+get_rdom_Gn_rk <- function(gns, N_cate_rfGn, bait_names){
+    # 1) set up global and informative set of genes
+    N_gns <- length(gns)    # the number of informative genes from the 'best baits per gene' data set (step 2.3)
+    N_inf_gns <- sum(N_cate_rfGn) - as.numeric(N_cate_rfGn["PMT"])
+
+    # 2) set up importance vector
+    imp <- sample(1:N_gns, N_gns)
+    names(imp) <- gns
+    
+    imp[imp<(N_gns+1-N_inf_gns)] <- 0   # should stay ~120 genes with some importance
+    imp <- sort(imp, decreasing=T)  # has to be sorted for the function 'get_BestBaitperContig'
+    return(imp)
+}
+
+get_baits_per_pairs <- function(indic, bait_names, P_PMT, P_Gn, P_Gn_PMT, info_TargGene_fil, gini_gene_rf, ds_pmt, ds_gns, verbose=2, inc=10, inc2=5, inc3=5)
 #draw pairs of baits randomly but by respecting the probabilities of being on the same contig
 # verbose can be 0 (no comments), 1(only comments outside the loops), or 2 (all comments), note that verbose==F and verbose==T results in verbose==0 and verbose==1 respectively
 {
-    system.time({
+#~    system.time({
     if (!verbose%in%0:2) stop("bad value of verbose")
     # I) set up the number of PMTs and Gns
     info_TargGene <- read.delim(info_TargGene_fil, stringsAsFactors=F)
@@ -169,7 +176,6 @@ get_baits_per_pairs <- function(bait_names, P_PMT, P_Gn, P_Gn_PMT, info_TargGene
         PMTs[(ite+1):(ite+inc)] <- new_baits}
         ite <- ite + inc
     }
-    unique(table(PMTs))
 #~    )
 
     # III) chose the Gns
@@ -221,6 +227,10 @@ get_baits_per_pairs <- function(bait_names, P_PMT, P_Gn, P_Gn_PMT, info_TargGene
             # III.2.3) test towards PMTs
             Gn_exons <- sapply(Gns[1:ite], collapse_elements, sep="_", what=1:3, colla="_")
             test3 <- get_P_same_contig(Gns[1:ite], PMTs, info_TargGene_fil, verbose=F)
+#~            print(ite)
+#~            print(Gns[1:ite])
+#~            print(PMTs)
+#~            print(test3)
             if (verbose==2) print(round(test3, 4))  
 
             if (test3 < (P_Gn_PMT)){
@@ -256,18 +266,29 @@ get_baits_per_pairs <- function(bait_names, P_PMT, P_Gn, P_Gn_PMT, info_TargGene
             ite <- ite + inc3
         }
     }
-    unique(table(PMTs))
 
-    if (verbose==1) print(P_PMT)
-    if (verbose==1) print(test <- get_P_same_contig(PMTs, PMTs, info_TargGene_fil, verbose=F))
-    if (verbose==1) print(P_Gn)
-    if (verbose==1) print(test2 <- get_P_same_contig(Gns, Gns, info_TargGene_fil, verbose=F))
-    if (verbose==1) print(P_Gn_PMT)
-    if (verbose==1) print(test3 <- get_P_same_contig(Gns, PMTs, info_TargGene_fil, verbose=F))
-    })
-    ll <- list(PMTs=PMTs, Gns=Gns)
-    return()
+    if (verbose%in%1:2) print(P_PMT)
+    test <- get_P_same_contig(PMTs, PMTs, info_TargGene_fil, verbose=F)
+    if (verbose%in%1:2) print(test)
+    if (verbose%in%1:2) print(P_Gn)
+    test2 <- get_P_same_contig(Gns, Gns, info_TargGene_fil, verbose=F)
+    if (verbose%in%1:2) print(test2)
+    if (verbose%in%1:2) print(P_Gn_PMT)
+    test3 <- get_P_same_contig(Gns, PMTs, info_TargGene_fil, verbose=F)
+    if (verbose%in%1:2) print()
+#~    })
+    ll <- list(PMTs=PMTs, Gns=Gns, P_PMT=test, P_Gn=test2, PGn_PMT=test3)
+    if (indic%%50==0) print(paste(indic, " iterations done")) 
+    return(ll)
 }
+
+
+
+
+
+
+
+
 
 
 nullHDraw <- function(ite, g, n_info, bait_names, info_TargGene, verbose=F){

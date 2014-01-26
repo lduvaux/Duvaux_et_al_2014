@@ -152,39 +152,56 @@ main <- function(argv){
   P_Gn_cont_Gn_obs <- as.numeric(get_P_same_contig(Gns_gene_rf, Gns_gene_rf, INFO_TARGENE_FILE))
     
     print(system.time(distr_rdom_P_Gn_cont_Gn <- unlist(mclapply(1:1000, get_distr_rdom_P_same_contig, bait_nam, Gn=T, PMT=F, INFO_TARGENE_FILE, mc.cores=8))))
-    
-    rg <- range(c(P_Gn_cont_Gn_obs, distr_rdom_P_Gn_cont_Gn))
     ds_Gn <- sd(distr_rdom_P_Gn_cont_Gn)
-    hist(distr_rdom_P_Gn_cont_Gn, breaks=50, xlim=c(rg[1], rg[2]))
-    abline(v=P_Gn_cont_Gn_obs, col='red')
-    pval_Gn_cont_Gn_obs <- get_pval(P_Gn_cont_Gn_obs,distr_rdom_P_Gn_cont_Gn, two_sided=T)
-    
+
             # 4.2.2) pmt bait on same contig as another pmt bait
     PMTs_gene_rf <- names(gini_gene_rf)[grep("^PMT_", names(gini_gene_rf))] 
   P_PMT_cont_PMT_obs <- as.numeric(get_P_same_contig(PMTs_gene_rf, PMTs_gene_rf, INFO_TARGENE_FILE))
-    
+
     print(system.time(distr_rdom_P_PMT_cont_PMT <- unlist(mclapply(1:1000, get_distr_rdom_P_same_contig, bait_nam, Gn=F, PMT=T, INFO_TARGENE_FILE, mc.cores=8))))
-    
-    rg <- range(c(P_PMT_cont_PMT_obs, distr_rdom_P_PMT_cont_PMT))
     ds_PMT <- sd(distr_rdom_P_PMT_cont_PMT)
-    hist(distr_rdom_P_PMT_cont_PMT, breaks=50, xlim=c(rg[1], rg[2]))
-    abline(v=P_PMT_cont_PMT_obs, col='red')
-    pval_PMT_cont_PMT_obs <- get_pval(P_PMT_cont_PMT_obs, distr_rdom_P_PMT_cont_PMT, two_sided=T)
-    
+
         # 4.2.3) gene bait on same contig as a pmt bait
   P_Gn_cont_PMT_obs <- as.numeric(get_P_same_contig(Gns_gene_rf, PMTs_gene_rf, INFO_TARGENE_FILE))
-    
+
     print(system.time(distr_rdom_P_Gn_cont_PMT <- unlist(mclapply(1:1000, get_distr_rdom_P_same_contig, bait_nam, Gn=T, PMT=T, INFO_TARGENE_FILE, mc.cores=8))))
-    
-    rg <- range(c(P_Gn_cont_PMT_obs, distr_rdom_P_Gn_cont_PMT))
     ds_Gn_PMT <- sd(distr_rdom_P_Gn_cont_PMT)
-    hist(distr_rdom_P_Gn_cont_PMT, breaks=50, xlim=c(rg[1], rg[2]))
-    abline(v=P_Gn_cont_PMT_obs, col='red')
-    pval_PMT_cont_PMT_obs <- get_pval(P_Gn_cont_PMT_obs, distr_rdom_P_Gn_cont_PMT, two_sided=T)
 
+        # 4.3) P being same contig new random algo
+    system.time({
+        sims2 <- mclapply(1:1000, function (x)
+            get_baits_per_pairs(x, bait_names=bait_nam, P_PMT=P_PMT_cont_PMT_obs, P_Gn=P_Gn_cont_Gn_obs, P_Gn_PMT=P_Gn_cont_PMT_obs, info_TargGene_fil=INFO_TARGENE_FILE, gini_gene_rf=gini_gene_rf, ds_pmt=ds_PMT, ds_gns=ds_Gn, inc=10, inc2=5, inc3=5, verbose=0)
+        , mc.cores=8)
+    })
 
+    P_PMTs <- sapply(sims2, function(sol) sol$P_PMT)
+    P_Gns <- sapply(sims2, function(sol) sol$P_Gn)
+    P_Gns_PMTs <- sapply(sims2, function(sol) sol$PGn_PMT)
 
+    layout(matrix(1:4, 2,2, byrow=T))
+    rg <- range(c(P_Gn_cont_Gn_obs, distr_rdom_P_Gn_cont_Gn, P_Gns))
+    pval_Gn_cont_Gn_obs <- get_pval(P_Gn_cont_Gn_obs,distr_rdom_P_Gn_cont_Gn, two_sided=T)
+        plot(density(distr_rdom_P_Gn_cont_Gn), xlim=c(rg[1], rg[2]), col="blue", ylim=c(0,700), xlab="P-same contig", main="")
+    pval_Gns <- get_pval(P_Gn_cont_Gn_obs, P_Gns, two_sided=T)
+        par(new=T)
+        plot(density(P_Gns), xlim=c(rg[1], rg[2]), col="red", ylim=c(0,700), xlab="", main=paste("Gns: Prdom=", pval_Gn_cont_Gn_obs, " ; P-new=", pval_Gns, sep=""))
+        abline(v=P_Gn_cont_Gn_obs, col='green')
+    
+    rg <- range(c(P_PMT_cont_PMT_obs, distr_rdom_P_PMT_cont_PMT, P_PMTs))
+    pval_PMT_cont_PMT_obs <- get_pval(P_PMT_cont_PMT_obs, distr_rdom_P_PMT_cont_PMT, two_sided=T)
+        plot(density(distr_rdom_P_PMT_cont_PMT), xlim=c(rg[1], rg[2]), col="blue", ylim=c(0,300), xlab="P-same contig", main="")
+    pval_PMTs <- get_pval(P_PMT_cont_PMT_obs, P_PMTs, two_sided=T)
+        par(new=T)
+        plot(density(P_PMTs), xlim=c(rg[1], rg[2]), col="red", ylim=c(0,300), xlab="", main=paste("PMTs: Prdom=", pval_PMT_cont_PMT_obs, " ; P-new=", pval_PMTs, sep=""))
+        abline(v=P_PMT_cont_PMT_obs, col='green')
 
+    rg <- range(c(P_Gn_cont_PMT_obs, distr_rdom_P_Gn_cont_PMT, P_Gns_PMTs))
+    pval_Gn_cont_PMT_obs <- get_pval(P_Gn_cont_PMT_obs, distr_rdom_P_Gn_cont_PMT, two_sided=T)
+        plot(density(distr_rdom_P_Gn_cont_PMT), xlim=c(rg[1], rg[2]), col="blue", ylim=c(0,600), xlab="P-same contig", main="")
+    pval_Gns_PMTs <- get_pval(P_Gn_cont_PMT_obs, P_Gns_PMTs, two_sided=T)
+        par(new=T)
+        plot(density(P_Gns_PMTs), xlim=c(rg[1], rg[2]), col="red", ylim=c(0,600), xlab="", main=paste("Gns_PMTs: Prdom=", pval_Gn_cont_PMT_obs, " ; P-new=", pval_Gns_PMTs, sep=""))
+        abline(v=P_Gn_cont_PMT_obs, col='green')
 
 
 
