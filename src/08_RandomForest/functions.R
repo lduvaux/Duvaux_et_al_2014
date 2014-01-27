@@ -2,7 +2,7 @@
 #~ source("./00_Accessory_Scripts/getter_functions.R")
 #~ library(parallel)
 
-################ new functions for rank test ################
+################ new functions to test sgnificativity ################
 get_elements <- function(x, sep="_", what=c(1)){
     return(strsplit(x, sep)[[1]][what])
 }
@@ -48,6 +48,36 @@ get_P_same_contig <- function(noms1, noms2, info_TargGene_fil, verbose=T){
         P <- as.numeric(res[2]/sum(res))
     }
     return(P)
+}
+
+draw_P_same_contig <- function(P_Gn_cont_Gn_obs, distr_rdom_P_Gn_cont_Gn, P_Gns, P_PMT_cont_PMT_obs, distr_rdom_P_PMT_cont_PMT, P_PMTs, P_Gn_cont_PMT_obs, distr_rdom_P_Gn_cont_PMT, P_Gns_PMTs)
+{
+    pdf("distrib_Proba_sameContig_3.pdf")
+    layout(matrix(1:4, 2,2, byrow=T))
+    rg <- range(c(P_Gn_cont_Gn_obs, distr_rdom_P_Gn_cont_Gn, P_Gns))
+    pval_Gn_cont_Gn_obs <- get_pval(P_Gn_cont_Gn_obs,distr_rdom_P_Gn_cont_Gn, two_sided=T)
+        plot(density(distr_rdom_P_Gn_cont_Gn), xlim=c(rg[1], rg[2]), col="blue", ylim=c(0,700), xlab="P-same contig", main="")
+    pval_Gns <- get_pval(P_Gn_cont_Gn_obs, P_Gns, two_sided=T)
+        par(new=T)
+        plot(density(P_Gns), xlim=c(rg[1], rg[2]), col="red", ylim=c(0,700), xlab="", main=paste("Gns: Prdom=", pval_Gn_cont_Gn_obs, " ; P-new=", pval_Gns, sep=""))
+        abline(v=P_Gn_cont_Gn_obs, col='green')
+    
+    rg <- range(c(P_PMT_cont_PMT_obs, distr_rdom_P_PMT_cont_PMT, P_PMTs))
+    pval_PMT_cont_PMT_obs <- get_pval(P_PMT_cont_PMT_obs, distr_rdom_P_PMT_cont_PMT, two_sided=T)
+        plot(density(distr_rdom_P_PMT_cont_PMT), xlim=c(rg[1], rg[2]), col="blue", ylim=c(0,300), xlab="P-same contig", main="")
+    pval_PMTs <- get_pval(P_PMT_cont_PMT_obs, P_PMTs, two_sided=T)
+        par(new=T)
+        plot(density(P_PMTs), xlim=c(rg[1], rg[2]), col="red", ylim=c(0,300), xlab="", main=paste("PMTs: Prdom=", pval_PMT_cont_PMT_obs, " ; P-new=", pval_PMTs, sep=""))
+        abline(v=P_PMT_cont_PMT_obs, col='green')
+
+    rg <- range(c(P_Gn_cont_PMT_obs, distr_rdom_P_Gn_cont_PMT, P_Gns_PMTs))
+    pval_Gn_cont_PMT_obs <- get_pval(P_Gn_cont_PMT_obs, distr_rdom_P_Gn_cont_PMT, two_sided=T)
+        plot(density(distr_rdom_P_Gn_cont_PMT), xlim=c(rg[1], rg[2]), col="blue", ylim=c(0,600), xlab="P-same contig", main="")
+    pval_Gns_PMTs <- get_pval(P_Gn_cont_PMT_obs, P_Gns_PMTs, two_sided=T)
+        par(new=T)
+        plot(density(P_Gns_PMTs), xlim=c(rg[1], rg[2]), col="red", ylim=c(0,600), xlab="", main=paste("Gns_PMTs: Prdom=", pval_Gn_cont_PMT_obs, " ; P-new=", pval_Gns_PMTs, sep=""))
+        abline(v=P_Gn_cont_PMT_obs, col='green')
+    dev.off()
 }
 
 get_distr_rdom_P_same_contig <- function(ite, bait_names, Gn=T, PMT=T, info_TargGene_fil) {
@@ -322,6 +352,46 @@ get_rk_sum <- function(rked_gns, kept)
     return(v)
 }
 
+get_rdom_rk_mat <- function(bait_nam, N_cate_rfGn, gini_gene_rf, INFO_TARGENE_FILE, gini_contig_rf)
+{
+    print(system.time(distr_rdom <- mclapply(
+        1:1000, get_null_draw,
+            Gns=get_rdom_Gn_rk(bait_nam, N_cate_rfGn),
+            PMTs=get_rdom_PMT_rk(bait_nam, N_cate_rfGn),
+            bait_names=bait_nam, n_info=length(gini_gene_rf),
+            info_TargGene_fil=INFO_TARGENE_FILE,
+            kept=length(gini_contig_rf), verbose=F, 
+        mc.cores=8)))
+    distr_rdom_mat <- sapply(seq(length(distr_rdom)), function(x) distr_rdom[[x]])
+    rownames(distr_rdom_mat) <- 1:length(bait_nam) ; colnames(distr_rdom_mat) <- paste("Simul_", 1:1000, sep="")
+    return(distr_rdom_mat)
+}
+
+get_rdom_LD_rk_mat <- function(sims2, bait_nam, gini_gene_rf, INFO_TARGENE_FILE, gini_contig_rf){
+    print(system.time(distr_rdom_LD <- mclapply(
+        seq(length(sims2)), function(x) get_null_draw(
+            x, 
+            Gns=sims2[[x]]$Gns, PMTs=sims2[[x]]$PMTs,
+            bait_names=bait_nam, n_info=length(gini_gene_rf),
+            info_TargGene_fil=INFO_TARGENE_FILE,
+            kept=length(gini_contig_rf), verbose=F), 
+        mc.cores=8)))
+    distr_rdom_LD_mat <- sapply(seq(length(distr_rdom_LD)), function(x) distr_rdom_LD[[x]])
+    rownames(distr_rdom_LD_mat) <- 1:length(bait_nam) ; colnames(distr_rdom_LD_mat) <- paste("Simul_", 1:1000, sep="")
+    return(distr_rdom_LD_mat)
+}
+
+get_count_top <- function(rked_gns, top=50, categ)
+{
+    res <- rep(0, length(categ))
+    names(res) <- categ
+    rked_gns <- rked_gns[1:top]
+    g <- sapply(rked_gns, get_elements)
+    tab <- table(g)
+    ind <- match(names(tab), names(res))
+    res[ind] <- tab
+    return(res)
+}
 
 addZeroImpGenes <- function(xx){
 
@@ -368,6 +438,69 @@ get_1rdom_bait_per_gn <- function (gene_names){
 
 grep_first <- function(patt, vec, value=T){
     return(grep(paste("^", patt, sep=""), vec, value=value)[1])
+}
+
+draw_rk_distrib <- function(sum_ranks, distr_rdom_rk, distr_rdom_LD_rk)
+{
+    pdf("Distrib-rk_rdom.pdf")
+	for(i in sum_ranks$grp){
+        obs <- sum_ranks$rnk[which(sum_ranks$grp==i)]
+        rg <- range(c(obs, distr_rdom_rk[i,]))
+        p_val <- get_pval(obs, distr_rdom_rk[i,], two_sided=TWOSIDED)
+        tit <- paste(i, ifelse(TWOSIDED, " (two sided", " (one sided"), " P= ", p_val, ")", sep="")
+		hist(distr_rdom_rk[i,], main=tit, breaks=50, xlab="Sum of the ranks", cex.main=0.9, xlim=c(rg[1], rg[2]))
+		srtd <- sort(distr_rdom_rk[i,])
+		abline(v = obs,col="red",lwd=3)
+	}
+	dev.off()
+    
+	pdf("Distrib-rk_rdom-LD.pdf")
+	for(i in sum_ranks$grp){
+        obs <- sum_ranks$rnk[which(sum_ranks$grp==i)]
+        rg <- range(c(obs, distr_rdom_LD_rk[i,]))
+        p_val <- get_pval(obs, distr_rdom_LD_rk[i,], two_sided=TWOSIDED)
+        tit <- paste(i, ifelse(TWOSIDED, " (two sided", " (one sided"), " P= ", p_val, ")", sep="")
+		hist(distr_rdom_LD_rk[i,], main=tit, breaks=50, xlab="Sum of the ranks", cex.main=0.9, xlim=c(rg[1], rg[2]))
+		srtd <- sort(distr_rdom_LD_rk[i,])
+		abline(v = obs,col="red",lwd=3)
+	}
+	dev.off()
+
+}
+
+draw_count_distrib <- function(top, categ, obs_count, rdom_count, rdom_LD_count)
+{
+    
+	pdf(paste("Distrib-count", top, "_rdom.pdf", sep=""))
+	for(i in 1:length(obs_count)){
+        obs <- obs_count[i]
+        rg <- range(c(obs, rdom_count[i,]))
+        p_val <- get_pval(obs, rdom_count[i,], two_sided=TWOSIDED)
+        tit <- paste(categ[i], ifelse(TWOSIDED, " (two sided", " (one sided"),
+            " P= ", p_val, ")", sep="")
+        tab <- table(rdom_count[i,])
+		aa <- plot(tab, main=tit, xlab="Counts", cex.main=0.9, xlim=c(rg[1], rg[2]), ylab="Frequency")
+        test <- as.numeric(names(tab))==obs
+        y <- ifelse(T%in%test, tab[test], 0)
+		points(obs, y, col="red",lwd=5)
+	}
+	dev.off()
+    
+	pdf(paste("Distrib-count", top, "_rdom-LD.pdf", sep=""))
+	for(i in 1:length(obs_count)){
+        obs <- obs_count[i]
+        rg <- range(c(obs, rdom_LD_count[i,]))
+        p_val <- get_pval(obs, rdom_LD_count[i,], two_sided=TWOSIDED)
+        tit <- paste(categ[i], ifelse(TWOSIDED, " (two sided", " (one sided"),
+            " P= ", p_val, ")", sep="")
+        tab <- table(rdom_LD_count[i,])
+		aa <- plot(tab, main=tit, xlab="Counts", cex.main=0.9, xlim=c(rg[1], rg[2]), ylab="Frequency")
+        test <- as.numeric(names(tab))==obs
+        y <- ifelse(T%in%test, tab[test], 0)
+		points(obs, y, col="red",lwd=5)
+	}
+	dev.off()
+
 }
 
 ############################################################# 

@@ -167,101 +167,49 @@ source("./functions.R")
 
     print(system.time(distr_rdom_P_Gn_cont_PMT <- unlist(mclapply(1:1000, get_distr_rdom_P_same_contig, bait_nam, Gn=T, PMT=T, INFO_TARGENE_FILE, mc.cores=8))))
     ds_Gn_PMT <- sd(distr_rdom_P_Gn_cont_PMT)
-
+}
         # 4.3) P being same contig new random algo
-    system.time({
+    system.time(
         sims2 <- mclapply(1:1000, function (x)
             get_baits_per_pairs(x, bait_names=bait_nam, P_PMT=P_PMT_cont_PMT_obs, P_Gn=P_Gn_cont_Gn_obs, P_Gn_PMT=P_Gn_cont_PMT_obs, info_TargGene_fil=INFO_TARGENE_FILE, gini_gene_rf=gini_gene_rf, ds_pmt=ds_PMT, ds_gns=ds_Gn, ds_gns_pmt=ds_Gn_PMT, inc=10, inc2=5, inc3=5, verbose=0)
         , mc.cores=8)
-    })
+    )
 
     P_PMTs <- sapply(sims2, function(sol) sol$P_PMT)
     P_Gns <- sapply(sims2, function(sol) sol$P_Gn)
     P_Gns_PMTs <- sapply(sims2, function(sol) sol$PGn_PMT)
-    }
 
-    {
-    pdf("distrib_Proba_sameContig_3.pdf")
-    layout(matrix(1:4, 2,2, byrow=T))
-    rg <- range(c(P_Gn_cont_Gn_obs, distr_rdom_P_Gn_cont_Gn, P_Gns))
-    pval_Gn_cont_Gn_obs <- get_pval(P_Gn_cont_Gn_obs,distr_rdom_P_Gn_cont_Gn, two_sided=T)
-        plot(density(distr_rdom_P_Gn_cont_Gn), xlim=c(rg[1], rg[2]), col="blue", ylim=c(0,700), xlab="P-same contig", main="")
-    pval_Gns <- get_pval(P_Gn_cont_Gn_obs, P_Gns, two_sided=T)
-        par(new=T)
-        plot(density(P_Gns), xlim=c(rg[1], rg[2]), col="red", ylim=c(0,700), xlab="", main=paste("Gns: Prdom=", pval_Gn_cont_Gn_obs, " ; P-new=", pval_Gns, sep=""))
-        abline(v=P_Gn_cont_Gn_obs, col='green')
-    
-    rg <- range(c(P_PMT_cont_PMT_obs, distr_rdom_P_PMT_cont_PMT, P_PMTs))
-    pval_PMT_cont_PMT_obs <- get_pval(P_PMT_cont_PMT_obs, distr_rdom_P_PMT_cont_PMT, two_sided=T)
-        plot(density(distr_rdom_P_PMT_cont_PMT), xlim=c(rg[1], rg[2]), col="blue", ylim=c(0,300), xlab="P-same contig", main="")
-    pval_PMTs <- get_pval(P_PMT_cont_PMT_obs, P_PMTs, two_sided=T)
-        par(new=T)
-        plot(density(P_PMTs), xlim=c(rg[1], rg[2]), col="red", ylim=c(0,300), xlab="", main=paste("PMTs: Prdom=", pval_PMT_cont_PMT_obs, " ; P-new=", pval_PMTs, sep=""))
-        abline(v=P_PMT_cont_PMT_obs, col='green')
+    draw_P_same_contig(P_Gn_cont_Gn_obs,
+        distr_rdom_P_Gn_cont_Gn, P_Gns, P_PMT_cont_PMT_obs, distr_rdom_P_PMT_cont_PMT, P_PMTs, P_Gn_cont_PMT_obs, distr_rdom_P_Gn_cont_PMT, P_Gns_PMTs)
 
-    rg <- range(c(P_Gn_cont_PMT_obs, distr_rdom_P_Gn_cont_PMT, P_Gns_PMTs))
-    pval_Gn_cont_PMT_obs <- get_pval(P_Gn_cont_PMT_obs, distr_rdom_P_Gn_cont_PMT, two_sided=T)
-        plot(density(distr_rdom_P_Gn_cont_PMT), xlim=c(rg[1], rg[2]), col="blue", ylim=c(0,600), xlab="P-same contig", main="")
-    pval_Gns_PMTs <- get_pval(P_Gn_cont_PMT_obs, P_Gns_PMTs, two_sided=T)
-        par(new=T)
-        plot(density(P_Gns_PMTs), xlim=c(rg[1], rg[2]), col="red", ylim=c(0,600), xlab="", main=paste("Gns_PMTs: Prdom=", pval_Gn_cont_PMT_obs, " ; P-new=", pval_Gns_PMTs, sep=""))
-        abline(v=P_Gn_cont_PMT_obs, col='green')
-    dev.off()
-    }
-        # 4.4) compute the expected distribution per gene category
+        # 4.4) compute the expected distribution of ranks per gene category
             # 4.4.1) random drawing (Gns and PMTs distinguished)
 #~    N_bait_alpMat <- count_categ()
-    print(system.time(distr_rdom <- mclapply(
-        1:1000, get_null_draw,
-            Gns=get_rdom_Gn_rk(bait_nam, N_cate_rfGn),
-            PMTs=get_rdom_PMT_rk(bait_nam, N_cate_rfGn),
-            bait_names=bait_nam, n_info=length(gini_gene_rf),
-            info_TargGene_fil=INFO_TARGENE_FILE,
-            kept=length(gini_contig_rf), verbose=F, 
-        mc.cores=8)))
-    distr_rdom_mat <- sapply(seq(length(distr_rdom)), function(x) distr_rdom[[x]])
-    rownames(distr_rdom_mat) <- 1:length(bait_nam) ; colnames(distr_rdom_mat) <- paste("Simul_", 1:1000, sep="") 
-    distr_rdom_rk <- apply(distr_rdom_mat, 2, get_rk_sum, length(gini_contig_rf))
+    distr_rdom_mat <- get_rdom_rk_mat(bait_nam, N_cate_rfGn, gini_gene_rf, INFO_TARGENE_FILE, gini_contig_rf)
 
             # 4.4.2) random_LD drawing (Gns and PMTs distinguished)
-    print(system.time(distr_rdom_LD <- mclapply(
-        seq(length(sims2)), function(x) get_null_draw(
-            x, 
-            Gns=sims2[[x]]$Gns, PMTs=sims2[[x]]$PMTs,
-            bait_names=bait_nam, n_info=length(gini_gene_rf),
-            info_TargGene_fil=INFO_TARGENE_FILE,
-            kept=length(gini_contig_rf), verbose=F), 
-        mc.cores=8)))
-    distr_rdom_LD_mat <- sapply(seq(length(distr_rdom_LD)), function(x) distr_rdom_LD[[x]])
-    rownames(distr_rdom_LD_mat) <- 1:length(bait_nam) ; colnames(distr_rdom_LD_mat) <- paste("Simul_", 1:1000, sep="") 
-    distr_rdom_LD_rk <- apply(distr_rdom_LD_mat, 2, get_rk_sum, length(gini_contig_rf))
+    distr_rdom_LD_mat <- get_rdom_LD_rk_mat(sims2, bait_nam, gini_gene_rf, INFO_TARGENE_FILE, gini_contig_rf)
 
             # 4.4.3) plots
-	pdf("Distrib-rk_rdom.pdf")
-	for(i in sum_ranks$grp){
-        obs <- sum_ranks$rnk[which(sum_ranks$grp==i)]
-        rg <- range(c(obs, distr_rdom_rk[i,]))
-        p_val <- get_pval(obs, distr_rdom_rk[i,], two_sided=TWOSIDED)
-        tit <- paste(i, ifelse(TWOSIDED, " (two sided", " (one sided"), " P= ", p_val, ")", sep="")
-		hist(distr_rdom_rk[i,], main=tit, breaks=50, xlab="Sum of the ranks", cex.main=0.9, xlim=c(rg[1], rg[2]))
-		srtd <- sort(distr_rdom_rk[i,])
-		print(obs)
-		abline(v = obs,col="red",lwd=3)
-	}
-	dev.off()
+    distr_rdom_rk <- apply(distr_rdom_mat, 2, get_rk_sum, length(gini_contig_rf))
+    distr_rdom_LD_rk <- apply(distr_rdom_LD_mat, 2, get_rk_sum, length(gini_contig_rf))
+    draw_rk_distrib(sum_ranks, distr_rdom_rk, distr_rdom_LD_rk)
+
     
-	pdf("Distrib-rk_rdom-LD.pdf")
-	for(i in sum_ranks$grp){
-        obs <- sum_ranks$rnk[which(sum_ranks$grp==i)]
-        rg <- range(c(obs, distr_rdom_LD_rk[i,]))
-        p_val <- get_pval(obs, distr_rdom_LD_rk[i,], two_sided=TWOSIDED)
-        tit <- paste(i, ifelse(TWOSIDED, " (two sided", " (one sided"), " P= ", p_val, ")", sep="")
-		hist(distr_rdom_LD_rk[i,], main=tit, breaks=50, xlab="Sum of the ranks", cex.main=0.9, xlim=c(rg[1], rg[2]))
-		srtd <- sort(distr_rdom_LD_rk[i,])
-		print(obs)
-		abline(v = obs,col="red",lwd=3)
-	}
-	dev.off()
+        # 4.5) draw the expected number of gene per categ in the top x
+    for (i in c(100, 50 , 30))
+    {
+        categ <- sum_ranks[,1]
+        obs_count <- get_count_top(names(gini_contig_rf), top=i, categ)
+        rdom_count <- apply(distr_rdom_mat, 2, get_count_top,
+            top=i, categ)
+        rdom_LD_count <- apply(distr_rdom_LD_mat, 2, get_count_top,
+            top=i, categ)
+        draw_count_distrib(top=i, categ, obs_count, rdom_count, rdom_LD_count)
+    }
+
+
+
 
 
 
