@@ -208,24 +208,25 @@ source("./functions.R")
 
 
 
-#~        # 4.3) compute the expected distribution per gene category
-#~    N_bait_alpMat <- count_categ()
-#~#~    info_Targ <- read.delim(INFO_TARGENE_FILE)
-#~    print(system.time(r0 <- mclapply(1:5000, nullHDraw, df$grp, length(gini_gene_rf), bait_names=bait_nam, info_TargGene=INFO_TARGENE_FILE, mc.cores=8)))
-#~    r <- t(matrix(unlist(r0), ncol = length(levels(df$grp)), byrow = TRUE, dimnames=list(1:5000, levels(df$grp))))
+        # 4.3) compute the expected distribution per gene category
+    N_bait_alpMat <- count_categ()
+#~    info_Targ <- read.delim(INFO_TARGENE_FILE)
+    print(system.time(r0 <- mclapply(1:1000, nullHDraw_rdom, df$grp, length(gini_gene_rf), bait_names=bait_nam, info_TargGene=INFO_TARGENE_FILE, N_cate_rfGn=N_cate_rfGn, mc.cores=8)))
     
-#~	pdf("test.pdf")
-#~	for(i in sum_ranks$grp){
-#~        obs <- sum_ranks$rnk[which(sum_ranks$grp==i)]
-#~        rg <- range(c(obs, r[i,]))
-#~        p_val <- get_pval(obs, r[i,], two_sided=TWOSIDED)
-#~        tit <- paste(i, ifelse(TWOSIDED, " (two sided", " (one sided"), " P= ", p_val, ")", sep="")
-#~		hist(r[i,], main=tit, nclass=50, xlab="Sum of the ranks", cex.main=0.9, xlim=c(rg[1], rg[2]))
-#~		srtd <- sort(r[i,])
-#~		print(obs)
-#~		abline(v = obs,col="red",lwd=3)
-#~	}
-#~	dev.off()
+    r <- t(matrix(unlist(r0), ncol = length(levels(df$grp)), byrow = TRUE, dimnames=list(1:1000, levels(df$grp))))
+    
+	pdf("test.pdf")
+	for(i in sum_ranks$grp){
+        obs <- sum_ranks$rnk[which(sum_ranks$grp==i)]
+        rg <- range(c(obs, r[i,]))
+        p_val <- get_pval(obs, r[i,], two_sided=TWOSIDED)
+        tit <- paste(i, ifelse(TWOSIDED, " (two sided", " (one sided"), " P= ", p_val, ")", sep="")
+		hist(r[i,], main=tit, nclass=50, xlab="Sum of the ranks", cex.main=0.9, xlim=c(rg[1], rg[2]))
+		srtd <- sort(r[i,])
+		print(obs)
+		abline(v = obs,col="red",lwd=3)
+	}
+	dev.off()
 
 
 

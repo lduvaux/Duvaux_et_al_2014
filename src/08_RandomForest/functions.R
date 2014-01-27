@@ -282,16 +282,7 @@ get_baits_per_pairs <- function(indic, bait_names, P_PMT, P_Gn, P_Gn_PMT, info_T
     return(ll)
 }
 
-
-
-
-
-
-
-
-
-
-nullHDraw <- function(ite, g, n_info, bait_names, info_TargGene, verbose=F){
+nullHDraw_rdom <- function(ite, g, n_info, bait_names, info_TargGene, N_cate_rfGn, verbose=F, rdom_LD=NA){
 
     PMTs_ind <- grep("^PMT_", bait_names)
     # 1) setup the number of remaining genes before contig selection
@@ -301,11 +292,15 @@ nullHDraw <- function(ite, g, n_info, bait_names, info_TargGene, verbose=F){
     # 2) setup the number of remaining PMTs before contig selection
     PMTs <- bait_names[PMTs_ind]
     rdom_PMTs_rk <- get_rdom_PMT_rk(PMTs, N_cate_rfGn, bait_names)
-
+        
     # 2) keep only a rankable importance for the best bait of non discarded genes only
         # attribute an EQUAL low importance of 0 for all other baits
         # corresponds to step 2.1) in the main script
-    imp[imp<(n+1-n_info)] <- 0   # should stay ~240 genes with some importance
+    imp <- c(rdom_Gns_rk, rdom_PMTs_rk)
+    good <- imp!=0
+    imp[seq(length(imp))] <- rep(0, length(bait_names))
+    imp_gd <- sample(seq(length(n_info), n_info))
+    imp[good] <- imp_gd   # should stay ~240 genes with some importance
     imp <- sort(imp, decreasing=T)  # has to be sorted for the function 'get_BestBaitperContig'
 
     # 3) select best bait per contig
