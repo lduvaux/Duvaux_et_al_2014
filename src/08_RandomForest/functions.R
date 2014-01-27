@@ -50,6 +50,67 @@ get_P_same_contig <- function(noms1, noms2, info_TargGene_fil, verbose=T){
     return(P)
 }
 
+get_distr_rdom_P_same_contig <- function(ite, bait_names, Gn=T, PMT=T, info_TargGene_fil) {
+    PMTs_ind <- grep("^PMT_", bait_names)
+
+    # 1) randomly chose the remaining genes before contig selection
+    if (Gn){
+    Gns <- bait_names[-PMTs_ind]
+    noms_a <- get_rdom_Gn_rk(bait_names, N_cate_rfGn)}
+
+    # 2) randomly chose the remaining PMTs before contig selection
+    if (PMT){
+    PMTs <- bait_names[PMTs_ind]
+    noms_b <- get_rdom_PMT_rk(bait_names, N_cate_rfGn)}
+
+    # 3) compute P
+    if (Gn & PMT)
+        {noms1 <- noms_a ; noms2 <- noms_b }
+    else if (!PMT)
+        {noms1 <- noms_a ; noms2 <- noms_a }
+    else if (!Gn)
+        {noms1 <- noms_b ; noms2 <- noms_b }
+
+    if (ite%%100==0) print(paste(ite, "iterations done"))
+    return(get_P_same_contig(noms1, noms2, info_TargGene_fil, verbose=F))
+}
+
+get_data4plot_same_contig <- function(gini_gene_rf, INFO_TARGENE_FILE, bait_nam)
+{
+            # 4.2.1) gene bait on same contig as another gene bait
+    # best bait per genes, all uninformative genes removed
+    print("##### Compute P Gn same contig other Gn (random drawing)")  
+    Gns_gene_rf <- names(gini_gene_rf)[-grep("^PMT_", names(gini_gene_rf))] 
+  P_Gn_cont_Gn_obs <- as.numeric(get_P_same_contig(Gns_gene_rf, Gns_gene_rf, INFO_TARGENE_FILE))
+  
+    print(system.time(distr_rdom_P_Gn_cont_Gn <- unlist(mclapply(1:1000, get_distr_rdom_P_same_contig, bait_nam, Gn=T, PMT=F, INFO_TARGENE_FILE, mc.cores=8))))
+    ds_Gn <- sd(distr_rdom_P_Gn_cont_Gn)
+
+            # 4.2.2) pmt bait on same contig as another pmt bait
+    print("##### Compute P PMT same contig other PMT (random drawing)")
+    PMTs_gene_rf <- names(gini_gene_rf)[grep("^PMT_", names(gini_gene_rf))] 
+  P_PMT_cont_PMT_obs <- as.numeric(get_P_same_contig(PMTs_gene_rf, PMTs_gene_rf, INFO_TARGENE_FILE))
+
+    print(system.time(distr_rdom_P_PMT_cont_PMT <- unlist(mclapply(1:1000, get_distr_rdom_P_same_contig, bait_nam, Gn=F, PMT=T, INFO_TARGENE_FILE, mc.cores=8))))
+    ds_PMT <- sd(distr_rdom_P_PMT_cont_PMT)
+
+        # 4.2.3) gene bait on same contig as a pmt bait
+    print("##### Compute P Gn same contig other PMT (random drawing)") 
+  P_Gn_cont_PMT_obs <- as.numeric(get_P_same_contig(Gns_gene_rf, PMTs_gene_rf, INFO_TARGENE_FILE))
+
+    print(system.time(distr_rdom_P_Gn_cont_PMT <- unlist(mclapply(1:1000, get_distr_rdom_P_same_contig, bait_nam, Gn=T, PMT=T, INFO_TARGENE_FILE, mc.cores=8))))
+    ds_Gn_PMT <- sd(distr_rdom_P_Gn_cont_PMT)
+
+    # results
+    res <- list(
+            P_Gn_obs=P_Gn_cont_Gn_obs, P_Gn_sim=distr_rdom_P_Gn_cont_Gn, ds_Gn=ds_Gn,
+            P_PMT_obs=P_PMT_cont_PMT_obs, P_PMT_sim=distr_rdom_P_PMT_cont_PMT, ds_PMT=ds_PMT,
+            P_Gn_PMT_obs=P_Gn_cont_PMT_obs, P_Gn_PMT_sim=distr_rdom_P_Gn_cont_PMT, ds_Gn_PMT=ds_Gn_PMT)
+
+    return(res)
+}
+
+
 draw_P_same_contig <- function(P_Gn_cont_Gn_obs, distr_rdom_P_Gn_cont_Gn, P_Gns, P_PMT_cont_PMT_obs, distr_rdom_P_PMT_cont_PMT, P_PMTs, P_Gn_cont_PMT_obs, distr_rdom_P_Gn_cont_PMT, P_Gns_PMTs)
 {
     pdf("distrib_Proba_sameContig_3.pdf")
@@ -78,31 +139,6 @@ draw_P_same_contig <- function(P_Gn_cont_Gn_obs, distr_rdom_P_Gn_cont_Gn, P_Gns,
         plot(density(P_Gns_PMTs), xlim=c(rg[1], rg[2]), col="red", ylim=c(0,600), xlab="", main=paste("Gns_PMTs: Prdom=", pval_Gn_cont_PMT_obs, " ; P-new=", pval_Gns_PMTs, sep=""))
         abline(v=P_Gn_cont_PMT_obs, col='green')
     dev.off()
-}
-
-get_distr_rdom_P_same_contig <- function(ite, bait_names, Gn=T, PMT=T, info_TargGene_fil) {
-    PMTs_ind <- grep("^PMT_", bait_names)
-
-    # 1) randomly chose the remaining genes before contig selection
-    if (Gn){
-    Gns <- bait_names[-PMTs_ind]
-    noms_a <- get_rdom_Gn_rk(bait_names, N_cate_rfGn)}
-
-    # 2) randomly chose the remaining PMTs before contig selection
-    if (PMT){
-    PMTs <- bait_names[PMTs_ind]
-    noms_b <- get_rdom_PMT_rk(bait_names, N_cate_rfGn)}
-
-    # 3) compute P
-    if (Gn & PMT)
-        {noms1 <- noms_a ; noms2 <- noms_b }
-    else if (!PMT)
-        {noms1 <- noms_a ; noms2 <- noms_a }
-    else if (!Gn)
-        {noms1 <- noms_b ; noms2 <- noms_b }
-
-    if (ite%%100==0) print(paste(ite, "iterations done"))
-    return(get_P_same_contig(noms1, noms2, info_TargGene_fil, verbose=F))
 }
 
 get_rdom_PMT_rk <- function(bait_names, N_cate_rfGn)
@@ -297,7 +333,8 @@ get_baits_per_pairs <- function(indic, bait_names, P_PMT, P_Gn, P_Gn_PMT, info_T
     if (verbose%in%1:2) print(test2)
     if (verbose%in%1:2) print(P_Gn_PMT)
     test3 <- get_P_same_contig(Gns, PMTs, info_TargGene_fil, verbose=F)
-    if (verbose%in%1:2) print()
+    if (verbose%in%1:2) print(test3)
+    if (verbose%in%1:2) print(P_Gn_PMT)
 #~    })
     ll <- list(PMTs=PMTs, Gns=Gns, P_PMT=test, P_Gn=test2, PGn_PMT=test3)
     if (indic%%50==0) print(paste(indic, " iterations done")) 

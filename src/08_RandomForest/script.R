@@ -144,34 +144,25 @@ source("./functions.R")
 	print(sum_ranks)
 
         # 4.2) P being same contig
-    {
     nn <- paste(sapply(names(genes), collapse_elements, sep="_", what=1:2, colla="_"), "_", sep="")
     bait_nam <- get_1rdom_bait_per_gn(nn)
-            # 4.2.1) gene bait on same contig as another gene bait
-    # best bait per genes, all uninformative genes removed
-    Gns_gene_rf <- names(gini_gene_rf)[-grep("^PMT_", names(gini_gene_rf))] 
-  P_Gn_cont_Gn_obs <- as.numeric(get_P_same_contig(Gns_gene_rf, Gns_gene_rf, INFO_TARGENE_FILE))
-    
-    print(system.time(distr_rdom_P_Gn_cont_Gn <- unlist(mclapply(1:1000, get_distr_rdom_P_same_contig, bait_nam, Gn=T, PMT=F, INFO_TARGENE_FILE, mc.cores=8))))
-    ds_Gn <- sd(distr_rdom_P_Gn_cont_Gn)
 
-            # 4.2.2) pmt bait on same contig as another pmt bait
-    PMTs_gene_rf <- names(gini_gene_rf)[grep("^PMT_", names(gini_gene_rf))] 
-  P_PMT_cont_PMT_obs <- as.numeric(get_P_same_contig(PMTs_gene_rf, PMTs_gene_rf, INFO_TARGENE_FILE))
+    data4plot_same_cont <- get_data4plot_same_contig(gini_gene_rf, INFO_TARGENE_FILE, bait_nam)
 
-    print(system.time(distr_rdom_P_PMT_cont_PMT <- unlist(mclapply(1:1000, get_distr_rdom_P_same_contig, bait_nam, Gn=F, PMT=T, INFO_TARGENE_FILE, mc.cores=8))))
-    ds_PMT <- sd(distr_rdom_P_PMT_cont_PMT)
+    P_Gn_obs <- data4plot_same_cont$P_Gn_obs
+    P_PMT_obs <- data4plot_same_cont$P_PMT_obs
+    P_Gn_PMT_obs <- data4plot_same_cont$P_Gn_PMT_obs
+    ds_Gn <- data4plot_same_cont$ds_Gn
+    ds_PMT <- data4plot_same_cont$ds_PMT
+    ds_Gn_PMT <- data4plot_same_cont$ds_Gn_PMT
+    distr_rdom_P_Gn_cont_Gn <- data4plot_same_cont$P_Gn_sim
+    distr_rdom_P_PMT_cont_PMT <- data4plot_same_cont$P_PMT_sim
+    distr_rdom_P_Gn_cont_PMT <- data4plot_same_cont$P_Gn_PMT_sim
 
-        # 4.2.3) gene bait on same contig as a pmt bait
-  P_Gn_cont_PMT_obs <- as.numeric(get_P_same_contig(Gns_gene_rf, PMTs_gene_rf, INFO_TARGENE_FILE))
-
-    print(system.time(distr_rdom_P_Gn_cont_PMT <- unlist(mclapply(1:1000, get_distr_rdom_P_same_contig, bait_nam, Gn=T, PMT=T, INFO_TARGENE_FILE, mc.cores=8))))
-    ds_Gn_PMT <- sd(distr_rdom_P_Gn_cont_PMT)
-}
         # 4.3) P being same contig new random algo
     system.time(
         sims2 <- mclapply(1:1000, function (x)
-            get_baits_per_pairs(x, bait_names=bait_nam, P_PMT=P_PMT_cont_PMT_obs, P_Gn=P_Gn_cont_Gn_obs, P_Gn_PMT=P_Gn_cont_PMT_obs, info_TargGene_fil=INFO_TARGENE_FILE, gini_gene_rf=gini_gene_rf, ds_pmt=ds_PMT, ds_gns=ds_Gn, ds_gns_pmt=ds_Gn_PMT, inc=10, inc2=5, inc3=5, verbose=0)
+            get_baits_per_pairs(x, bait_names=bait_nam, P_PMT=P_PMT_obs, P_Gn=P_Gn_obs, P_Gn_PMT=P_Gn_PMT_obs, info_TargGene_fil=INFO_TARGENE_FILE, gini_gene_rf=gini_gene_rf, ds_pmt=ds_PMT, ds_gns=ds_Gn, ds_gns_pmt=ds_Gn_PMT, inc=10, inc2=5, inc3=5, verbose=0)
         , mc.cores=8)
     )
 
@@ -179,20 +170,20 @@ source("./functions.R")
     P_Gns <- sapply(sims2, function(sol) sol$P_Gn)
     P_Gns_PMTs <- sapply(sims2, function(sol) sol$PGn_PMT)
 
-    draw_P_same_contig(P_Gn_cont_Gn_obs,
-        distr_rdom_P_Gn_cont_Gn, P_Gns, P_PMT_cont_PMT_obs, distr_rdom_P_PMT_cont_PMT, P_PMTs, P_Gn_cont_PMT_obs, distr_rdom_P_Gn_cont_PMT, P_Gns_PMTs)
+    draw_P_same_contig(P_Gn_obs,
+        distr_rdom_P_Gn_cont_Gn, P_Gns, P_PMT_obs, distr_rdom_P_PMT_cont_PMT, P_PMTs, P_Gn_PMT_obs, distr_rdom_P_Gn_cont_PMT, P_Gns_PMTs)
 
         # 4.4) compute the expected distribution of ranks per gene category
             # 4.4.1) random drawing (Gns and PMTs distinguished)
 #~    N_bait_alpMat <- count_categ()
-    distr_rdom_mat <- get_rdom_rk_mat(bait_nam, N_cate_rfGn, gini_gene_rf, INFO_TARGENE_FILE, gini_contig_rf)
+    distr_rk_rdom_mat <- get_rdom_rk_mat(bait_nam, N_cate_rfGn, gini_gene_rf, INFO_TARGENE_FILE, gini_contig_rf)
 
             # 4.4.2) random_LD drawing (Gns and PMTs distinguished)
-    distr_rdom_LD_mat <- get_rdom_LD_rk_mat(sims2, bait_nam, gini_gene_rf, INFO_TARGENE_FILE, gini_contig_rf)
+    distr_rk_rdom_LD_mat <- get_rdom_LD_rk_mat(sims2, bait_nam, gini_gene_rf, INFO_TARGENE_FILE, gini_contig_rf)
 
             # 4.4.3) plots
-    distr_rdom_rk <- apply(distr_rdom_mat, 2, get_rk_sum, length(gini_contig_rf))
-    distr_rdom_LD_rk <- apply(distr_rdom_LD_mat, 2, get_rk_sum, length(gini_contig_rf))
+    distr_rdom_rk <- apply(distr_rk_rdom_mat, 2, get_rk_sum, length(gini_contig_rf))
+    distr_rdom_LD_rk <- apply(distr_rk_rdom_LD_mat, 2, get_rk_sum, length(gini_contig_rf))
     draw_rk_distrib(sum_ranks, distr_rdom_rk, distr_rdom_LD_rk)
 
     
@@ -201,9 +192,9 @@ source("./functions.R")
     {
         categ <- sum_ranks[,1]
         obs_count <- get_count_top(names(gini_contig_rf), top=i, categ)
-        rdom_count <- apply(distr_rdom_mat, 2, get_count_top,
+        rdom_count <- apply(distr_rk_rdom_mat, 2, get_count_top,
             top=i, categ)
-        rdom_LD_count <- apply(distr_rdom_LD_mat, 2, get_count_top,
+        rdom_LD_count <- apply(distr_rk_rdom_LD_mat, 2, get_count_top,
             top=i, categ)
         draw_count_distrib(top=i, categ, obs_count, rdom_count, rdom_LD_count)
     }
