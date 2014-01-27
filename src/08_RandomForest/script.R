@@ -182,9 +182,22 @@ source("./functions.R")
     distr_rk_rdom_LD_mat <- get_rdom_LD_rk_mat(sims2, bait_nam, gini_gene_rf, INFO_TARGENE_FILE, gini_contig_rf)
 
             # 4.4.3) plots
+                # 4.4.3.1) for all genes in gini_contig_rf
     distr_rdom_rk <- apply(distr_rk_rdom_mat, 2, get_rk_sum, length(gini_contig_rf))
     distr_rdom_LD_rk <- apply(distr_rk_rdom_LD_mat, 2, get_rk_sum, length(gini_contig_rf))
     draw_rk_distrib(sum_ranks, distr_rdom_rk, distr_rdom_LD_rk)
+
+                # 4.4.3.1) for a subset of genes
+    dat_obs <- rownames(df)
+    for (i in c(30, 50))
+    {
+        sum_ranks0 <- get_rk_sum(dat_obs, i)
+        rownames(sum_ranks0) <- sum_ranks0[,1]
+        distr_rdom_rk0 <- apply(distr_rk_rdom_mat, 2, get_rk_sum, i)
+        distr_rdom_LD_rk0 <- apply(distr_rk_rdom_LD_mat, 2, get_rk_sum, i)
+        draw_rk_distrib(sum_ranks0, distr_rdom_rk0, distr_rdom_LD_rk0)
+    }
+
 
     
         # 4.5) draw the expected number of gene per categ in the top x

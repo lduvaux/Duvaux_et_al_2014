@@ -341,6 +341,35 @@ get_baits_per_pairs <- function(indic, bait_names, P_PMT, P_Gn, P_Gn_PMT, info_T
     return(ll)
 }
 
+get_rdom_rk_mat <- function(bait_nam, N_cate_rfGn, gini_gene_rf, INFO_TARGENE_FILE, gini_contig_rf)
+{
+    print(system.time(distr_rdom <- mclapply(
+        1:1000, get_null_draw,
+            Gns=get_rdom_Gn_rk(bait_nam, N_cate_rfGn),
+            PMTs=get_rdom_PMT_rk(bait_nam, N_cate_rfGn),
+            bait_names=bait_nam, n_info=length(gini_gene_rf),
+            info_TargGene_fil=INFO_TARGENE_FILE,
+            kept=length(gini_contig_rf), verbose=F, 
+        mc.cores=8)))
+    distr_rdom_mat <- sapply(seq(length(distr_rdom)), function(x) distr_rdom[[x]])
+    rownames(distr_rdom_mat) <- 1:length(bait_nam) ; colnames(distr_rdom_mat) <- paste("Simul_", 1:1000, sep="")
+    return(distr_rdom_mat)
+}
+
+get_rdom_LD_rk_mat <- function(sims2, bait_nam, gini_gene_rf, INFO_TARGENE_FILE, gini_contig_rf){
+    print(system.time(distr_rdom_LD <- mclapply(
+        seq(length(sims2)), function(x) get_null_draw(
+            x, 
+            Gns=sims2[[x]]$Gns, PMTs=sims2[[x]]$PMTs,
+            bait_names=bait_nam, n_info=length(gini_gene_rf),
+            info_TargGene_fil=INFO_TARGENE_FILE,
+            kept=length(gini_contig_rf), verbose=F), 
+        mc.cores=8)))
+    distr_rdom_LD_mat <- sapply(seq(length(distr_rdom_LD)), function(x) distr_rdom_LD[[x]])
+    rownames(distr_rdom_LD_mat) <- 1:length(bait_nam) ; colnames(distr_rdom_LD_mat) <- paste("Simul_", 1:1000, sep="")
+    return(distr_rdom_LD_mat)
+}
+
 get_null_draw <- function(ite, Gns, PMTs, bait_names, n_info, info_TargGene_fil, kept, verbose=F)
 # Gns: a list of genes drawn at random or at random accounting for LD
 # PMTs: a list of promoters drawn at random or at random accounting for LD
@@ -387,35 +416,6 @@ get_rk_sum <- function(rked_gns, kept)
     v <- res$rnk
     names(v) <- res$grp
     return(v)
-}
-
-get_rdom_rk_mat <- function(bait_nam, N_cate_rfGn, gini_gene_rf, INFO_TARGENE_FILE, gini_contig_rf)
-{
-    print(system.time(distr_rdom <- mclapply(
-        1:1000, get_null_draw,
-            Gns=get_rdom_Gn_rk(bait_nam, N_cate_rfGn),
-            PMTs=get_rdom_PMT_rk(bait_nam, N_cate_rfGn),
-            bait_names=bait_nam, n_info=length(gini_gene_rf),
-            info_TargGene_fil=INFO_TARGENE_FILE,
-            kept=length(gini_contig_rf), verbose=F, 
-        mc.cores=8)))
-    distr_rdom_mat <- sapply(seq(length(distr_rdom)), function(x) distr_rdom[[x]])
-    rownames(distr_rdom_mat) <- 1:length(bait_nam) ; colnames(distr_rdom_mat) <- paste("Simul_", 1:1000, sep="")
-    return(distr_rdom_mat)
-}
-
-get_rdom_LD_rk_mat <- function(sims2, bait_nam, gini_gene_rf, INFO_TARGENE_FILE, gini_contig_rf){
-    print(system.time(distr_rdom_LD <- mclapply(
-        seq(length(sims2)), function(x) get_null_draw(
-            x, 
-            Gns=sims2[[x]]$Gns, PMTs=sims2[[x]]$PMTs,
-            bait_names=bait_nam, n_info=length(gini_gene_rf),
-            info_TargGene_fil=INFO_TARGENE_FILE,
-            kept=length(gini_contig_rf), verbose=F), 
-        mc.cores=8)))
-    distr_rdom_LD_mat <- sapply(seq(length(distr_rdom_LD)), function(x) distr_rdom_LD[[x]])
-    rownames(distr_rdom_LD_mat) <- 1:length(bait_nam) ; colnames(distr_rdom_LD_mat) <- paste("Simul_", 1:1000, sep="")
-    return(distr_rdom_LD_mat)
 }
 
 get_count_top <- function(rked_gns, top=50, categ)
