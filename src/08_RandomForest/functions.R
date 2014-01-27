@@ -56,14 +56,12 @@ get_distr_rdom_P_same_contig <- function(ite, bait_names, Gn=T, PMT=T, info_Targ
     # 1) randomly chose the remaining genes before contig selection
     if (Gn){
     Gns <- bait_names[-PMTs_ind]
-    rdom_Gns_rk <- get_rdom_Gn_rk(Gns, N_cate_rfGn, bait_names)
-    noms_a <- names(rdom_Gns_rk[rdom_Gns_rk!=0])}
+    noms_a <- get_rdom_Gn_rk(bait_names, N_cate_rfGn)}
 
     # 2) randomly chose the remaining PMTs before contig selection
     if (PMT){
     PMTs <- bait_names[PMTs_ind]
-    rdom_PMTs_rk <- get_rdom_PMT_rk(PMTs, N_cate_rfGn, bait_names)
-    noms_b <- names(rdom_PMTs_rk[rdom_PMTs_rk!=0])}
+    noms_b <- get_rdom_PMT_rk(bait_names, N_cate_rfGn)}
 
     # 3) compute P
     if (Gn & PMT)
@@ -77,32 +75,26 @@ get_distr_rdom_P_same_contig <- function(ite, bait_names, Gn=T, PMT=T, info_Targ
     return(get_P_same_contig(noms1, noms2, info_TargGene_fil, verbose=F))
 }
 
-get_rdom_PMT_rk <- function(pmts, N_cate_rfGn, bait_names){
-    # 1) set up global and informative set of PMTs
-    N_pmts <- length(pmts)    # the number of informative PMTs from the 'best baits per gene' data set
+get_rdom_PMT_rk <- function(bait_names, N_cate_rfGn)
+# bait_names: set of bait representing all genes (1 bait per gene)
+# N_cate_rfGn: count of bait per category at step 2.3
+{
+    ind <- grep("^PMT_", bait_names)
+    pmts <- bait_names[ind]
     N_inf_pmts <- as.numeric(N_cate_rfGn["PMT"])
-
-    # 2) set up importance vector
-    imp <- sample(1:N_pmts, N_pmts)
-    names(imp) <- pmts
-    
-    imp[imp<(N_pmts+1-N_inf_pmts)] <- 0   # should stay ~120 genes with some importance
-    imp <- sort(imp, decreasing=T)  # has to be sorted for the function 'get_BestBaitperContig'
-    return(imp)
+    res <- sample(pmts, N_inf_pmts)
+    return(res)
 }
 
-get_rdom_Gn_rk <- function(gns, N_cate_rfGn, bait_names){
-    # 1) set up global and informative set of genes
-    N_gns <- length(gns)    # the number of informative genes from the 'best baits per gene' data set (step 2.3)
+get_rdom_Gn_rk <- function(bait_names, N_cate_rfGn)
+# bait_names: set of bait representing all genes (1 bait per gene)
+# N_cate_rfGn: count of bait per category at step 2.3
+{
+    ind <- grep("^PMT_", bait_names)
+    gns <- bait_names[-ind]
     N_inf_gns <- sum(N_cate_rfGn) - as.numeric(N_cate_rfGn["PMT"])
-
-    # 2) set up importance vector
-    imp <- sample(1:N_gns, N_gns)
-    names(imp) <- gns
-    
-    imp[imp<(N_gns+1-N_inf_gns)] <- 0   # should stay ~120 genes with some importance
-    imp <- sort(imp, decreasing=T)  # has to be sorted for the function 'get_BestBaitperContig'
-    return(imp)
+    res <- sample(gns, N_inf_gns)
+    return(res)
 }
 
 get_baits_per_pairs <- function(indic, bait_names, P_PMT, P_Gn, P_Gn_PMT, info_TargGene_fil, gini_gene_rf, ds_pmt, ds_gns, ds_gns_pmt, verbose=2, inc=10, inc2=5, inc3=5, coef_sd1=2, coef_sd2=-0.5, coef_sd3=-1)
@@ -282,97 +274,54 @@ get_baits_per_pairs <- function(indic, bait_names, P_PMT, P_Gn, P_Gn_PMT, info_T
     return(ll)
 }
 
-nullHDraw_rdom <- function(ite, g, n_info, bait_names, info_TargGene, N_cate_rfGn, verbose=F){
+get_null_draw <- function(ite, Gns, PMTs, bait_names, n_info, info_TargGene_fil, kept, verbose=F)
+# Gns: a list of genes drawn at random or at random accounting for LD
+# PMTs: a list of promoters drawn at random or at random accounting for LD
+# bait_names: vector bait names representing the set of possible target (only one bait per target). A target can be a Gn or a PMT.
+# n_info: nber of informative baits after step 2.3
+# kept: number of gene to keep in the final ranking correspond to the number of genes shown in the final analysis)
+{
+    # 1) set up the importance 'imp' vector
+    ind <- match(c(Gns, PMTs), bait_names)
+    imp <- rep(0, length(bait_names))
+    names(imp) <- bait_names
+    imp [ind] <- sample(seq(n_info), n_info)   # should stay ~240 genes with some importance
+    imp <- sort(imp, decreasing=T)  # has to be sorted for the function 'get_1baitPerContig'
 
-    PMTs_ind <- grep("^PMT_", bait_names)
-    # 1) setup the number of remaining genes before contig selection
-    Gns <- bait_names[-PMTs_ind]
-    rdom_Gns_rk <- get_rdom_Gn_rk(Gns, N_cate_rfGn, bait_names)
-
-    # 2) setup the number of remaining PMTs before contig selection
-    PMTs <- bait_names[PMTs_ind]
-    rdom_PMTs_rk <- get_rdom_PMT_rk(PMTs, N_cate_rfGn, bait_names)
+    # 2) select best bait per contig
+    imp1 <- imp[imp!=0]
+    if (verbose) cat(imp1, sep="\n", file="importance.txt")
+    if (verbose) cat(names(imp1), sep="\n", file="genes.txt")
         
-    # 3) keep only a rankable importance for the best bait of non discarded genes only
-        # attribute an EQUAL low importance of 0 for all other baits
-        # corresponds to step 2.1) in the main script
-    imp <- c(rdom_Gns_rk, rdom_PMTs_rk)
-    good <- imp!=0
-    imp[seq(length(imp))] <- rep(0, length(bait_names))
-    imp_gd <- sample(seq(length(n_info), n_info))
-    imp[good] <- imp_gd   # should stay ~240 genes with some importance
-    imp <- sort(imp, decreasing=T)  # has to be sorted for the function 'get_BestBaitperContig'
-
-    # 4) select best bait per contig
-    imp1 <- imp[imp!=0]
-    if (verbose) cat(imp1, sep="\n", file="importance.txt")
     all_targ <- sapply(names(imp1), collapse_elements, sep="_", what=1:3, colla="_")
-    
-#~    info_TargGene <- info_TargGene[infoTarg$NewTargetName%in%all_targ,]
-    info_TargGene <- get_info_AllTargGene(info_TargGene, all_targ)
-    
-    if (verbose) cat(names(imp1), sep="\n", file="genes.txt")
+    info_TargGene <- get_info_AllTargGene(info_TargGene_fil, all_targ)
+
     bestBait_PerContig <- as.character(get_1baitPerContig(info_TargGene, imp1, verbose=F))
     if (verbose) print(bestBait_PerContig)
     ind <- PrePro_findIndex(bestBait_PerContig, names(imp))
-    
-    # 5) keep only a rankable importance for the best bait best bait per contig
-        # attribute an EQUAL low importance of 0 for all other baits
-        # corresponds to step 3.1) in the main script
-    imp[-ind] <- 0
 
-    # 6) compute sum of ranks per grp
-    df_fc <- data.frame(rnk = rank(imp), grp = g)
-    res <- aggregate(rnk ~ grp,df_fc,sum)
+    # 3) keep only a rankable importance for the best bait best bait per contig
+        # attribute an EQUAL low importance of 0 for all other baits (step 3.1 in the main script)
+    imp[-ind] <- 0
+        # keep only the 'kept' first loci
+    bad <- order(imp, decreasing=T)[(kept+1):length(bait_names)]
+    imp[bad] <- 0
+    if (ite%%100==0) print(paste(ite, "iterations done"))
+    return(names(sort(imp, decreasing=T)))
+}
+
+get_rk_sum <- function(rked_gns, kept)
+{
+    g <- sapply(rked_gns, get_elements)
+    imp <- rep(0, length(rked_gns))
+    imp[1:kept] <- kept:1
+    df_fc <- data.frame(grp = g, rnk = rank(imp))
+    res <- aggregate(rnk ~ grp, df_fc, sum)
     v <- res$rnk
     names(v) <- res$grp
-    
-    if (ite%%100==0) print(paste(ite, "iterations done"))
     return(v)
 }
 
-nullHDraw_rdom_LD <- function(sim_rdom_LD, g, n_info, bait_names, info_TargGene, N_cate_rfGn, verbose=F, rdom_LD=NA){
-
-
-
-
-    # 2) keep only a rankable importance for the best bait of non discarded genes only
-        # attribute an EQUAL low importance of 0 for all other baits
-        # corresponds to step 2.1) in the main script
-    imp <- c(rdom_Gns_rk, rdom_PMTs_rk)
-    good <- imp!=0
-    imp[seq(length(imp))] <- rep(0, length(bait_names))
-    imp_gd <- sample(seq(length(n_info), n_info))
-    imp[good] <- imp_gd   # should stay ~240 genes with some importance
-    imp <- sort(imp, decreasing=T)  # has to be sorted for the function 'get_BestBaitperContig'
-
-    # 3) select best bait per contig
-    imp1 <- imp[imp!=0]
-    if (verbose) cat(imp1, sep="\n", file="importance.txt")
-    all_targ <- sapply(names(imp1), collapse_elements, sep="_", what=1:3, colla="_")
-    
-#~    info_TargGene <- info_TargGene[infoTarg$NewTargetName%in%all_targ,]
-    info_TargGene <- get_info_AllTargGene(info_TargGene, all_targ)
-    
-    if (verbose) cat(names(imp1), sep="\n", file="genes.txt")
-    bestBait_PerContig <- as.character(get_1baitPerContig(info_TargGene, imp1, verbose=F))
-    if (verbose) print(bestBait_PerContig)
-    ind <- PrePro_findIndex(bestBait_PerContig, names(imp))
-    
-    # 4) keep only a rankable importance for the best bait best bait per contig
-        # attribute an EQUAL low importance of 0 for all other baits
-        # corresponds to step 3.1) in the main script
-    imp[-ind] <- 0
-
-    # 5) compute sum of ranks per grp
-    df_fc <- data.frame(rnk = rank(imp), grp = g)
-    res <- aggregate(rnk ~ grp,df_fc,sum)
-    v <- res$rnk
-    names(v) <- res$grp
-    
-    if (ite%%100==0) print(paste(ite, "iterations done"))
-    return(v)
-}
 
 addZeroImpGenes <- function(xx){
 

@@ -144,6 +144,7 @@ source("./functions.R")
 	print(sum_ranks)
 
         # 4.2) P being same contig
+    {
     nn <- paste(sapply(names(genes), collapse_elements, sep="_", what=1:2, colla="_"), "_", sep="")
     bait_nam <- get_1rdom_bait_per_gn(nn)
             # 4.2.1) gene bait on same contig as another gene bait
@@ -177,7 +178,9 @@ source("./functions.R")
     P_PMTs <- sapply(sims2, function(sol) sol$P_PMT)
     P_Gns <- sapply(sims2, function(sol) sol$P_Gn)
     P_Gns_PMTs <- sapply(sims2, function(sol) sol$PGn_PMT)
+    }
 
+    {
     pdf("distrib_Proba_sameContig_3.pdf")
     layout(matrix(1:4, 2,2, byrow=T))
     rg <- range(c(P_Gn_cont_Gn_obs, distr_rdom_P_Gn_cont_Gn, P_Gns))
@@ -204,28 +207,61 @@ source("./functions.R")
         plot(density(P_Gns_PMTs), xlim=c(rg[1], rg[2]), col="red", ylim=c(0,600), xlab="", main=paste("Gns_PMTs: Prdom=", pval_Gn_cont_PMT_obs, " ; P-new=", pval_Gns_PMTs, sep=""))
         abline(v=P_Gn_cont_PMT_obs, col='green')
     dev.off()
+    }
+        # 4.4) compute the expected distribution per gene category
+            # 4.4.1) random drawing (Gns and PMTs distinguished)
+#~    N_bait_alpMat <- count_categ()
+    print(system.time(distr_rdom <- mclapply(
+        1:1000, get_null_draw,
+            Gns=get_rdom_Gn_rk(bait_nam, N_cate_rfGn),
+            PMTs=get_rdom_PMT_rk(bait_nam, N_cate_rfGn),
+            bait_names=bait_nam, n_info=length(gini_gene_rf),
+            info_TargGene_fil=INFO_TARGENE_FILE,
+            kept=length(gini_contig_rf), verbose=F, 
+        mc.cores=8)))
+    distr_rdom_mat <- sapply(seq(length(distr_rdom)), function(x) distr_rdom[[x]])
+    rownames(distr_rdom_mat) <- 1:length(bait_nam) ; colnames(distr_rdom_mat) <- paste("Simul_", 1:1000, sep="") 
+    distr_rdom_rk <- apply(distr_rdom_mat, 2, get_rk_sum, length(gini_contig_rf))
 
-        # 4.3) compute the expected distribution per gene category
-    N_bait_alpMat <- count_categ()
-#~    info_Targ <- read.delim(INFO_TARGENE_FILE)
-    print(system.time(r0 <- mclapply(1:1000, nullHDraw_rdom, df$grp, length(gini_gene_rf), bait_names=bait_nam, info_TargGene=INFO_TARGENE_FILE, N_cate_rfGn=N_cate_rfGn, mc.cores=8)))
-    r <- t(matrix(unlist(r0), ncol = length(levels(df$grp)), byrow = TRUE, dimnames=list(1:1000, levels(df$grp))))
-    
-	pdf("test.pdf")
+            # 4.4.2) random_LD drawing (Gns and PMTs distinguished)
+    print(system.time(distr_rdom_LD <- mclapply(
+        seq(length(sims2)), function(x) get_null_draw(
+            x, 
+            Gns=sims2[[x]]$Gns, PMTs=sims2[[x]]$PMTs,
+            bait_names=bait_nam, n_info=length(gini_gene_rf),
+            info_TargGene_fil=INFO_TARGENE_FILE,
+            kept=length(gini_contig_rf), verbose=F), 
+        mc.cores=8)))
+    distr_rdom_LD_mat <- sapply(seq(length(distr_rdom_LD)), function(x) distr_rdom_LD[[x]])
+    rownames(distr_rdom_LD_mat) <- 1:length(bait_nam) ; colnames(distr_rdom_LD_mat) <- paste("Simul_", 1:1000, sep="") 
+    distr_rdom_LD_rk <- apply(distr_rdom_LD_mat, 2, get_rk_sum, length(gini_contig_rf))
+
+            # 4.4.3) plots
+	pdf("Distrib-rk_rdom.pdf")
 	for(i in sum_ranks$grp){
         obs <- sum_ranks$rnk[which(sum_ranks$grp==i)]
-        rg <- range(c(obs, r[i,]))
-        p_val <- get_pval(obs, r[i,], two_sided=TWOSIDED)
+        rg <- range(c(obs, distr_rdom_rk[i,]))
+        p_val <- get_pval(obs, distr_rdom_rk[i,], two_sided=TWOSIDED)
         tit <- paste(i, ifelse(TWOSIDED, " (two sided", " (one sided"), " P= ", p_val, ")", sep="")
-		hist(r[i,], main=tit, nclass=50, xlab="Sum of the ranks", cex.main=0.9, xlim=c(rg[1], rg[2]))
-		srtd <- sort(r[i,])
+		hist(distr_rdom_rk[i,], main=tit, breaks=50, xlab="Sum of the ranks", cex.main=0.9, xlim=c(rg[1], rg[2]))
+		srtd <- sort(distr_rdom_rk[i,])
 		print(obs)
 		abline(v = obs,col="red",lwd=3)
 	}
 	dev.off()
-
-
-
+    
+	pdf("Distrib-rk_rdom-LD.pdf")
+	for(i in sum_ranks$grp){
+        obs <- sum_ranks$rnk[which(sum_ranks$grp==i)]
+        rg <- range(c(obs, distr_rdom_LD_rk[i,]))
+        p_val <- get_pval(obs, distr_rdom_LD_rk[i,], two_sided=TWOSIDED)
+        tit <- paste(i, ifelse(TWOSIDED, " (two sided", " (one sided"), " P= ", p_val, ")", sep="")
+		hist(distr_rdom_LD_rk[i,], main=tit, breaks=50, xlab="Sum of the ranks", cex.main=0.9, xlim=c(rg[1], rg[2]))
+		srtd <- sort(distr_rdom_LD_rk[i,])
+		print(obs)
+		abline(v = obs,col="red",lwd=3)
+	}
+	dev.off()
 
 
 

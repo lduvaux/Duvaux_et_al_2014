@@ -204,15 +204,14 @@ get_BestBaitperContig <- function(contig, infoTargGene, gini_gene_rf, verb=F)
 {
     if (verb) print(contig)
     tab <- subset(infoTargGene, contigV2==contig)
+    if (ncol(tab)==0) stop("tab in 'get_BestBaitperContig' has 0 row")
 	if (nrow(tab)>1) {
 		baits <- tab$NewTargetName
 		ind <- sapply(baits, grep_bait, names(gini_gene_rf))
 		if (!is.integer(ind) | length(ind) != length(baits)) stop("Indexing problem")
-#		best <- baits[which.min(ind)]
 		best <- names(gini_gene_rf)[min(ind)]
 		}
 	else {
-#~		ind <- grep(paste("^", tab$NewTargetName, "_", sep=""), names(gini_gene_rf))
 		ind <- grep_bait(tab$NewTargetName, names(gini_gene_rf))
 		if (!is.integer(ind)) stop("Indexing problem")
 		best <- names(gini_gene_rf)[ind]}
