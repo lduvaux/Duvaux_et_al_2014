@@ -205,14 +205,10 @@ source("./functions.R")
         abline(v=P_Gn_cont_PMT_obs, col='green')
     dev.off()
 
-
-
-
         # 4.3) compute the expected distribution per gene category
     N_bait_alpMat <- count_categ()
 #~    info_Targ <- read.delim(INFO_TARGENE_FILE)
     print(system.time(r0 <- mclapply(1:1000, nullHDraw_rdom, df$grp, length(gini_gene_rf), bait_names=bait_nam, info_TargGene=INFO_TARGENE_FILE, N_cate_rfGn=N_cate_rfGn, mc.cores=8)))
-    
     r <- t(matrix(unlist(r0), ncol = length(levels(df$grp)), byrow = TRUE, dimnames=list(1:1000, levels(df$grp))))
     
 	pdf("test.pdf")
