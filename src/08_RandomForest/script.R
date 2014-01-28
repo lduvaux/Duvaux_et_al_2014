@@ -12,7 +12,7 @@ source("../utils/randomForest_helperFuns.R")
 source("./params.R")
 source("./functions.R")
 
-main <- function(argv){
+#~main <- function(argv){
 
 	load(PREVIOUS_DATA)
 
@@ -250,18 +250,19 @@ main <- function(argv){
 #~	labells[seq(1, length(tab_barp), by=2)] <-  colnames(tab_barp)
 #~	text(0.5+barp, par("usr")[3], labels = labells, srt = 45, adj = c(1.1,1.1), xpd = TRUE, cex=1.4, font=2)
 #~	dev.off()
-	
+
+    argv <- commandArgs(TRUE)[1]
 	outFileName <- argv[1]
     ver(sprintf("Saving data to %s",outFileName))
     save(contig_rf,file=outFileName)
-}
+#~}
 
 
-argv <- commandArgs(TRUE)[1]
-if(DEBUG)
-	traceback(main(argv));
-if(!DEBUG)
-	main(argv);
+
+#~if(DEBUG)
+#~	traceback(main(argv));
+#~if(!DEBUG)
+#~	main(argv);
 
 
 
