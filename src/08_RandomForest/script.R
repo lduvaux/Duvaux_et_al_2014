@@ -186,7 +186,7 @@ source("./functions.R")
                 # 4.4.3.1) length(gini_contig_rf) genes with importance and all genes used for th esum of ranks
     distr_rdom_rk <- apply(distr_rk_rdom_mat, 2, get_rk_sum, n_imp=final_nber, kept=length(genes), categ)
     distr_rdom_LD_rk <- apply(distr_rk_rdom_LD_mat, 2, get_rk_sum, n_imp=final_nber, kept=length(genes), categ)
-    draw_rk_distrib(sum_ranks, distr_rdom_rk, distr_rdom_LD_rk, final_nber)
+    draw_rk_distrib(sum_ranks, distr_rdom_rk, distr_rdom_LD_rk, final_nber, length(genes))
 
                 # 4.4.3.1) for a subset of genes
     dat_obs <- rownames(df)
@@ -204,18 +204,14 @@ source("./functions.R")
         distr_rdom_LD_rk0 <- apply(distr_rk_rdom_LD_mat, 2, get_rk_sum,
             n_imp=i, kept=i, categ)
         # plots
-        draw_rk_distrib(sum_ranks0, distr_rdom_rk0, distr_rdom_LD_rk0, i)
+        draw_rk_distrib(sum_ranks0, distr_rdom_rk0, distr_rdom_LD_rk0, i, i)
         print("Done")
     }
-
-
-
-
-
     
         # 4.5) draw the expected number of gene per categ in the top x
-    for (i in c(100, 50 , 30))
+    for (i in c(30, 50, final_nber))
     {
+        print(paste("Cunt baits par category over the top ", i, " baits", sep=""))
         categ <- sum_ranks[,1]
         obs_count <- get_count_top(names(gini_contig_rf), top=i, categ)
         rdom_count <- apply(distr_rk_rdom_mat, 2, get_count_top,

@@ -490,9 +490,9 @@ grep_first <- function(patt, vec, value=T){
     return(grep(paste("^", patt, sep=""), vec, value=value)[1])
 }
 
-draw_rk_distrib <- function(sum_ranks, distr_rdom_rk, distr_rdom_LD_rk, kept)
+draw_rk_distrib <- function(sum_ranks, distr_rdom_rk, distr_rdom_LD_rk, n_imp, kept)
 {
-    pdf(paste("Distrib-rk_rdom_", kept, ".pdf", sep=""))
+    pdf(paste("Distrib-rk_rdom_", n_imp, "_", kept, ".pdf", sep=""))
 	for(i in sum_ranks$grp){
         obs <- sum_ranks$rnk[which(sum_ranks$grp==i)]
         rg <- range(c(obs, distr_rdom_rk[i,]))
@@ -504,7 +504,7 @@ draw_rk_distrib <- function(sum_ranks, distr_rdom_rk, distr_rdom_LD_rk, kept)
 	}
 	dev.off()
     
-	pdf(paste("Distrib-rk_rdom-LD_", kept, ".pdf"))
+	pdf(paste("Distrib-rk_rdom-LD_", n_imp, "_",  kept, ".pdf"))
 	for(i in sum_ranks$grp){
         obs <- sum_ranks$rnk[which(sum_ranks$grp==i)]
         rg <- range(c(obs, distr_rdom_LD_rk[i,]))
