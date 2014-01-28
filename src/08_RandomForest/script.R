@@ -138,10 +138,11 @@ source("./functions.R")
         # 4.1) observed sum of ranks
 	genes <- addZeroImpGenes(gini_contig_rf)
     group <- sapply(names(genes), get_elements)
-	df <- data.frame(grp = group, rnk = rank(genes))
-	sum_ranks <- aggregate(rnk ~ grp, df, sum)
-    rownames(sum_ranks) <- sum_ranks[,1]
-	print(sum_ranks)
+    categ <- sort(unique(group))
+    final_nber <- length(gini_contig_rf)
+    sum_ranks <- get_rk_sum(names(genes), n_imp=final_nber, kept=length(genes), categ)
+    sum_ranks <- data.frame(grp=categ, rnk=sum_ranks)
+    rownames(sum_ranks) <- categ
 
         # 4.2) P being same contig
     nn <- paste(sapply(names(genes), collapse_elements, sep="_", what=1:2, colla="_"), "_", sep="")
@@ -182,21 +183,33 @@ source("./functions.R")
     distr_rk_rdom_LD_mat <- get_rdom_LD_rk_mat(sims2, bait_nam, gini_gene_rf, INFO_TARGENE_FILE, gini_contig_rf)
 
             # 4.4.3) plots
-                # 4.4.3.1) for all genes in gini_contig_rf
-    distr_rdom_rk <- apply(distr_rk_rdom_mat, 2, get_rk_sum, length(gini_contig_rf))
-    distr_rdom_LD_rk <- apply(distr_rk_rdom_LD_mat, 2, get_rk_sum, length(gini_contig_rf))
-    draw_rk_distrib(sum_ranks, distr_rdom_rk, distr_rdom_LD_rk)
+                # 4.4.3.1) length(gini_contig_rf) genes with importance and all genes used for th esum of ranks
+    distr_rdom_rk <- apply(distr_rk_rdom_mat, 2, get_rk_sum, n_imp=final_nber, kept=length(genes), categ)
+    distr_rdom_LD_rk <- apply(distr_rk_rdom_LD_mat, 2, get_rk_sum, n_imp=final_nber, kept=length(genes), categ)
+    draw_rk_distrib(sum_ranks, distr_rdom_rk, distr_rdom_LD_rk, final_nber)
 
                 # 4.4.3.1) for a subset of genes
     dat_obs <- rownames(df)
-    for (i in c(30, 50))
+    for (i in c(30, 50, final_nber))
     {
-        sum_ranks0 <- get_rk_sum(dat_obs, i)
-        rownames(sum_ranks0) <- sum_ranks0[,1]
-        distr_rdom_rk0 <- apply(distr_rk_rdom_mat, 2, get_rk_sum, i)
-        distr_rdom_LD_rk0 <- apply(distr_rk_rdom_LD_mat, 2, get_rk_sum, i)
-        draw_rk_distrib(sum_ranks0, distr_rdom_rk0, distr_rdom_LD_rk0)
+        print(paste("Sum of ranks over ", i, " baits (", i, " baits ranked from ", i, " (best) to 1 (less good))", sep=""))
+        # data obs
+        sum_ranks0 <- get_rk_sum(dat_obs, n_imp=i, kept=i, categ)
+        sum_ranks0 <- data.frame(grp=categ, rnk=sum_ranks0)
+        rownames(sum_ranks0) <- categ
+
+        # simuls
+        distr_rdom_rk0 <- apply(distr_rk_rdom_mat, 2, get_rk_sum,
+            n_imp=i, kept=i, categ)
+        distr_rdom_LD_rk0 <- apply(distr_rk_rdom_LD_mat, 2, get_rk_sum,
+            n_imp=i, kept=i, categ)
+        # plots
+        draw_rk_distrib(sum_ranks0, distr_rdom_rk0, distr_rdom_LD_rk0, i)
+        print("Done")
     }
+
+
+
 
 
     

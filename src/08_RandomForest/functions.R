@@ -110,7 +110,6 @@ get_data4plot_same_contig <- function(gini_gene_rf, INFO_TARGENE_FILE, bait_nam)
     return(res)
 }
 
-
 draw_P_same_contig <- function(P_Gn_cont_Gn_obs, distr_rdom_P_Gn_cont_Gn, P_Gns, P_PMT_cont_PMT_obs, distr_rdom_P_PMT_cont_PMT, P_PMTs, P_Gn_cont_PMT_obs, distr_rdom_P_Gn_cont_PMT, P_Gns_PMTs)
 {
     pdf("distrib_Proba_sameContig_3.pdf")
@@ -406,15 +405,29 @@ get_null_draw <- function(ite, Gns, PMTs, bait_names, n_info, info_TargGene_fil,
     return(names(sort(imp, decreasing=T)))
 }
 
-get_rk_sum <- function(rked_gns, kept)
+get_rk_sum <- function(rked_gns, n_imp, kept, categ)
+# rked_gns: vector of baits sorted by rank (1 is the most important to distinguish races)
+# n_imp: number of baits with an importance !=0
+# kept: number of baits kept to compute the sum of ranks
 {
-    g <- sapply(rked_gns, get_elements)
-    imp <- rep(0, length(rked_gns))
-    imp[1:kept] <- kept:1
+    if (n_imp>kept) {
+        n_imp <- kept
+        print("Warning n_imp > kept, so reduce to _imp = kept")
+    }
+    # setup result vector
+    v <- rep(0, length(categ))
+    names(v) <- categ
+
+    # compute importance vector
+    imp <- rep(0, kept)
+    imp[1:n_imp] <- n_imp:1
+
+    g <- sapply(rked_gns[1:kept], get_elements)
     df_fc <- data.frame(grp = g, rnk = rank(imp))
     res <- aggregate(rnk ~ grp, df_fc, sum)
-    v <- res$rnk
-    names(v) <- res$grp
+
+    ind <- match(res$grp, names(v))
+    v [ind] <- res$rnk
     return(v)
 }
 
@@ -477,9 +490,9 @@ grep_first <- function(patt, vec, value=T){
     return(grep(paste("^", patt, sep=""), vec, value=value)[1])
 }
 
-draw_rk_distrib <- function(sum_ranks, distr_rdom_rk, distr_rdom_LD_rk)
+draw_rk_distrib <- function(sum_ranks, distr_rdom_rk, distr_rdom_LD_rk, kept)
 {
-    pdf("Distrib-rk_rdom.pdf")
+    pdf(paste("Distrib-rk_rdom_", kept, ".pdf", sep=""))
 	for(i in sum_ranks$grp){
         obs <- sum_ranks$rnk[which(sum_ranks$grp==i)]
         rg <- range(c(obs, distr_rdom_rk[i,]))
@@ -491,7 +504,7 @@ draw_rk_distrib <- function(sum_ranks, distr_rdom_rk, distr_rdom_LD_rk)
 	}
 	dev.off()
     
-	pdf("Distrib-rk_rdom-LD.pdf")
+	pdf(paste("Distrib-rk_rdom-LD_", kept, ".pdf"))
 	for(i in sum_ranks$grp){
         obs <- sum_ranks$rnk[which(sum_ranks$grp==i)]
         rg <- range(c(obs, distr_rdom_LD_rk[i,]))
