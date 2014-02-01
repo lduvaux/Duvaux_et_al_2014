@@ -16,10 +16,22 @@ Usage
 You need `R(>=3.0)`.
 And the folowing packages:
 
-* `TODO`
-* `randomForest`
-* `TODO`
-* optimalCapt (TODO : clone!!)
+install.packages("ape")
+install.packages("epicalc")
+install.packages("foreign")
+install.packages("ggplot2")
+install.packages("lme4")
+install.packages("MASS")
+install.packages("methods")
+install.packages("microbenchmark")
+install.packages("multicore")
+install.packages("MuMIn")
+install.packages("nnet")
+install.packages("optimalCaptureSegmentation")
+install.packages("parallel")
+install.packages("randomForest")
+
+optimalCapt (TODO : clone!!)
 
 
 
