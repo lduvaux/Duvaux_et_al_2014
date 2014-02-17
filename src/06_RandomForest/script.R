@@ -24,7 +24,7 @@ source("./functions.R")
 	pure_indiv <- names(y)
 	ind_pure_indiv <- PrePro_findIndex(pure_indiv, indiv)
 
-    # 1) run a RF by removing all noisy loci
+
         cat("\n")
 	print("###### 1) run a RF by removing all noisy loci ######")
 			# 1.1) extract locus importance from the biggest RF
@@ -66,7 +66,6 @@ source("./functions.R")
 	write.table(tem_tab, TABIMPEXON, quote=T, sep="\t", row.names=F)
 
 
-    # 2) run a RF with one bait per gene
         cat("\n")
 	print("###### 2) run a RF with one bait per gene ######")
 			# 2.1) rm non interesting baits
@@ -95,7 +94,6 @@ source("./functions.R")
 	write.table(tem_tab, TABIMPGn, quote=T, sep="\t", row.names=F)
 
 
-    # 3) run a RF with one bait per contig (either PMT either exon)
         cat("\n")
 	print("###### 3) run a RF with one bait per contig (either PMT either exon) ######")
         # 3.1) rm non interesting baits
@@ -132,8 +130,7 @@ source("./functions.R")
     write.table(tab, ASSIGN_TAB, quote=F, sep="\t", row.names=F)
 
 
-    # 4) check CN for best baits and their contigous baits
-    print("###### 5) check CN for best baits and their contigous baits ######")
+    print("###### 4) check CN for best baits and their contigous baits ######")
 		# 4.1) chose relevant individuals
     good_indiv <- which(as.character(y)==contig_rf$predicted)
     x_prim <- x[good_indiv,]

@@ -3,7 +3,7 @@ GLMs := 12_
 toclean := $(shell ls [0-9][0-9]_*/Makefile |sed s/Makefile//g)
 
 #all : 22_ 24_ 05_ 06_ 11_ 12_ 14_ 15_ 16_ 09_
-all : 22_ 24_ 05_ 11_ 12_ 14_ 15_ 16_ 09_
+all : 22_ 24_ 11_ 12_ 14_ 15_ 16_ 09_
 
 
 clean:
@@ -34,20 +34,23 @@ cleanall: clean
 10_: 03_
 	@$(MAKE) -C 10_GeneralStatsA
 
-09_: 08_
-	@$(MAKE) -C 09_NJFromRF
+09_: 03_ 06_
+	@$(MAKE) -C 09_Count_CNV
 
-07_: 04_
-	@$(MAKE) -C 07_RandomForest
+08_: 06_
+	@$(MAKE) -C 08_GeneFamImptceTest
 
-06_: 03_
-	@$(MAKE) -C 06_Count_CNV
-	
-05_: 03_
-	@$(MAKE) -C 05_NJ
+07_: 06_
+	@$(MAKE) -C 07_NJFromRF
+
+06_: 05_
+	@$(MAKE) -C 06_RandomForest
+
+05_: 03_ 04_
+	@$(MAKE) -C 05_Stability-RF
 
 04_: 03_
-	@$(MAKE) -C 04_Stability-RF
+	@$(MAKE) -C 04_NJ
 
 23_: 03_
 	@$(MAKE) -C 23_TargetAndBaitCount

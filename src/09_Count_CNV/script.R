@@ -1,5 +1,4 @@
 #!/bin/Rscript
-library(ape)
 
 source("../utils/functions.R")
 source("../utils/getter_functions.R")
@@ -9,14 +8,9 @@ source("../utils/randomForest_helperFuns.R")
 source("params.R")
 source("./functions.R")
 
-
-#~ load("./03_OutputMatrix/result_prosegment_fit.Rdata")
-
-#~ main_NJ <- function(outpdf, indiv_details, raw_data_file, col_lib_raw, racine, lane=F, method){
-
 main <- function(argv){
 	load(PREVIOUS_DATA)
-	print(ls())
+#~	print(ls())
 
     # 1) load data and colors
         # 1.1) reads count
