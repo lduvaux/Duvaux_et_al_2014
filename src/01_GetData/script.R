@@ -67,9 +67,8 @@ main <- function(argv){
 	vrunID <- paste(run_date, lane, mach_run_nb, sep="_")
 	runID <- sort(unique(vrunID))
 
-		# 0.2.4)  set up ref vectors (median!!! of 15 individuals) and graph parameters
-	vref0 <- sapply(REF, function (x) grep(paste("^", x,"$", sep=""), nbtested))	# ID of ref individuals
-	x <- sapply(1:nrow(tested_tab), function(x) median(tested_tab[x,vref0]))	# vetor of ref data
+		# 0.2.4)  set up ref vectors (median of the REF individuals) and graph parameters
+	x <- sapply(1:nrow(tested_tab), function(x) median(tested_tab[x,CTRL_GUYS]))	# vector of ref data
 
 		# 0.2.5) save data
 	tested_tab_raw <- tested_tab

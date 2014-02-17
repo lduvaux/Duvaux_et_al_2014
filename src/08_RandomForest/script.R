@@ -1,5 +1,5 @@
 #!/bin/Rscript
-
+rm(list=ls())
 library(ape)
 library(randomForest)
 library(parallel)
@@ -254,7 +254,7 @@ source("./functions.R")
     argv <- commandArgs(TRUE)[1]
 	outFileName <- argv[1]
     ver(sprintf("Saving data to %s",outFileName))
-    save(contig_rf,file=outFileName)
+    save(contig_rf, file=outFileName)
 #~}
 
 

@@ -13,11 +13,11 @@ main <- function(argv){
     data_mat <- PrePro_fetchRawDataMat(raw_data_file, BAD_GUYS); dbgPrint(dim(data_mat))
     lib_name <- PrePro_LibName(indiv_details=INDIV_DETAILS,indiv=colnames(data_mat))
 
-    races <- PrePro_fetchRaces(raw_data_file, CTRL_GUYS, BAD_GUYS)
-    races_uniq <- unique(races)
+#~    races <- PrePro_fetchRaces(raw_data_file, CTRL_GUYS, BAD_GUYS)
+#~    races_uniq <- unique(races)
     
     col_lib <- PrePro_LibColo(lib_name, col_lib_raw)
-    col_races <- PrePro_fetchColours(races, races_uniq, race_colo_raw)
+#~    col_races <- PrePro_fetchColours(races, races_uniq, race_colo_raw)
     
     control_vec <- PrePro_fetchRawCtrl(raw_data_file); dbgPrint(length(control_vec))
     quantiles_ctrl <- PrePro_quantiles_ctrl(control_vec, THRES)

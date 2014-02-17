@@ -2,11 +2,11 @@ source("../utils/getter_functions.R")
 DEBUG <- F
 VERBOSE <- 1
 
-REF <- c(138, 140, 141, 204, 25, 32, 207, 209, 212, 221, "N143", "N328", "N334", "N339", "N341")	# references
+CTRL_GUYS <- c("Medicago_204_T60", "Medicago_32_T72", "Medicago_207_T63", "Medicago_209_T64", "Medicago_212_T67", "Medicago_N334_T76", "Medicago_29_T71", "Medicago_36_T73", "Medicago_205_T61", "Medicago_214_T68")# the third first from lane "light green", the 3 following from the "purple" lane and the last 4 are from the first lane (try to smooth the lane effect amongst several lanes). They are all from Medicago2.
 
 BAD_GUYS <- c("L.ped._82_T47", "L.ped._84_T49", "Medicago_210_T65")
-# CTRL_GUYS <- c("Medicago_138_T57", "Medicago_140_T58", "Medicago_141_T59", "Medicago_204_T60", "Medicago_25_T70", "Medicago_32_T72", "Medicago_207_T63", "Medicago_209_T64", "Medicago_212_T67", "Medicago_221_T69", "Medicago_N143_T74", "Medicago_N328_T75", "Medicago_N334_T76", "Medicago_N339_T77", "Medicago_N341_T78")   # 15 controls
-CTRL_GUYS <- c("Medicago_204_T60", "Medicago_32_T72", "Medicago_207_T63", "Medicago_209_T64", "Medicago_212_T67", "Medicago_N334_T76", "Medicago_29_T71", "Medicago_36_T73", "Medicago_205_T61", "Medicago_214_T68")# the third first from lane "light green", the 3 following from the "purple" lane and the last 4 are from the first lane (try to smooth the lane effect amongst several lanes.)
+
+
 BAD_CYTISUS <- c("Cytisus_115_T1", "Cytisus_127_T2", "Cytisus_128_T3", "Cytisus_16_T7", "Cytisus_76_T10", "Cytisus_77_T11", "Cytisus_79_T12", "Cytisus_80_T13", "Cytisus_87_T14", "Cytisus_89_T15", "Cytisus_90_T16", "Cytisus_92_T17")
 
 

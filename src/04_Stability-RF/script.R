@@ -48,7 +48,7 @@ main <- function(argv){
 		# 1) check results stability
 			# 1.1) stability ~ number of trees (growing 100 RFs of 100 trees each)
 	print(paste("Grow ", N_RF, " supervised RFs of ", NTREES, " trees", sep=""))
-	print(paste("Matrix dimensions for supervised RFs:", paste(dim(tdata_mat), collapse=" ")))
+	print(paste("Matrix dimensions for supervised RFs:", paste(dim(x), collapse=" ")))
 	print(system.time(lrf_superv <- Imptce_Stability_superv(N_RF, NTREES, tdata_mat, races, SAMP_SIZE1)))
 	
 	print(paste("Grow ", N_RF, " unsupervised Rfs of ", NTREES, " trees", sep=""))

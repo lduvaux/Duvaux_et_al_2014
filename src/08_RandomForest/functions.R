@@ -469,9 +469,9 @@ getAllGeneNames <- function(){
 }
 
 get_pval <- function(observ, dist_exp, two_sided=F)
-# if two_sided=F, P is always P(observ>expected)
+# if two_sided=F, P is always P(observ>=expected)
 {
-    pval <- round(1-length(subset(dist_exp, observ>dist_exp))/length(dist_exp), 3)
+    pval <- round(1-length(subset(dist_exp, observ>=dist_exp))/length(dist_exp), 3)
     if (two_sided) {
         pval2 <- abs(1-pval)
         pval <- ifelse(pval<=pval2, pval, pval2)*2}
