@@ -46,9 +46,8 @@ main <- function(argv){
 	col_races <- col_races[ind]
 #identical(names(col_races),colnames(distance_matrix))
 
-
-	tree <- root(nj(distance_matrix), 31)	# Lathyrus
-	#tree <- root(nj(distance_matrix), 21)	# cytisus
+    root <- which(colnames(distance_matrix)==ROOT)
+	tree <- root(nj(distance_matrix), root)
 	tree_edges <- get_tree_edges(tree)
 	edge_colors <- apply_colors_2_edges(tree, tree_edges, lane=F, col_races)
 
@@ -57,7 +56,7 @@ main <- function(argv){
 	par(mar=c(3, 2, 3, 0))
 	plot(tree, show.tip.label = T, tip.color=col_races, edge.color=edge_colors, edge.width=1.5, root.edge=F, cex = 0.75, font=4)
 
-#~	legend("bottomleft", legend=races_uniq, col = race_colo_raw, lwd=2, bg = 'gray92', cex=1)
+	legend("bottomleft", legend=races_uniq, col = race_colo_raw, lwd=2, bg = 'gray92', cex=1)
 
 	title(paste("NJ tree based on random forest proximity matrix\n(", nrow(contig_rf$importance), " informative genes)", sep=""), cex.main=1.5, font=4)
 	dev.off()
@@ -65,13 +64,13 @@ main <- function(argv){
 	outFileName <- argv[1]
     ver(sprintf("Saving *DUMMY* data to %s",outFileName))
     dummy <- numeric()
-    save(dummy,file=outFileName)
+    save(dummy, file=outFileName)
 
-	
 }
 
 
 argv <- commandArgs(TRUE)[1]
+print(argv)
 if(DEBUG)
 	traceback(main(argv));
 if(!DEBUG)
