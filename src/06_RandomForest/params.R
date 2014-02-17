@@ -7,6 +7,11 @@ RAW_DATA <- "../01_GetData.Rdata"
 NTREES <- 5000
 
 # outputs
+    # assignment
+TRAIN_SET_VOTES <- "./Res_RF_training_set_votes.txt"
+TEST_SET_VOTES <- "./Res_RF_test_set_votes.txt"
+
+    # importance
 TAB50EXON <- "./Res_Tab_best50_exons.csv"
 TABIMPEXON <- "./Res_RF_Imptce_exons.csv"
 TAB20EXON <- "./Res_Tab_best20_genes.csv"

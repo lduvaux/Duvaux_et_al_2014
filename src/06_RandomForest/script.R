@@ -107,6 +107,12 @@ source("./functions.R")
 	new_xtest3 <- xtest[,PrePro_findIndex(colnames(new_x3), colnames(xtest))]
     print(sprintf("Growing random forest of %i trees...", NTREES))
     contig_rf <- randomForest(x=new_x3, y=y, xtest=new_xtest3, ytest=ytest, ntree=NTREES, proximity = TRUE, importance=T, sampsize=SAMP_SIZE2)
+        # export RF contig results
+    tab <- cbind(rownames(contig_rf$votes), contig_rf$votes)
+    write.table(tab, file=TRAIN_SET_VOTES, sep="\t", quote=F, row.names=F)
+    tab <- cbind(rownames(contig_rf$test$votes), contig_rf$test$votes)
+    write.table(tab, file=TEST_SET_VOTES, sep="\t", quote=F, row.names=F)
+
     print(contig_rf)
 
         # 3.3) extract best baits per contig
