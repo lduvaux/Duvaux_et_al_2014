@@ -35,6 +35,7 @@ main <- function(argv){
     bad <- grep("PMT", genes0, fixed=T)
     genes <- genes0[-bad]
     PMT <- genes0[bad]
+    categ <- unique(sapply(genes0, function(x) unlist(strsplit(x, "_"))[1]))
 
 
     cat("\n")
@@ -80,13 +81,36 @@ main <- function(argv){
     p_pmt <- n_pmt/N_pmt
 
 
+    cat("\n")
+    print(" # 2.5) per gene family")
+    CNV_count_gn_pmt <- rbind(CNV_count_gn, CNV_count_pmt)
+    test_pol_gn <- sapply(1:nrow(CNV_count_gn_pmt), function(x) 1%in%CNV_count_gn_pmt[x,])
+    tab_pol_gn <- CNV_count_gn_pmt[test_pol_gn,]
+    mat_pol <- matrix(data=NA, nrow=length(categ), ncol=3, dimnames=list(categ, c("Nb of loci", "Nb of CNV", "Proportion")))
+    for (i in seq(length(categ)))
+    {
+        ca <- categ[i]
+        # total
+        ind <- grep(paste(ca, "_", sep=""), rownames(CNV_count_gn_pmt))
+        N_cat <- nrow(CNV_count_gn_pmt[ind,])
+
+        # polym
+        ind <- grep(paste(ca, "_", sep=""), rownames(tab_pol_gn))
+        n_cat <- nrow(tab_pol_gn[ind,])
+        if (is.null(n_cat)) n_cat <- 0
+
+        mat_pol[i,] <- c(N_cat, n_cat, round(n_cat/N_cat,3))
+    }
+    mat_pol <- cbind(rownames(mat_pol), mat_pol)
+
     m_prob <- cbind(c("Subtargets", "Targets", "Genes", "Promoters"), c(N_bait, N_targ, N_gn, N_pmt), c(n_bait, n_targ, n_gn, n_pmt), round(c(p_bait, p_targ, p_gn, p_pmt),3))
     colnames(m_prob) <- c("Marker", "Nb of loci", "Nb of CNV", "Proportion")
+    m_prob <- rbind(m_prob, mat_pol)
     write.table(m_prob, file=P_CNV1, sep="\t", quote=F, row.names=F)
 
 
     cat("\n")
-    print(" # 2.5) draw venns")
+    print(" # 2.6) draw venns")
     l_venns <- list(Subtargets=l4venn_bait, Targets=l4venn_targ, Genes=l4venn_gn, Promoters=l4venn_pmt)
 
     jpeg(VENN1.1)
