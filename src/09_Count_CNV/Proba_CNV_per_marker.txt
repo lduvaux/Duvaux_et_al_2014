@@ -1,0 +1,5 @@
+Marker	Nb of loci	Nb of CNV	Proportion
+Subtargets	10879	2042	0.188
+Targets	2778	660	0.238
+Genes	434	184	0.424
+Promoters	441	176	0.399

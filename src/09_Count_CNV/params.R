@@ -3,3 +3,8 @@
 source("../05_Stability-RF/params.R")
 PREVIOUS_DATA <- "../03_ProcessingSegmentation.Rdata"
 RAW_DATA <- "../01_GetData.Rdata"
+
+# outputs
+P_CNV1 <- "Proba_CNV_per_marker.txt"
+VENN1.1 <- "Venn_CNV_per_marker.jpg"
+VENN1.2 <- "Venn_CNV_per_marker.pdf"
