@@ -1,26 +1,37 @@
 #!/bin/Rscript
+rm(list=ls())
+library(ggplot2)
+
+    # load global ressources
 source("../utils/functions.R")
 source("../utils/getter_functions.R")
 source("../utils/globalCtes.R")
-source("../utils/randomForest_helperFuns.R")
+
+    # load local ressources
 source("./params.R")
 source("./functions.R")
 
 main <- function(argv){
-	
+	# load data
 	load(PREVIOUS_DATA)
-	alpha_matrix_raw <- PrePro_roundToZeroFive(alpha_matrix)
-	IndivRace_raw <- PrePro_fetchRacesPrior(PRIOR_ASSIGN)
-	races_raw <- unique(IndivRace_raw)
-	ind_order <- PrePro_findIndex(colnames(alpha_matrix_raw), names(IndivRace_raw))
-	IndivRace_raw <- IndivRace_raw[ind_order]
-	bad_indiv_ind <- which(is.na(IndivRace_raw)|IndivRace_raw=="hybrid")
-	IndivRace <- IndivRace_raw[-bad_indiv_ind]
-	alpha_matrix <- alpha_matrix_raw[,-bad_indiv_ind]
-	IndivRace_raw <- IndivRace_raw[ind_order]
-	ListRaces <- unique(IndivRace)
-	indivperRace <- table(IndivRace)
-	print(ls())
+
+    # 1) generate a dataset from the estimated model
+    samp_size <- table(with(GLMtab_all1, interaction(Family, trimmed)))
+    obs_prob0 <- table(with(GLMtab_all1, interaction(Family, trimmed, Polymorphic)))/rep(samp_size, 2)
+    obs_prob <- obs_prob0[(length(obs_prob0)/2+1):length(obs_prob0)]
+
+    colo <- c("Black", "Blue", "Purple", "DarkGreen")
+    categ <- rep(c("Control", "Gr", "Or", "P450"), 2)
+
+    jpeg(JPG, height=480*2, width=480*2, quality=100, res=72*2)
+    draw_plot(obs_prob, colo, categ, yli=c(0, 0.6))
+    dev.off()
+    pdf(PDF)
+    draw_plot(obs_prob, colo, categ, yli=c(0, 0.6))
+    dev.off()
+
+    cat("\n")
+    print(" #### save results")
 	outFileName <- argv[1]
     ver(sprintf("Saving data to %s",outFileName))
     dummy <- numeric()
@@ -37,10 +48,6 @@ if(DEBUG)
 	traceback(main(argv));
 if(!DEBUG)
 	main(argv);
-
-
-
-
 
 
 
