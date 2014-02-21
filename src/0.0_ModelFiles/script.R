@@ -1,30 +1,30 @@
 #!/bin/Rscript
-library('multicore')
-
-
+    # load global ressources
 source("../utils/functions.R")
 source("../utils/getter_functions.R")
 source("../utils/globalCtes.R")
 
-source("./Process_glm.R")
+    # load local ressources
 source("./params.R")
 source("./functions.R")
 
 main <- function(argv){
+	# load data
+	load(PREVIOUS_DATA)
 
-    load(PREVIOUS_DATA)
-	set.seed(0)
-	
-    ######################
-    
-    Pre_GLMtab <- setGLMtable(ListGenes, BaitsGeneNames, alpha_matrix, Genes_Info, CATEG_FOR_GLM)
-    ######################
+
+    cat("\n")
+    print(" #### save results")
 	outFileName <- argv[1]
     ver(sprintf("Saving data to %s",outFileName))
     dummy <- numeric()
-    save(dummy ,file=outFileName)
+    save(dummy,file=outFileName)
 
+	
 }
+
+cat("dummy logfile\n")
+
 
 argv <- commandArgs(TRUE)[1]
 if(DEBUG)

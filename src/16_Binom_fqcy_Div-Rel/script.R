@@ -52,7 +52,7 @@ GLMtab_all1 <- set_GLMtab_fqcy(Pre_GLMtab0, NonTrim_only=F)
     # 16.2.1) data
 cat("\n         # 16.2.1) Remove non polymorphic genes\n")
 GLMtab_all2 <- GLMtab_all1[GLMtab_all1$Polymorphic==T,]
-GLMtab_all2$trimmed <- factor(GLMtab_all2$trimmed, levels=c("Yes", "No"))
+#~GLMtab_all2$trimmed <- factor(GLMtab_all2$trimmed, levels=c("Yes", "No"))
 
 print(sample_size1 <- table(GLMtab_all2$Family, GLMtab_all2$trimmed))
 print(sample_size2 <- table(GLMtab_all2$Family, GLMtab_all2$CpDup))

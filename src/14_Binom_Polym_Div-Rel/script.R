@@ -107,7 +107,7 @@ GLMPolymorphic <- list(max_mdl_Pol=fm1, all_mdl_Pol=test_trimmed, mdl_avg_Pol=md
 outFileName <- argv[1]
 ver(sprintf("Saving data to %s",outFileName))
 #     dummy <- numeric()
-save(GLMPolymorphic, list_samples, file=outFileName)
+save(GLMtab_all1, GLMPolymorphic, list_samples, file=outFileName)
 # }
 
 # if(DEBUG)

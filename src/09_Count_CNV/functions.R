@@ -1,12 +1,3 @@
-get_elements <- function(x, sep="_", what=c(1)){
-    return(strsplit(x, sep)[[1]][what])
-}
-
-collapse_elements <- function(nom, sep="_", what=1:3, colla="_"){
-    res <- paste(get_elements(nom, sep, what), collapse=colla)
-    return(res)
-}
-
 caract_bait <- function(vect_bait){
 # vect_bait can be a vector (bait) or a table (target or gene)
     tt <- table(as.vector(vect_bait))

@@ -1,5 +1,0 @@
-The fiels of the folder should be modified only if all GLM need to
-have this modifs. Ideally, this should never happen since that means we
-should modify all the previous GLM scripts.
-(File to be removed where present in any other folder than
-'./0.0_GLM00_TEMPLATE')

@@ -19,7 +19,7 @@ main <- function(argv){
     cat("\n")
     print(" #### 1) load data and colors")
         # 1.1) reads count
-	raw_data_file <- RAW_DATA
+#~	raw_data_file <- RAW_DATA
 	alpha_matrix <- PrePro_roundToZeroFive(alpha_matrix)
         # 1.2) remove bad cytisus
     ind_bad <- PrePro_findIndex(BAD_CYTISUS, colnames(alpha_matrix))
@@ -37,9 +37,16 @@ main <- function(argv){
     PMT <- genes0[bad]
     categ <- unique(sapply(genes0, function(x) unlist(strsplit(x, "_"))[1]))
 
-
     cat("\n")
     print(" #### 2) count global proportion of deletion/insertions/both")
+        print(" # 2.0) Compute CN distribution")
+    CNV_distr0 <- table(as.vector(alpha_matrix))
+    CNV_distr <- CNV_distr0[-3]
+    CNV_distr_pro <- round(CNV_distr/sum(CNV_distr), 5)*100
+    tab <- rbind(names(CNV_distr_pro), CNV_distr_pro)
+    write.table(tab, file=TAB_CNV_DISTR, sep="\t", row.names=F, quote=F, col.names=F)
+    
+    
         print(" # 2.1) subtargets")
     CNV_count_bait <- t(apply(alpha_matrix, 1, caract_bait))
     colnames(CNV_count_bait) <- c("Deletion", "Insertion", "Both")

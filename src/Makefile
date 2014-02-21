@@ -2,7 +2,7 @@ GLMs := 12_
 
 toclean := $(shell ls [0-9][0-9]_*/Makefile |sed s/Makefile//g)
 
-all : 22_ 24_ 11_ 12_ 14_ 15_ 16_ 08_ 09_
+all : 22_ 24_ 11_ 12_ 14_ 15_ 16_ 07_ 08_ 09_
 
 
 clean:
@@ -30,8 +30,8 @@ cleanall: clean
 11_: 03_ 23_
 	@$(MAKE) -C 11_GLMTruncFetchData
 
-10_: 03_
-	@$(MAKE) -C 10_GeneralStatsA
+#10_: 03_
+	#@$(MAKE) -C 10_GeneralStatsA
 
 09_: 03_ 06_
 	@$(MAKE) -C 09_Count_CNV

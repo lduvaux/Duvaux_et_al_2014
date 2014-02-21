@@ -53,12 +53,11 @@ main <- function(argv){
 
 
 	pdf(PDF_NAME, height=12.9, width=9)
-	par(mar=c(3, 2, 3, 0))
-	plot(tree, show.tip.label = T, tip.color=col_races, edge.color=edge_colors, edge.width=1.5, root.edge=F, cex = 0.75, font=4)
+    whole_fig(tree, col_races, edge_colors, races_uniq, race_colo_raw, contig_rf, leg_pos="bottomleft")
+	dev.off()
 
-	legend("bottomleft", legend=races_uniq, col = race_colo_raw, lwd=2, bg = 'gray92', cex=1)
-
-	title(paste("NJ tree based on random forest proximity matrix\n(", nrow(contig_rf$importance), " informative genes)", sep=""), cex.main=1.5, font=4)
+	jpeg(JPG_NAME, height=688*2, width=480*2, quality=100, res=72*2)
+    whole_fig(tree, col_races, edge_colors, races_uniq, race_colo_raw, contig_rf, leg_pos="bottomleft", cex_leaves=0.5)
 	dev.off()
 
 	outFileName <- argv[1]

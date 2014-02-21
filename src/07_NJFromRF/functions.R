@@ -118,7 +118,15 @@ processing_NJ <- function(i_categ, gene_categ, alpha_matrix, method, racine, lan
 
 }
 
+whole_fig <- function(tree, col_races, edge_colors, races_uniq, race_colo_raw, contig_rf, leg_pos="bottomleft", cex_leaves=0.75)
+{
+	par(mar=c(3, 2, 3, 0))
+	plot(tree, show.tip.label = T, tip.color=col_races, edge.color=edge_colors, edge.width=1.5, root.edge=F, cex = cex_leaves, font=4)
 
+	legend(leg_pos, legend=races_uniq, col = race_colo_raw, lwd=2, bg = 'gray92', cex=1)
+
+	title(paste("NJ tree based on random forest proximity matrix\n(", nrow(contig_rf$importance), " informative genes)", sep=""), cex.main=1.5, font=4)
+}
 
 
 
