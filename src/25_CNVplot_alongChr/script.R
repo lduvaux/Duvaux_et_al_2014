@@ -14,6 +14,7 @@ main <- function(argv){
     refBaits <- sapply(subtarg$V5, Prepro_fixName)
     subtarg[,"V5"] <- refBaits
     colnames(subtarg) <- c("Contig", "Start", "End", "Strand", "Name")
+    t_targ <-  read.delim(TARG, stringsAsFactors=F)
     
         # 1.1) load reads count
     load(PREVIOUS_DATA)
@@ -31,12 +32,14 @@ main <- function(argv){
     genes <- genes0[-bad]
 #~    PMT <- genes0[bad]
 
-    # 2 test with th efirst gene
+    # 2) test with the first gene
     gn <- genes[1]
     ind <- grep (paste(gn, "_", sep=""), rownames(alpha_matrix))
     lcnv <- alpha_matrix[ind,]
     ind <- grep (paste(gn, "_", sep=""), subtarg[,"Name"])
     lsubtarg <- subtarg[ind, ]
+    ind <- grep (paste(gn, "_", sep=""), t_targ[,"NewTargetName"])
+    lt_targ <- t_targ[ind, ]
 
 }
 

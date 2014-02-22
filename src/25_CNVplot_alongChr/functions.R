@@ -5,29 +5,33 @@ makeTransparent<-function(someColor, alpha=50)
     blue=curcoldata[3],alpha=alpha, maxColorValue=255)})
 }
 
+draw_star_bar0 <- function(tab, i, yl, colo, alph=100)
+{
+    polygon(x=c(tab$startV2[i],tab$stopV2[i],tab$stopV2[i],tab$startV2[i]), y=c(yl[1], yl[1], yl[2], yl[2]),col=makeTransparent(colo, alpha=alph), border = NA)
+}
+
 draw_star_bar <- function(tab, i, yl, colo, alph=100)
 {
     polygon(x=c(tab$Start[i],tab$End[i],tab$End[i],tab$Start[i]), y=c(yl[1], yl[1], yl[2], yl[2]),col=makeTransparent(colo, alpha=alph), border = NA)
 }
 
-plot_CNV_chr <- function(gn, yli=c(-0.5, 2.5), centz=c(0.75,1.25))
+plot_CNV_chr <- function(tab_cnv, tab_star, tab_tar, yli=c(-0.5, 2.5), centz=c(0.75,1.25))
 #zcent: central zone, use the delimit the rounding area where alpha wil lbe rounded to 1
 {
     # 1) define sub-tables
-        # 1.1) sub-matrix of alpha values (cnv estimates)
-    ind <- grep (paste(gn, "_", sep=""), rownames(alpha_matrix))
-    lcnv <- alpha_matrix[ind,]
-        # 1.2) total table of sub-targ
-    ind <- grep (paste(gn, "_", sep=""), subtarg[,"Name"])
-    lstar <- subtarg[ind, ]
-        # 1.3) table of subtarg present and absent from the final dataset
-    conc <- rownames(lcnv)%in%subtarg[,"Name"]
-    lstar_gd <- lstar[conc, ]
+        # 1.1) table of subtarg present and absent from the final dataset
+    conc <- rownames(tab_cnv)%in%tab_star[,"Name"]
+    tab_star_gd <- tab_star[conc, ]
+    tab_star_gd[,"bary"] <- apply(tab_star_gd[, c("Start", "End")], 1, median)
+    ind <- sapply(rownames(tab_cnv), function(x) which(x==tab_star_gd$Name))
+
+        # 1.2) set up final tab of CNV
+    ind <- sapply(rownames(tab_cnv), function(x) which(x==tab_star_gd$Name))
+    ftab_cnv <- cbind(bary=tab_star_gd[ind,"bary"], tab_cnv)
+    ftab_cnv <- ftab_cnv[order(ftab_cnv[, "bary"]), ]
 
     # 2) plot an empty graph
-
-            #### is just the different subtargets for the moment, I can use the targets themselves (to be done as better actually)
-    rg_coo <- c(min(lstar$Start), max(lstar$End))# define range of initial targets
+    rg_coo <- c(min(tab_tar$startV2), max(tab_tar$stopV2))# define range of initial targets
 
     plot(rg_coo, rep(1, 2), xlim=rg_coo, ylim=yli, type="n", main=gn, xlab="Chromosome coordinate (bp)", ylab="Alpha (CNV relative to standard)")
     points(x=c(-10, 10000000), y=c(0,0), type="l")	# add a lower box (x range is over large on purpose) 
@@ -36,20 +40,29 @@ plot_CNV_chr <- function(gn, yli=c(-0.5, 2.5), centz=c(0.75,1.25))
     polygon(x=c(-10, 10000000, 10000000, -10), y=c(centz[1], centz[1], centz[2], centz[2]), col=makeTransparent("red", alpha=60), border = NA)
 
     # 4) draw the spanning of subtargets as originally designed
-
-        #### is just the different subtargets for the moment, I can use the targets themselves (to be done as better actually)
-    for (sta in 1:nrow(lstar))
-    {draw_star_bar(tab=lstar, i=sta, yl=yli+c(-0.5, +0.5), colo="gray", alph=80)}
+    for (sta in 1:nrow(tab_tar))
+    {draw_star_bar0(tab=tab_tar, i=sta, yl=yli+c(-0.5, +0.5), colo="gray", alph=80)}
 
     # 5) draw
         # the initial 
-    for (sta in 1:nrow(lstar))
-    {draw_star_bar(tab=lstar, i=sta, yl=c(yli[1]-0.5, 0), colo="black", alph=90)}
+    for (sta in 1:nrow(tab_star))
+    {draw_star_bar(tab=tab_star, i=sta, yl=c(yli[1]-0.5, 0), colo="black", alph=90)}
         # and final sets of subtargets
-    if(nrow(lstar_gd)>0){
-        for (sta in 1:nrow(lstar_gd))
-        {draw_star_bar(tab=lstar_gd, i=sta, yl=c(yli[1]-0.5, 0), colo="darkgoldenrod2", alph=100)}
+    if(nrow(tab_star_gd)>0){
+        for (sta in 1:nrow(tab_star_gd))
+        {draw_star_bar(tab=tab_star_gd, i=sta, yl=c(yli[1]-0.5, 0), colo="darkgoldenrod2", alph=100)}
     }
+
+    # 6) plot alpha segments for each individual
+    for (i in 2:ncol(ftab_cnv))
+    {
+        
+    }
+
+
+
+
+
 
 #######################################
 #######################################
