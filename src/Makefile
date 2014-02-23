@@ -2,7 +2,7 @@ GLMs := 12_
 
 toclean := $(shell ls [0-9][0-9]_*/Makefile |sed s/Makefile//g)
 
-all : 22_ 24_ 11_ 12_ 14_ 15_ 16_ 07_ 08_ 09_
+all : 22_ 24_ 25_ 11_ 12_ 14_ 15_ 16_ 07_ 08_ 09_
 
 
 clean:
@@ -50,6 +50,9 @@ cleanall: clean
 
 04_: 03_
 	@$(MAKE) -C 04_NJ
+
+25_: 03_
+	@$(MAKE) -C 25_CNVplot_alongChr
 
 23_: 03_
 	@$(MAKE) -C 23_TargetAndBaitCount
