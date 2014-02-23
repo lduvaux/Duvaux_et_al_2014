@@ -33,13 +33,39 @@ main <- function(argv){
 #~    PMT <- genes0[bad]
 
     # 2) test with the first gene
-    gn <- genes[1]
-    ind <- grep (paste(gn, "_", sep=""), rownames(alpha_matrix))
-    lcnv <- alpha_matrix[ind,]
-    ind <- grep (paste(gn, "_", sep=""), subtarg[,"Name"])
-    lsubtarg <- subtarg[ind, ]
-    ind <- grep (paste(gn, "_", sep=""), t_targ[,"NewTargetName"])
-    lt_targ <- t_targ[ind, ]
+    l_gn <- c(genes[1], "Control_g190", "Control_g204", "Gr_g36", "Control_g144", "Control_g181")
+    pdf("Plot_CNV_along_Chr.pdf")
+    layout(matrix(1:6, nrow=3, ncol=2, byrow=T))
+    par(mar=c(4, 4, 2, 2), mgp=c(1.5,0.5,0))
+    for (gn in l_gn)
+    {
+        ind <- grep (paste(gn, "_", sep=""), t_targ[,"NewTargetName"])
+        lt_targ <- t_targ[ind, ]
+        
+        ind <- grep (paste(gn, "_", sep=""), subtarg[,"Name"])
+        lt_star <- subtarg[ind, ]
+        
+        ind <- grep (paste(gn, "_", sep=""), rownames(alpha_matrix))
+        lcnv <- alpha_matrix[ind,]
+        n_ctig <- sort(table(lt_star$Contig), decreasing=T)
+
+        # check contig
+        if (length(n_ctig)>1) {
+        print("WARNING: gene on several contigs")
+        gd_ctig <- names(n_ctig)[1]
+        ind <- lt_star$Contig%in%gd_ctig
+        lt_star <- lt_star[ind,]
+        gd_star <- lt_star[ind,"Name"]
+        gd <- sapply(gd_star, function(x) which(x==rownames(lcnv)))
+        lcnv <- lcnv[gd, ]
+
+        ind <- lt_targ$contigV2%in%gd_ctig
+        lt_targ <- lt_targ[ind,]
+        }
+
+        plot_CNV_chr(tab_cnv=lcnv, tab_star=lt_star, tab_tar=lt_targ, c_ex=0.5, l_wd=.5)
+    }
+    dev.off()
 
 }
 
