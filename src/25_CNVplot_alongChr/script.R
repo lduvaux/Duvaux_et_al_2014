@@ -33,39 +33,139 @@ main <- function(argv){
 #~    PMT <- genes0[bad]
 
     # 2) test with the first gene
-    l_gn <- c(genes[1], "Control_g190", "Control_g204", "Gr_g36", "Control_g144", "Control_g181")
-    pdf("Plot_CNV_along_Chr.pdf")
-    layout(matrix(1:6, nrow=3, ncol=2, byrow=T))
-    par(mar=c(4, 4, 2, 2), mgp=c(1.5,0.5,0))
-    for (gn in l_gn)
-    {
-        ind <- grep (paste(gn, "_", sep=""), t_targ[,"NewTargetName"])
-        lt_targ <- t_targ[ind, ]
-        
-        ind <- grep (paste(gn, "_", sep=""), subtarg[,"Name"])
-        lt_star <- subtarg[ind, ]
-        
-        ind <- grep (paste(gn, "_", sep=""), rownames(alpha_matrix))
-        lcnv <- alpha_matrix[ind,]
-        n_ctig <- sort(table(lt_star$Contig), decreasing=T)
+#~    l_gn <- c(genes[1], "Control_g190", "Control_g204", "Gr_g36", "Control_g144", "Control_g181")
+    l_gn <- genes
+    print(system.time({
+        pdf(PDF1)
+        layout(matrix(1:6, nrow=3, ncol=2, byrow=T))
+        par(mar=c(4, 4, 2, 2), mgp=c(1.5,0.5,0))
+        tab <- as.data.frame(matrix(data=NA, ncol=4, nrow=length(genes), dimnames=list(genes, c("Gene", "LengthV1", "LengthV2", "Fold"))))
+        for (i in seq(l_gn))
+        {
+            gn <- l_gn[i]
+            ind <- grep (paste(gn, "_", sep=""), t_targ[,"NewTargetName"])
+            lt_targ <- t_targ[ind, ]
 
-        # check contig
-        if (length(n_ctig)>1) {
-        print("WARNING: gene on several contigs")
-        gd_ctig <- names(n_ctig)[1]
-        ind <- lt_star$Contig%in%gd_ctig
-        lt_star <- lt_star[ind,]
-        gd_star <- lt_star[ind,"Name"]
-        gd <- sapply(gd_star, function(x) which(x==rownames(lcnv)))
-        lcnv <- lcnv[gd, ]
+            ind <- grep (paste(gn, "_", sep=""), subtarg[,"Name"])
+            lt_star <- subtarg[ind, ]
+            n_ctig <- sort(table(lt_star$Contig), decreasing=T)
+            
+            ind <- grep (paste(gn, "_", sep=""), rownames(alpha_matrix))
+            lcnv <- alpha_matrix[ind,]
+            if (is.vector(lcnv)) {
+                lcnv <- t(as.matrix(lcnv))
+                rownames(lcnv) <- rownames(alpha_matrix)[ind]
+            }
+            
+            # check contig
+            if (length(n_ctig)>1) {
+                print("WARNING: gene on several contigs")
+                
+                # detect good subtarget in initial subtargets
+                gd_ctig <- names(n_ctig)[1]
+                ind <- lt_star$Contig%in%gd_ctig
+                lt_star <- lt_star[ind,]    # subset initial table of subtargets
+                
+                # remove subtargets from bad contigs in lcnv
+                    # fetch contigs of star in lt_cnv
+#~                ind <- match(rownames(lcnv), subtarg[, "Name"])
+                ind <- sapply(rownames(lcnv), function(x) which(x==subtarg[, "Name"]))
+                cnv_contigs <- subtarg[ind,"Contig"]
+                ind <- cnv_contigs%in%gd_ctig
+                lcnv <- lcnv[ind, ]
 
-        ind <- lt_targ$contigV2%in%gd_ctig
-        lt_targ <- lt_targ[ind,]
+                # same with lt_targ table
+                ind <- lt_targ$contigV2%in%gd_ctig
+                lt_targ <- lt_targ[ind,]
+            }
+            LengthV1 <- max(c(lt_targ$startV1,lt_targ$stopV1), na.rm=T) - min(c(lt_targ$startV1,lt_targ$stopV1), na.rm=T) + 1
+            LengthV2 <- max(c(lt_targ$startV2,lt_targ$stopV2), na.rm=T) - min(c(lt_targ$startV2,lt_targ$stopV2), na.rm=T) + 1
+            Fold <- round(LengthV1/LengthV2, 2)
+            tab[i,] <- c(gn, LengthV1, LengthV2, Fold)
+
+    #~        tab_cnv <- lcnv; tab_star <- lt_star; tab_tar <- lt_targ; yli=c(-0.5, 2.5); centz=c(0.75,1.25); c_ex=.9; l_wd=.9
+            mmax <- max(lcnv)
+            if (mmax< 2.5)
+                rgg <- c(-0.5, 2.5)
+            else
+                rgg <- c(-0.5, ceiling(mmax))
+
+#~            pdf("test.pdf")
+            plot_CNV_chr(tab_cnv=lcnv, tab_star=lt_star, tab_tar=lt_targ, c_ex=0.5, l_wd=.5, yli=rgg)
+            cat ("###################")
+            if (i%%20==0) {cat("\n") ; print(i)}
+            cat ("###################\n")
+#~            dev.off()
         }
+        dev.off()
+    }))
+    ind <- order(as.numeric(tab[,"Fold"]))
+    tabf <- tab[ind,]
+    write.table(tabf, file=FIL_LGTH, sep="\t", row.names=F, quote=F)
 
-        plot_CNV_chr(tab_cnv=lcnv, tab_star=lt_star, tab_tar=lt_targ, c_ex=0.5, l_wd=.5)
-    }
-    dev.off()
+# for the paper
+    l_gn <- GN_FIG
+    print(system.time({
+        pdf(PDF2)
+        layout(matrix(1:6, nrow=3, ncol=2, byrow=T))
+        par(mar=c(4, 4, 2, 2), mgp=c(1.5,0.5,0))
+        for (i in seq(l_gn))
+        {
+            gn <- l_gn[i]
+            ind <- grep (paste(gn, "_", sep=""), t_targ[,"NewTargetName"])
+            lt_targ <- t_targ[ind, ]
+            
+            ind <- grep (paste(gn, "_", sep=""), subtarg[,"Name"])
+            lt_star <- subtarg[ind, ]
+            n_ctig <- sort(table(lt_star$Contig), decreasing=T)
+            
+            ind <- grep (paste(gn, "_", sep=""), rownames(alpha_matrix))
+            lcnv <- alpha_matrix[ind,]
+            if (is.vector(lcnv)) {
+                lcnv <- t(as.matrix(lcnv))
+                rownames(lcnv) <- rownames(alpha_matrix)[ind]
+            }
+            
+            # check contig
+            if (length(n_ctig)>1) {
+                print("WARNING: gene on several contigs")
+                
+                # detect good subtarget in initial subtargets
+                gd_ctig <- names(n_ctig)[1]
+                ind <- lt_star$Contig%in%gd_ctig
+                lt_star <- lt_star[ind,]    # subset initial table of subtargets
+                
+                # remove subtargets from bad contigs in lcnv
+                    # fetch contigs of star in lt_cnv
+#~                ind <- match(rownames(lcnv), subtarg[, "Name"])
+                ind <- sapply(rownames(lcnv), function(x) which(x==subtarg[, "Name"]))
+                cnv_contigs <- subtarg[ind,"Contig"]
+                ind <- cnv_contigs%in%gd_ctig
+                lcnv <- lcnv[ind, ]
+
+                # same with lt_targ table
+                ind <- lt_targ$contigV2%in%gd_ctig
+                lt_targ <- lt_targ[ind,]
+            }
+
+    #~        tab_cnv <- lcnv; tab_star <- lt_star; tab_tar <- lt_targ; yli=c(-0.5, 2.5); centz=c(0.75,1.25); c_ex=.9; l_wd=.9
+            mmax <- max(lcnv)
+            if (mmax< 2.5)
+                rgg <- c(-0.5, 2.5)
+            else
+                rgg <- c(-0.5, ceiling(mmax))
+
+#~            pdf("test.pdf")
+            plot_CNV_chr(tab_cnv=lcnv, tab_star=lt_star, tab_tar=lt_targ, c_ex=0.5, l_wd=.5, yli=rgg)
+            cat ("###################")
+            if (i%%20==0) {cat("\n") ; print(i)}
+            cat ("###################\n")
+#~            dev.off()
+        }
+        dev.off()
+    }))
+
+    
 
 }
 
