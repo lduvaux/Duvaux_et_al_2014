@@ -14,25 +14,32 @@ Usage
 ------
 
 You need `R(>=3.0)`.
-And the folowing packages:
+And the following packages:
 
-install.packages("ape")
-install.packages("epicalc")
-install.packages("foreign")
-install.packages("ggplot2")
-install.packages("lme4")
-install.packages("MASS")
-install.packages("methods")
-install.packages("microbenchmark")
-install.packages("multicore")
-install.packages("MuMIn")
-install.packages("nnet")
-install.packages("optimalCaptureSegmentation")
-install.packages("parallel")
-install.packages("randomForest")
+```R
+install.packages("ape");
+install.packages("epicalc");
+install.packages("foreign");
+install.packages("ggplot2");
+install.packages("lme4");
+install.packages("MASS");
+install.packages("methods");
+install.packages("microbenchmark");
+install.packages("multicore");
+install.packages("MuMIn");
+install.packages("nnet");
+install.packages("optimalCaptureSegmentation");
+install.packages("parallel");
+install.packages("randomForest");
+```
 
-optimalCapt (TODO : clone!!)
+You also need the unofficial package `optimalCaptureSegmentation`
+you can download it at http://bioinformatics.nki.nl/ocs/downloads/optimalCaptureSegmentation_0.9-4.tar.gz
+And to install it :
 
+```R
+install.packages("/PATH/TO/THE/PKG/optimalCaptureSegmentation_0.9-4.tar.gz", repos =NULL, type="source")
+```
 
 
 Code organisation
