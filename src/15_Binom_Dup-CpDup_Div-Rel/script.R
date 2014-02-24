@@ -114,7 +114,7 @@ Res_CpDup <- list(max_mdl_CpDup=fm2, all_mdl_CpDup=test_trimmed2, mdl_avg_CpDup=
 outFileName <- argv[1]
 ver(sprintf("Saving data to %s",outFileName))
 #     dummy <- numeric()
-save(Res_CpDup, list_samples, file=outFileName)
+save(GLMtab_all2, Res_CpDup, list_samples, file=outFileName)
 # }
 
 # if(DEBUG)

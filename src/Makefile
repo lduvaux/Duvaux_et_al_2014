@@ -2,7 +2,7 @@ GLMs := 12_
 
 toclean := $(shell ls [0-9][0-9]_*/Makefile |sed s/Makefile//g)
 
-all : 22_ 24_ 25_ 11_ 12_ 14_ 15_ 16_ 07_ 08_ 09_
+all : 22_ 24_ 25_ 11_ 12_ 14_ 15_ 16_ 17_ 18_ 07_ 08_ 09_
 
 
 clean:
@@ -11,6 +11,12 @@ clean:
 cleanall: clean
 	echo $(toclean)
 	for i in $(toclean); do $(MAKE) -C $$i clean; done
+
+18_: 11_
+	@$(MAKE) -C 18_Plot_Dup-CpDup_Div-Rel
+
+17_: 11_
+	@$(MAKE) -C 17_Plot_Polym_Div-Rel
 
 16_: 11_
 	@$(MAKE) -C 16_Binom_fqcy_Div-Rel
