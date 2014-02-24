@@ -18,16 +18,21 @@ main <- function(argv){
     cat("\n")
     print("#### 1) proba of complete duplication/deletion per truncated/non-truncated gene")
     samp_size1 <- table(with(GLMtab_all2, interaction(Family, trimmed)))
-    samp_size1_0 <- table(with(GLMtab_all2, interaction(Family, trimmed, Duplication)))
-    obs_prob1.0 <- samp_size1_0/rep(samp_size1, 2)
-    obs_prob1 <- obs_prob1.0[(length(obs_prob1.0)/2+1):length(obs_prob1.0)]
-
-    colo <- c("Black", "Blue", "Purple", "DarkGreen")
+    inter <- with(GLMtab_all2, interaction(Family, CpDup))
+    samp_size <- table(inter)
+    
+    colo <- c("White", "Blue", "Purple", "DarkGreen")
     categ <- c("Control", "Gr", "Or", "P450")
-    categ1 <- paste(categ, " (", samp_size1_0[(length(samp_size1_0)/2+1):length(samp_size1_0)], ")", sep="")
+
+    draw_plot(GLMtab_all2$Family, GLMtab_all2$Fqcy_all, colo, categ1, yli=c(0, 1), yla="Frequency of unusual CN variants\nin populations", lab=categ)
+    x11()
+    draw_plot(inter, GLMtab_all2$Fqcy_all, colo, categ1, yli=c(0, 1), yla="Frequency of unusual CN variants\nin populations", lab=categ)
+    x11()
+    draw_plot(GLMtab_all2$CpDup, GLMtab_all2$Fqcy_all, colo, categ1, yli=c(0, 1), yla="Frequency of unusual CN variants\nin populations", lab=unique(GLMtab_all2$CpDup))
+
 
     jpeg(JPG, height=480*2, width=480*2, quality=100, res=72*2)
-    draw_plot(obs_prob1, colo, categ1, yli=c(0, 1), yla="Proportion of observations completely\nduplicated/deleted for CNV per family")
+    draw_plot(inter, GLMtab_all2$Fqcy_all, colo, categ1, yli=c(0, 1), yla="Frequency of unusual CN variants\nin populations", lab=categ)
     text(x=c(2.5, 9), y=c(0.4, 0.9), labels=c("Non\ntruncated", "Truncated"), lheight=1.5)
     abline(v=5.5, lty=2)
     dev.off()
