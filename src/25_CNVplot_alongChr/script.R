@@ -34,43 +34,47 @@ main <- function(argv){
     genes <- genes0[-bad]
     PMT <- genes0[bad]
 
-    # 2) Draw all genes
-#~    l_gn <- c(genes[1], "Control_g190", "Control_g204", "Gr_g36", "Control_g144", "Control_g181")
-    l_gn <- genes
-    print(system.time({
-        pdf(PDF1)
-        layout(matrix(1:6, nrow=3, ncol=2, byrow=T))
-        par(mar=c(4, 4, 2, 2), mgp=c(1.5,0.5,0))
-        tab <- as.data.frame(matrix(data=NA, ncol=4, nrow=length(genes), dimnames=list(genes, c("Gene", "LengthV1", "LengthV2", "Fold"))))
-        for (i in seq(l_gn))
-        {
-            # prepare data
-            gen <- l_gn[i]
-            l_data <- get_data4plot(gen, t_targ, subtarg, alpha_matrix, adapt=T)
-            tab[i,] <- l_data$stats
 
-            # draw plot
-#~            pdf("test.pdf")
-#~              tab_cnv <- l_data$lcnv; tab_star <- l_data$lt_star; tab_tar <- l_data$lt_targ; yli=l_data$rgg; centz=c(0.75,1.25); c_ex=.9; l_wd=.9; races=v_races
-            plot_CNV_chr(tab_cnv=l_data$lcnv, tab_star=l_data$lt_star, tab_tar=l_data$lt_targ, c_ex=0.5, l_wd=.5, yli=l_data$rgg, races=v_races)
-            cat ("###################")
-            if (i%%20==0) {cat("\n") ; print(i)}
-            cat ("###################\n")
-#~            dev.off()
-        }
-        dev.off()
-    }))
-    ind <- order(as.numeric(tab[,"Fold"]))
-    tabf <- tab[ind,]
-    write.table(tabf, file=FIL_LGTH, sep="\t", row.names=F, quote=F)
+    cat("\n")
+    print(" #### 2) Draw all genes")
+    if (SKIP_MAIN==F){
+        l_gn <- genes
+        print(system.time({
+            pdf(PDF1)
+            layout(matrix(1:6, nrow=3, ncol=2, byrow=T))
+            par(mar=c(4, 4, 2, 2), mgp=c(1.5,0.5,0))
+            tab <- as.data.frame(matrix(data=NA, ncol=4, nrow=length(genes), dimnames=list(genes, c("Gene", "LengthV1", "LengthV2", "Fold"))))
+            for (i in seq(l_gn))
+            {
+                # prepare data
+                gen <- l_gn[i]
+                l_data <- get_data4plot(gen, t_targ, subtarg, alpha_matrix, adapt=T)
+                tab[i,] <- l_data$stats
+
+                # draw plot
+    #~            pdf("test.pdf")
+    #~              tab_cnv <- l_data$lcnv; tab_star <- l_data$lt_star; tab_tar <- l_data$lt_targ; yli=l_data$rgg; centz=c(0.75,1.25); c_ex=.9; l_wd=.9; races=v_races
+                plot_CNV_chr(tab_cnv=l_data$lcnv, tab_star=l_data$lt_star, tab_tar=l_data$lt_targ, c_ex=0.5, l_wd=.5, yli=l_data$rgg, races=v_races)
+                cat ("###################")
+                if (i%%20==0) {cat("\n") ; print(i)}
+                cat ("###################\n")
+    #~            dev.off()
+            }
+            dev.off()
+        }))
+        ind <- order(as.numeric(tab[,"Fold"]))
+        tabf <- tab[ind,]
+        write.table(tabf, file=FIL_LGTH, sep="\t", row.names=F, quote=F)
+    }
 
 
-    # 3) plots for the paper
+    cat("\n")
+    print(" #### 3) plots for the paper")
     l_gn <- GN_FIG2
-    m_rg <- cbind(rep(-0.5, 6), YLI)
+    m_rg <- cbind(rep(YLI1, 6), YLI2)
     print(system.time({
         pdf(PDF2)
-        layout(matrix(1:6, nrow=3, ncol=2, byrow=T))
+        layout(MAT_LAYOUT)
         par(mar=c(4, 4, 2, 2), mgp=c(1.5,0.5,0))
         for (i in seq(l_gn))
         {
@@ -89,6 +93,21 @@ main <- function(argv){
         }
         dev.off()
     }))
+
+    jpeg(JPG, height=480*2, width=480*2, quality=100, res=72*2)
+    {
+        layout(MAT_LAYOUT)
+        par(mar=c(4, 4, 2, 2), mgp=c(1.5,0.5,0))
+        for (i in seq(l_gn))
+        {
+            # prepare data
+            gen <- l_gn[i]
+            l_data <- get_data4plot(gen, t_targ, subtarg, alpha_matrix, adapt=T)
+            # draw plot
+            colos_race <- plot_CNV_chr(tab_cnv=l_data$lcnv, tab_star=l_data$lt_star, tab_tar=l_data$lt_targ, c_ex=0.5, l_wd=.5, yli=m_rg[i,], races=v_races, transp=TRANSP, alphaa=ALPHA)
+        }
+        dev.off()
+    }
 
 
     #############################

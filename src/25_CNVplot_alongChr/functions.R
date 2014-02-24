@@ -58,7 +58,7 @@ plot_CNV_chr <- function(tab_star, tab_tar, tab_cnv, yli=c(-0.5, 2.5), centz=c(0
     rg_coo <- c(min(c(tab_tar$startV2,tab_tar$stopV2), na.rm=T), max(c(tab_tar$startV2,tab_tar$stopV2), na.rm=T))# define range of initial targets
     print("Range of displayed marker:")
     print(range(rg_coo))
-    plot(rg_coo, rep(1, 2), xlim=rg_coo, ylim=yli, type="n", main=paste(gene, " (", contig, ")", sep=""), xlab="Chromosome coordinate (bp)", ylab="Alpha (CNV relative to standard)")
+    plot(rg_coo, rep(1, 2), xlim=rg_coo, ylim=yli, type="n", main=paste(gene, " (", contig, ")", sep=""), xlab="Contig coordinate (bp)", ylab="Alpha (CNV relative to standard)")
     points(x=c(-10, 10000000), y=c(0,0), type="l")	# add a lower box (x range is over large on purpose) 
 
     # 3) draw the rounding area
