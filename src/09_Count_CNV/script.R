@@ -134,6 +134,7 @@ main <- function(argv){
 #~    CNV_count_race <- mclapply(1:nrow(alpha_matrix), function(x) sapply(races, caract_bait_race, clones, alpha_matrix[x,], x))
 #~    names(CNV_count_race) <- subtargets
 
+    #############################
     cat("\n")
     print(" #### save results")
 	outFileName <- argv[1]

@@ -52,10 +52,12 @@ main <- function(argv){
 		legend("topleft", colnames(ratio_mat)[i],cex=1.5,col="blue",bg="white", text.col=col_lib[i]) 
 		}
 	dev.off()
-	
+
     #############################
-    outFileName <- argv[1]
-    ver(sprintf("Saving data to %s",outFileName))
+    cat("\n")
+    print(" #### save results")
+	outFileName <- argv[1]
+    ver(sprintf("Saving *DUMMY* data to %s",outFileName))
     dummy <- numeric()
     save (dummy, file=outFileName)
 }

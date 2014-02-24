@@ -28,7 +28,7 @@ draw_lines <- function(v_sta, v_end, l_wd=0.5, l_ty=3, colo="red")
     points(x=v_sta, y=v_end, lwd=l_wd, lty=l_ty, type="l", col=colo)
 }
 
-plot_CNV_chr <- function(tab_star, tab_tar, tab_cnv, yli=c(-0.5, 2.5), centz=c(0.75,1.25), c_ex=.9, l_wd=.9)
+plot_CNV_chr <- function(tab_star, tab_tar, tab_cnv, yli=c(-0.5, 2.5), centz=c(0.75,1.25), c_ex=.9, l_wd=.9, races, transp=F, alphaa=80)
 #zcent: central zone, use the delimit the rounding area where alpha wil lbe rounded to 1
 {
     # 1) define preliminary parameters
@@ -41,7 +41,6 @@ plot_CNV_chr <- function(tab_star, tab_tar, tab_cnv, yli=c(-0.5, 2.5), centz=c(0
     targ <- tab_tar$NewTargetName
     cnv_targ <- unique(sapply(cnv_starg, collapse_elements))
 
-    races <- sapply(colnames(tab_cnv), get_elements)
     races_uniq <- unique(races)
     col_races <- PrePro_fetchColours(races, races_uniq, race_colo_raw)
         # 1.1) table of subtarg present and absent from the final dataset
@@ -86,16 +85,21 @@ plot_CNV_chr <- function(tab_star, tab_tar, tab_cnv, yli=c(-0.5, 2.5), centz=c(0
     # 7) plot alpha segments for each individual
     if (is.vector(ftab_cnv)){
         ftab_cnv <- t(as.matrix(ftab_cnv))}
-    for (i in 2:ncol(ftab_cnv))
+
+    med_ctrl <- names(races)[races%in%"Medicago_ctrl"]
+    ctrl_in_ftab_cnv <- sapply(med_ctrl, function(x) which(colnames(ftab_cnv)==x))
+    v_rdom_draw <- (2:ncol(ftab_cnv))[-(ctrl_in_ftab_cnv-1)]
+    rdom_draw <- c(sample(v_rdom_draw, length(v_rdom_draw)), ctrl_in_ftab_cnv)
+    for (i in rdom_draw)
     {
         # 7.1) set up individual parmater
         indiv <- colnames(ftab_cnv)[i]
-#~        colo <- makeTransparent(col_races[which(indiv==names(col_races))], 70)
-        colo <- col_races[which(indiv==names(col_races))]
-#~        colo <- col_races[match(indiv, names(col_races))]
+        if (transp)
+            colo <- makeTransparent(col_races[which(indiv==names(col_races))], alphaa)
+        else
+            colo <- col_races[which(indiv==names(col_races))]
 
         # 7.2) draw linking lines between targets
-#~        x_coord_tt <- ftab_cnv[,"bary"]%in%x_coord
         if (length(cnv_targ)>1) {
             x_coord_ind <- sapply(x_coord, grep, ftab_cnv[,"bary"])
             y_coord <- ftab_cnv[x_coord_ind,i]
@@ -117,4 +121,60 @@ plot_CNV_chr <- function(tab_star, tab_tar, tab_cnv, yli=c(-0.5, 2.5), centz=c(0
         }
     }
     cat("\n")
+
+    return(col_races)
+}
+
+get_data4plot <- function(gn, t_targ, subtarg, alpha_matrix, adapt=T)
+{
+            ind <- grep (paste(gn, "_", sep=""), t_targ[,"NewTargetName"])
+            lt_targ <- t_targ[ind, ]
+
+            ind <- grep (paste(gn, "_", sep=""), subtarg[,"Name"])
+            lt_star <- subtarg[ind, ]
+            n_ctig <- sort(table(lt_star$Contig), decreasing=T)
+            
+            ind <- grep (paste(gn, "_", sep=""), rownames(alpha_matrix))
+            lcnv <- alpha_matrix[ind,]
+            if (is.vector(lcnv)) {
+                lcnv <- t(as.matrix(lcnv))
+                rownames(lcnv) <- rownames(alpha_matrix)[ind]
+            }
+            
+            # check contig
+            if (length(n_ctig)>1) {
+                print("WARNING: gene on several contigs")
+                
+                # detect good subtarget in initial subtargets
+                gd_ctig <- names(n_ctig)[1]
+                ind <- lt_star$Contig%in%gd_ctig
+                lt_star <- lt_star[ind,]    # subset initial table of subtargets
+                
+                # remove subtargets from bad contigs in lcnv
+                    # fetch contigs of star in lt_cnv
+#~                ind <- match(rownames(lcnv), subtarg[, "Name"])
+                ind <- sapply(rownames(lcnv), function(x) which(x==subtarg[, "Name"]))
+                cnv_contigs <- subtarg[ind,"Contig"]
+                ind <- cnv_contigs%in%gd_ctig
+                lcnv <- lcnv[ind, ]
+
+                # same with lt_targ table
+                ind <- lt_targ$contigV2%in%gd_ctig
+                lt_targ <- lt_targ[ind,]
+            }
+            LengthV1 <- max(c(lt_targ$startV1,lt_targ$stopV1), na.rm=T) - min(c(lt_targ$startV1,lt_targ$stopV1), na.rm=T) + 1
+            LengthV2 <- max(c(lt_targ$startV2,lt_targ$stopV2), na.rm=T) - min(c(lt_targ$startV2,lt_targ$stopV2), na.rm=T) + 1
+            Fold <- round(LengthV1/LengthV2, 2)
+            stats <- c(gn, LengthV1, LengthV2, Fold)
+
+            mmax <- max(lcnv)
+            if (adapt)
+                rgg <- c(-0.5, ceiling(mmax))
+            else {
+                if (mmax< 2.5)
+                    rgg <- c(-0.5, 2.5)
+                else
+                    rgg <- c(-0.5, ceiling(mmax))
+            }
+        res <- list(lcnv=lcnv, lt_star=lt_star, lt_targ=lt_targ, rgg=rgg, stats=stats)
 }
