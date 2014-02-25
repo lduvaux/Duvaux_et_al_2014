@@ -16,44 +16,41 @@ main <- function(argv){
 	load(PREVIOUS_DATA)
     
     cat("\n")
-    print("#### 1) proba of complete duplication/deletion per truncated/non-truncated gene")
+    print("#### 1) Frequency of unusual CN in populations per gene families x trimmed categories")
     samp_size1 <- table(with(GLMtab_all2, interaction(Family, trimmed)))
     inter <- with(GLMtab_all2, interaction(Family, CpDup))
     samp_size <- table(inter)
-    
+
     colo <- c("White", "Blue", "Purple", "DarkGreen")
     categ <- c("Control", "Gr", "Or", "P450")
-
-    draw_plot(GLMtab_all2$Family, GLMtab_all2$Fqcy_all, colo, categ1, yli=c(0, 1), yla="Frequency of unusual CN variants\nin populations", lab=categ)
-    x11()
-    draw_plot(inter, GLMtab_all2$Fqcy_all, colo, categ1, yli=c(0, 1), yla="Frequency of unusual CN variants\nin populations", lab=categ)
-    x11()
-    draw_plot(GLMtab_all2$CpDup, GLMtab_all2$Fqcy_all, colo, categ1, yli=c(0, 1), yla="Frequency of unusual CN variants\nin populations", lab=unique(GLMtab_all2$CpDup))
-
+    lab <- paste(rep(categ, 2), " (", samp_size, ")", sep="")
 
     jpeg(JPG, height=480*2, width=480*2, quality=100, res=72*2)
-    draw_plot(inter, GLMtab_all2$Fqcy_all, colo, categ1, yli=c(0, 1), yla="Frequency of unusual CN variants\nin populations", lab=categ)
-    text(x=c(2.5, 9), y=c(0.4, 0.9), labels=c("Non\ntruncated", "Truncated"), lheight=1.5)
-    abline(v=5.5, lty=2)
+    p1 <- draw_plot(inter, GLMtab_all2$Fqcy_all, colo, categ1, yli=c(0, 1), yla="Frequency of unusual CN variants\nin populations", lab=lab, main="Family x CpDup", new_mar=c(9, 6,4,2), att=c(1:4, 6:9), adjust=.05)
+    par(lheight=1.5)
+    text(x=c(2.5, 7.5), y=c(0, 0), labels=c("Non CDD", "CDD"))
+    abline(v=5, lty=2)
     dev.off()
-    
+
     pdf(PDF)
-    draw_plot(obs_prob1, colo, categ1, yli=c(0, 1), yla="Proportion of observations completely\nduplicated/deleted for CNV per family")
-    text(x=c(2.5, 9), y=c(0.4, 0.9), labels=c("Non\ntruncated", "Truncated"), lheight=1.5)
-    abline(v=5.5, lty=2)
+    p1 <- draw_plot(inter, GLMtab_all2$Fqcy_all, colo, categ1, yli=c(0, 1), yla="Frequency of unusual CN variants\nin populations", lab=lab, main="Family x CpDup", new_mar=c(9, 6,4,2), att=c(1:4, 6:9), adjust=.05)
+    par(lheight=1.5)
+    text(x=c(2.5, 7.5), y=c(0, 0), labels=c("Non CDD", "CDD"))
+    abline(v=5, lty=2)
     dev.off()
 
-    
-    cat("\n")
-    print("#### 2) Correalation between exon length and proba of complete duplication/deletion ")
-    Complete_CNV <- ifelse(GLMtab_all2$Duplication=="3_CpDup", 1, 0)
-    GLMtab_all2[,"Complete_CNV"] <- Complete_CNV
-    gplot <- ggplot(GLMtab_all2, aes(x = LnExonLength, y = Complete_CNV, color = trimmed)) + geom_point(alpha=0.7) + labs(colour = "Truncated") + coord_fixed(ratio=2)
-    gplot <- gplot + stat_smooth(method = 'glm', family = 'binomial')
 
-    ggsave(PDF2)
-    ggsave(JPG2)
+
+    cat("\n")
+    print("#### 2) Frequency of unusual CN in populations per phylogenetic levels")
+    jpeg(JPG2, height=480*2, width=480*2, quality=100, res=72*2)
+    p1 <- draw_plot(GLMtab_all2$Phylog_lvl, GLMtab_all2$Fqcy_all, col=c("white", "grey"), categ1, yli=c(0, 1), yla="Frequency of unusual CN variants\nin populations", lab=c("Divergent", "Related"), main="Genetic relatedness", att=1:2)
+    dev.off()
     
+    pdf(PDF2)
+    p1 <- draw_plot(GLMtab_all2$Phylog_lvl, GLMtab_all2$Fqcy_all, col=c("white", "grey"), categ1, yli=c(0, 1), yla="Frequency of unusual CN variants\nin populations", lab=c("Divergent", "Related"), main="Genetic relatedness", att=1:2)
+    dev.off()
+
     #########
     cat("\n")
     print(" #### save results")
