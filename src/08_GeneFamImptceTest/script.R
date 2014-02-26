@@ -13,6 +13,7 @@ source("../utils/randomForest_helperFuns.R")
 source("params.R")
 load(PREVIOUS_DATA)
 source("params.R")  # needed as the previous will load former params!
+source("./functions.R")
 
 #~main <- function(argv){
 
@@ -77,7 +78,7 @@ source("params.R")  # needed as the previous will load former params!
     distr_rk_rdom_LD_mat <- get_rdom_LD_rk_mat(sims2, bait_nam, gini_gene_rf, INFO_TARGENE_FILE, gini_contig_rf)
 
             # 4.4.3) plots
-                # 4.4.3.1) length(gini_contig_rf) genes with importance and all genes used for th esum of ranks
+                # 4.4.3.1) length(gini_contig_rf) genes with importance and all genes used for the sum of ranks
     distr_rdom_rk <- apply(distr_rk_rdom_mat, 2, get_rk_sum, n_imp=final_nber, kept=length(genes), categ)
     distr_rdom_LD_rk <- apply(distr_rk_rdom_LD_mat, 2, get_rk_sum, n_imp=final_nber, kept=length(genes), categ)
     draw_rk_distrib(sum_ranks, distr_rdom_rk, distr_rdom_LD_rk, final_nber, length(genes))
@@ -98,7 +99,9 @@ source("params.R")  # needed as the previous will load former params!
         distr_rdom_LD_rk0 <- apply(distr_rk_rdom_LD_mat, 2, get_rk_sum,
             n_imp=i, kept=i, categ)
         # plots
-        draw_rk_distrib(sum_ranks0, distr_rdom_rk0, distr_rdom_LD_rk0, i, i)
+        res <- draw_rk_distrib(sum_ranks0, distr_rdom_rk0, distr_rdom_LD_rk0, i, i)
+        nfil <- sub(".txt", paste(i, ".txt", sep=""), SIGNIF)
+        write.table(res, file=nfil, row.names=F, quote=F, sep="\t")
         print("Done")
     }
 
