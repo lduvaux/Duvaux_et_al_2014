@@ -225,21 +225,21 @@ get_baits_per_pairs <- function(indic, bait_names, P_PMT, P_Gn, P_Gn_PMT, info_T
     return(ll)
 }
 
-get_rdom_rk_mat <- function(bait_nam, N_cate_rfGn, gini_gene_rf, INFO_TARGENE_FILE, gini_contig_rf){
+get_rdom_rk_mat <- function(bait_nam, N_cate_rfGn, gini_gene_rf, INFO_TARGENE_FILE, gini_contig_rf, n_sim=1000, n_cores = 8){
     print(system.time(distr_rdom <- mclapply(
-        1:1000, get_null_draw,
+        1:n_sim, get_null_draw,
             Gns=get_rdom_Gn_rk(bait_nam, N_cate_rfGn),
             PMTs=get_rdom_PMT_rk(bait_nam, N_cate_rfGn),
             bait_names=bait_nam, n_info=length(gini_gene_rf),
             info_TargGene_fil=INFO_TARGENE_FILE,
             kept=length(gini_contig_rf), verbose=F, 
-        mc.cores=8)))
+        mc.cores=n_cores)))
     distr_rdom_mat <- sapply(seq(length(distr_rdom)), function(x) distr_rdom[[x]])
-    rownames(distr_rdom_mat) <- 1:length(bait_nam) ; colnames(distr_rdom_mat) <- paste("Simul_", 1:1000, sep="")
+    rownames(distr_rdom_mat) <- 1:length(bait_nam) ; colnames(distr_rdom_mat) <- paste("Simul_", 1:n_sim, sep="")
     return(distr_rdom_mat)
 }
 
-get_rdom_LD_rk_mat <- function(sims2, bait_nam, gini_gene_rf, INFO_TARGENE_FILE, gini_contig_rf){
+get_rdom_LD_rk_mat <- function(sims2, bait_nam, gini_gene_rf, INFO_TARGENE_FILE, gini_contig_rf, n_cores = 8){
     print(system.time(distr_rdom_LD <- mclapply(
         seq(length(sims2)), function(x) get_null_draw(
             x, 
@@ -247,9 +247,9 @@ get_rdom_LD_rk_mat <- function(sims2, bait_nam, gini_gene_rf, INFO_TARGENE_FILE,
             bait_names=bait_nam, n_info=length(gini_gene_rf),
             info_TargGene_fil=INFO_TARGENE_FILE,
             kept=length(gini_contig_rf), verbose=F), 
-        mc.cores=8)))
+        mc.cores=n_cores)))
     distr_rdom_LD_mat <- sapply(seq(length(distr_rdom_LD)), function(x) distr_rdom_LD[[x]])
-    rownames(distr_rdom_LD_mat) <- 1:length(bait_nam) ; colnames(distr_rdom_LD_mat) <- paste("Simul_", 1:1000, sep="")
+    rownames(distr_rdom_LD_mat) <- 1:length(bait_nam) ; colnames(distr_rdom_LD_mat) <- paste("Simul_", 1:length(sims2), sep="")
     return(distr_rdom_LD_mat)
 }
 
@@ -288,29 +288,29 @@ get_null_draw <- function(ite, Gns, PMTs, bait_names, n_info, info_TargGene_fil,
     return(names(sort(imp, decreasing=T)))
 }
 
-get_data4plot_same_contig <- function(gini_gene_rf, INFO_TARGENE_FILE, bait_nam){
+get_data4plot_same_contig <- function(gini_gene_rf, INFO_TARGENE_FILE, bait_nam, n_sim=1000, n_cores = 8){
             # 4.2.1) gene bait on same contig as another gene bait
     # best bait per genes, all uninformative genes removed
-    print("##### Compute P Gn same contig other Gn (random drawing)")  
+    print("### Compute P Gn same contig other Gn (random drawing)")  
     Gns_gene_rf <- names(gini_gene_rf)[-grep("^PMT_", names(gini_gene_rf))] 
   P_Gn_cont_Gn_obs <- as.numeric(get_P_same_contig(Gns_gene_rf, Gns_gene_rf, INFO_TARGENE_FILE))
   
-    print(system.time(distr_rdom_P_Gn_cont_Gn <- unlist(mclapply(1:1000, get_distr_rdom_P_same_contig, bait_nam, Gn=T, PMT=F, INFO_TARGENE_FILE, mc.cores=8))))
+    print(system.time(distr_rdom_P_Gn_cont_Gn <- unlist(mclapply(1:n_sim, get_distr_rdom_P_same_contig, bait_nam, Gn=T, PMT=F, INFO_TARGENE_FILE, mc.cores=n_cores))))
     ds_Gn <- sd(distr_rdom_P_Gn_cont_Gn)
 
             # 4.2.2) pmt bait on same contig as another pmt bait
-    print("##### Compute P PMT same contig other PMT (random drawing)")
+    print("### Compute P PMT same contig other PMT (random drawing)")
     PMTs_gene_rf <- names(gini_gene_rf)[grep("^PMT_", names(gini_gene_rf))] 
   P_PMT_cont_PMT_obs <- as.numeric(get_P_same_contig(PMTs_gene_rf, PMTs_gene_rf, INFO_TARGENE_FILE))
 
-    print(system.time(distr_rdom_P_PMT_cont_PMT <- unlist(mclapply(1:1000, get_distr_rdom_P_same_contig, bait_nam, Gn=F, PMT=T, INFO_TARGENE_FILE, mc.cores=8))))
+    print(system.time(distr_rdom_P_PMT_cont_PMT <- unlist(mclapply(1:n_sim, get_distr_rdom_P_same_contig, bait_nam, Gn=F, PMT=T, INFO_TARGENE_FILE, mc.cores=n_cores))))
     ds_PMT <- sd(distr_rdom_P_PMT_cont_PMT)
 
         # 4.2.3) gene bait on same contig as a pmt bait
-    print("##### Compute P Gn same contig other PMT (random drawing)") 
+    print("### Compute P Gn same contig other PMT (random drawing)") 
   P_Gn_cont_PMT_obs <- as.numeric(get_P_same_contig(Gns_gene_rf, PMTs_gene_rf, INFO_TARGENE_FILE))
 
-    print(system.time(distr_rdom_P_Gn_cont_PMT <- unlist(mclapply(1:1000, get_distr_rdom_P_same_contig, bait_nam, Gn=T, PMT=T, INFO_TARGENE_FILE, mc.cores=8))))
+    print(system.time(distr_rdom_P_Gn_cont_PMT <- unlist(mclapply(1:n_sim, get_distr_rdom_P_same_contig, bait_nam, Gn=T, PMT=T, INFO_TARGENE_FILE, mc.cores=n_cores))))
     ds_Gn_PMT <- sd(distr_rdom_P_Gn_cont_PMT)
 
     # results
@@ -465,7 +465,6 @@ draw_rk_distrib <- function(sum_ranks, distr_rdom_rk, distr_rdom_LD_rk, n_imp, k
 	dev.off()
 
     return(mat_p)
-
 }
 
 draw_count_distrib <- function(top, categ, obs_count, rdom_count, rdom_LD_count){

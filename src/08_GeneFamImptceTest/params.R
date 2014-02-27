@@ -7,4 +7,7 @@ RAW_DATA <- "../01_GetData.Rdata"
 TWOSIDED <- F
 
 # outputs
+N_SIM_OLD <- 1000
+N_SIM_NEW <- 5000
 SIGNIF <- "FamilySignif_OverImportce_rk.txt"
+N_CORES <- 8

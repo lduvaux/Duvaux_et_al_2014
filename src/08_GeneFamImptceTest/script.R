@@ -4,7 +4,6 @@ library(ape)
 library(randomForest)
 library(parallel)
 
-
 source("../utils/functions.R")
 source("../utils/getter_functions.R")
 source("../utils/globalCtes.R")
@@ -15,7 +14,7 @@ load(PREVIOUS_DATA)
 source("params.R")  # needed as the previous will load former params!
 source("./functions.R")
 
-set.seed(0)
+set.seed(1)
 
 cat("\n")
 print("########################################################
@@ -39,7 +38,7 @@ print("##### 2) P being same contig")
 nn <- paste(sapply(names(genes), collapse_elements, sep="_", what=1:2, colla="_"), "_", sep="")
 bait_nam <- get_1rdom_bait_per_gn(nn)
 
-data4plot_same_cont <- get_data4plot_same_contig(gini_gene_rf, INFO_TARGENE_FILE, bait_nam)
+data4plot_same_cont <- get_data4plot_same_contig(gini_gene_rf, INFO_TARGENE_FILE, bait_nam, n_sim=N_SIM_OLD, n_cores = N_CORES)
 
 P_Gn_obs <- data4plot_same_cont$P_Gn_obs
 P_PMT_obs <- data4plot_same_cont$P_PMT_obs
@@ -55,9 +54,9 @@ distr_rdom_P_Gn_cont_PMT <- data4plot_same_cont$P_Gn_PMT_sim
 cat("\n")
 print("##### 3) P being same contig new random algo")
 system.time(
-    sims2 <- mclapply(1:1000, function (x)
+    sims2 <- mclapply(1:N_SIM_NEW, function (x)
         get_baits_per_pairs(x, bait_names=bait_nam, P_PMT=P_PMT_obs, P_Gn=P_Gn_obs, P_Gn_PMT=P_Gn_PMT_obs, info_TargGene_fil=INFO_TARGENE_FILE, gini_gene_rf=gini_gene_rf, ds_pmt=ds_PMT, ds_gns=ds_Gn, ds_gns_pmt=ds_Gn_PMT, inc=10, inc2=5, inc3=5, verbose=0)
-    , mc.cores=8)
+    , mc.cores=N_CORES)
 )
 
 P_PMTs <- sapply(sims2, function(sol) sol$P_PMT)
@@ -72,10 +71,10 @@ cat("\n")
 print("##### 4) compute the expected distribution of ranks per gene category")
         # 4.4.1) random drawing (Gns and PMTs distinguished)
 #~    N_bait_alpMat <- count_categ()
-distr_rk_rdom_mat <- get_rdom_rk_mat(bait_nam, N_cate_rfGn, gini_gene_rf, INFO_TARGENE_FILE, gini_contig_rf)
+distr_rk_rdom_mat <- get_rdom_rk_mat(bait_nam, N_cate_rfGn, gini_gene_rf, INFO_TARGENE_FILE, gini_contig_rf, n_sim=N_SIM_OLD, n_cores = N_CORES)
 
         # 4.4.2) random_LD drawing (Gns and PMTs distinguished)
-distr_rk_rdom_LD_mat <- get_rdom_LD_rk_mat(sims2, bait_nam, gini_gene_rf, INFO_TARGENE_FILE, gini_contig_rf)
+distr_rk_rdom_LD_mat <- get_rdom_LD_rk_mat(sims2, bait_nam, gini_gene_rf, INFO_TARGENE_FILE, gini_contig_rf, n_cores = N_CORES)
 
         # 4.4.3) plots
             # 4.4.3.1) length(gini_contig_rf) genes with importance and all genes used for the sum of ranks
