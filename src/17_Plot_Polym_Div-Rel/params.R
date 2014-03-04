@@ -1,5 +1,7 @@
 #~ All explit parameters for the related script.R should be declared here as constantes ~#
 PREVIOUS_DATA <- "../14_Binom_Polym_Div-Rel.Rdata"
+PREVIOUS_DATA2 <- "../23_TargetAndBaitCount.Rdata"
+
 
 # output
 JPG <- "Fig2.1_barplot_fqcyPolymGenes_trim-fam.jpeg"

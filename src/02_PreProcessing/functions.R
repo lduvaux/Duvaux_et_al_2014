@@ -15,15 +15,6 @@ PrePro_showError <- function(err,col_race,return_median_error = F){
 }
 
 
-PrePro_findMeaninglessRows <- function(mat){
-
-    invalid_rows <- apply(mat,1,function(row){all(row == row[1])})
-    
-    print(sprintf("A total of %i rows had the exact same values for all column",length(invalid_rows[invalid_rows])))
-    return(invalid_rows)
-    
-}
-
 PrePro_showError <- function(err,col_race, return_median_error= FALSE, border=1){
     boxplot(err,outline=F,col=col_race,ylim = c(-0.25, +0.25), border=border)
     return(apply(abs(err),2,median))

@@ -1,7 +1,8 @@
 #!/bin/Rscript
 rm(list=ls())
 library(ggplot2)
-
+library(lme4)
+ 
     # load global ressources
 source("../utils/functions.R")
 source("../utils/getter_functions.R")
@@ -14,11 +15,31 @@ source("./functions.R")
 main <- function(argv){
 	# load data
 	load(PREVIOUS_DATA)
+	load(PREVIOUS_DATA2)
     
     cat("\n")
     print("#### 1) proba per trimmed per gene family")
 #~    print(samp_size_pol <- table(with(GLMtab_all1, interaction(Family, Polymorphic))))
     samp_size1 <- table(with(GLMtab_all1, interaction(Family, trimmed)))
+    
+    # 0) compute proba over-representation of multigene family genes
+    genes <- unique(GLMtab_all1$Gene)
+    Family <- as.factor(sapply(as.character(genes), get_elements, what=1))
+    truncated <- !genes%in%NonTrimGenes
+    tab <- data.frame(genes, truncated, Family)
+
+        # 0.1)proportion of trimmed per category
+    size_inter <- table(with(tab, interaction(Family, truncated)))
+    size_fam <- table(tab$Family)
+    p_trim <- size_inter/rep(size_fam,2)
+
+        # 0.2) run GLM
+    form <- truncated ~ Family
+    glm2 <- glm(formula=form, data = tab, family="binomial")
+    print(summary(glm2))
+
+
+    # 1) prepare data for plot
     samp_size1_0 <- table(with(GLMtab_all1, interaction(Family, trimmed, Polymorphic)))
     obs_prob1.0 <- samp_size1_0/rep(samp_size1, 2)
     obs_prob1 <- obs_prob1.0[(length(obs_prob1.0)/2+1):length(obs_prob1.0)]

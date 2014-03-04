@@ -10,7 +10,7 @@ YLI1 <- -0.25   # bottom limit for paper plot
 YLI2 <- c(1.26, 2.5, 4.7, 1.6, 1.5, 1.5)   # top limit for paper plot
 TRANSP <- F
 ALPHA <- 120
-SKIP_MAIN <- T
+SKIP_MAIN <- F
 
 # outputs
 PDF1 <- "Plot_CNV_along_Chr.pdf"

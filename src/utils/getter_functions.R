@@ -93,3 +93,12 @@ PrePro_fetchInfo_TarGene <- function(datafile){
 	temp <- read.delim(datafile, stringsAsFactors =F )
 	return(temp)
 }
+
+PrePro_findMeaninglessRows <- function(mat){
+
+    invalid_rows <- apply(mat,1,function(row){all(row == row[1])})
+    
+    print(sprintf("A total of %i rows had the exact same values for all column",length(invalid_rows[invalid_rows])))
+    return(invalid_rows)
+    
+}

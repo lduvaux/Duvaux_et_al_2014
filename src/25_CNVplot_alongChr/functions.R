@@ -38,6 +38,8 @@ plot_CNV_chr <- function(tab_star, tab_tar, tab_cnv, yli=c(-0.5, 2.5), centz=c(0
     cnv_starg <- rownames(tab_cnv)
     gene <- collapse_elements(sub_targ[1], what=1:2)
     print(gene)
+    gene_real_name <- ifelse(length(grep("ApisSNMP|Control", tab_tar[1,"NewTargetName"]))==1, collapse_elements(tab_tar[1, "NewTargetName"], what=1:2), tab_tar[1,1])
+    
     targ <- tab_tar$NewTargetName
     cnv_targ <- unique(sapply(cnv_starg, collapse_elements))
 
@@ -55,10 +57,11 @@ plot_CNV_chr <- function(tab_star, tab_tar, tab_cnv, yli=c(-0.5, 2.5), centz=c(0
     ftab_cnv <- ftab_cnv[order(ftab_cnv[, "bary"]), ]
 
     # 2) plot an empty graph
+    x_lab <- ifelse(T%in%is.na(tab_tar[,"contigV2"]), "Contig coordinate (bp) - Partial representation", "Contig coordinate (bp)")
     rg_coo <- c(min(c(tab_tar$startV2,tab_tar$stopV2), na.rm=T), max(c(tab_tar$startV2,tab_tar$stopV2), na.rm=T))# define range of initial targets
     print("Range of displayed marker:")
     print(range(rg_coo))
-    plot(rg_coo, rep(1, 2), xlim=rg_coo, ylim=yli, type="n", main=paste(gene, " (", contig, ")", sep=""), xlab="Contig coordinate (bp)", ylab="Alpha (CNV relative to standard)")
+    plot(rg_coo, rep(1, 2), xlim=rg_coo, ylim=yli, type="n", main=paste(gene_real_name, " (", contig, ")", sep=""), xlab=x_lab, ylab="Alpha (CNV relative to standard)")
     points(x=c(-10, 10000000), y=c(0,0), type="l")	# add a lower box (x range is over large on purpose) 
 
     # 3) draw the rounding area

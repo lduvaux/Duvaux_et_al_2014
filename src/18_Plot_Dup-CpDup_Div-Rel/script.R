@@ -14,7 +14,20 @@ source("./functions.R")
 main <- function(argv){
 	# load data
 	load(PREVIOUS_DATA)
+	load(PREVIOUS_DATA2)
+    Genes_Info <- read.delim(INFO_TARGENE_FILE, stringsAsFactors=F)
+
+    # 0) get number of exons per genes
+    v_targets <- sapply(rownames(alpha_matrix), collapse_elements)
+    # finir de choper le ombre de targets restantes par gene
     
+    genes <- unique(GLMtab_all2$Gene)
+    N_exon <- sapply(genes, get_exdon_number, Genes_Info)
+    LnLengthExon <- sapply(genes, get_length, GLMtab_all2)
+    tab <- data.frame(genes, N_exon, LnLengthExon)
+    print(cor.test(tab$N_exon, tab$LnLengthExon, method="s"))
+
+    # prepare data for plots
     cat("\n")
     print("#### 1) proba of complete duplication/deletion per truncated/non-truncated gene")
     samp_size1 <- table(with(GLMtab_all2, interaction(Family, trimmed)))

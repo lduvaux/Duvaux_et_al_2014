@@ -15,7 +15,7 @@ main <- function(argv){
     refBaits <- sapply(subtarg$V5, Prepro_fixName)
     subtarg[,"V5"] <- refBaits
     colnames(subtarg) <- c("Contig", "Start", "End", "Strand", "Name")
-    t_targ <-  read.delim(TARG, stringsAsFactors=F)
+    t_targ0 <-  read.delim(TARG, stringsAsFactors=F)
     
         # 1.1) load reads count
     load(PREVIOUS_DATA)
@@ -34,16 +34,32 @@ main <- function(argv){
     genes <- genes0[-bad]
     PMT <- genes0[bad]
 
+    # reduce t_targ
+    v_new_gn_targ <- sapply(t_targ0$NewTargetName, collapse_elements, what=1:2)
+    ind <- v_new_gn_targ%in%genes
+    t_targ <- t_targ0[ind,]
+
+    # reorder genes vector
+        # reorder target table by V1 coordinates of contig and lower bp coordinate
+    first_coord <- sapply(1:nrow(t_targ), function(x) min(as.numeric(t_targ[x,c("startV1", "stopV1")])))
+    ord <- order(t_targ$contigV1, first_coord)
+    t_targ2 <- t_targ[ord,]
+        # reorder genes
+    v_new_gn_targ2 <- sapply(t_targ2$NewTargetName, collapse_elements, what=1:2)
+    ind_genes0 <- sapply(seq(genes), function(x) min(which(genes[x]==v_new_gn_targ2)))
+    ind_genes <- order(ind_genes0)
+    genes2 <- genes[ind_genes]
+    
 
     cat("\n")
     print(" #### 2) Draw all genes")
     if (SKIP_MAIN==F){
-        l_gn <- genes
+        l_gn <- genes2
         print(system.time({
             pdf(PDF1)
             layout(matrix(1:6, nrow=3, ncol=2, byrow=T))
             par(mar=c(4, 4, 2, 2), mgp=c(1.5,0.5,0))
-            tab <- as.data.frame(matrix(data=NA, ncol=4, nrow=length(genes), dimnames=list(genes, c("Gene", "LengthV1", "LengthV2", "Fold"))))
+            tab <- as.data.frame(matrix(data=NA, ncol=4, nrow=length(l_gn), dimnames=list(l_gn, c("Gene", "LengthV1", "LengthV2", "Fold"))))
             for (i in seq(l_gn))
             {
                 # prepare data

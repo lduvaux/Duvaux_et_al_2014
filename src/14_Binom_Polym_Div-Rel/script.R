@@ -70,7 +70,7 @@ nomfil <- GLM_POL_MAX
 output_glm(sum_fm1, nomfil)
 
     # 14.3.2) Fit al other models & model averaging
-cat("\n         # 14.3.2) Fit al other models & model averaging\n")
+cat("\n         # 14.3.2) Fit all other models & model averaging\n")
 cat("\n             # Test all terms\n")
 clusterExport(clust, c("GLMtab_all1", "FAMILY"))
 clusterEvalQ(clust, library(lme4))
