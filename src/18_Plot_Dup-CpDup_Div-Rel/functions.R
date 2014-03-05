@@ -16,8 +16,8 @@ draw_plot <- function(obsprob, colo, categ, yli=c(0, 0.6), yla="", sep_ind="def"
     text(mp, par("usr")[3], labels = categ, srt = 45, adj = c(1.1,1.1), xpd = TRUE, cex=.9)
 }
 
-get_exdon_number <- function(gene, Genes_Info){
-    ind <- grep(paste(gene, "_", sep=""), Genes_Info$NewTargetName)
+get_exdon_number <- function(gene, targets){
+    ind <- grep(paste(gene, "_", sep=""), targets)
     res <- length(ind)
     if (res==0) stop(paste("No exons present for gene", gene))
     return(res)

@@ -15,17 +15,44 @@ main <- function(argv){
 	# load data
 	load(PREVIOUS_DATA)
 	load(PREVIOUS_DATA2)
+	load(PREVIOUS_DATA3)
     Genes_Info <- read.delim(INFO_TARGENE_FILE, stringsAsFactors=F)
 
     # 0) get number of exons per genes
-    v_targets <- sapply(rownames(alpha_matrix), collapse_elements)
-    # finir de choper le ombre de targets restantes par gene
-    
+    subtarg <- rownames(alpha_matrix)
+    v_targets <- sapply(subtarg, collapse_elements)
     genes <- unique(GLMtab_all2$Gene)
-    N_exon <- sapply(genes, get_exdon_number, Genes_Info)
+    categ <- as.factor(sapply(as.character(genes), get_elements, what=1))
+    N_exon_init <- sapply(genes, get_exdon_number, Genes_Info$NewTargetName)
+    N_exon_clean <- sapply(genes, get_exdon_number, unique(v_targets))
+    truncated <- !genes%in%NonTrimGenes
     LnLengthExon <- sapply(genes, get_length, GLMtab_all2)
-    tab <- data.frame(genes, N_exon, LnLengthExon)
-    print(cor.test(tab$N_exon, tab$LnLengthExon, method="s"))
+    tab <- data.frame(Genes=genes, LgCoding=exp(LnLengthExon), N_exon=N_exon_init, N_exon_trunc=N_exon_clean, Truncated=truncated, Categ=categ)
+
+    boxplot(N_exon_init~truncated)
+    inter <- interaction(truncated, categ)
+    boxplot(N_exon_init~inter)
+    
+    print(cor.test(tab$N_exon, tab$LgCoding, method="s"))
+    plot(tab$N_exon, tab$LgCoding, col=as.numeric(tab$Categ))
+    p <- ggplot(tab, aes(x = N_exon, y = LgCoding, color = Categ)) + geom_point() + facet_wrap( ~ Categ, ncol=2)
+    x11()
+    plot(p)
+    bad_Or <- c("Or_g64", "Or_g69", "Or_g55")
+    bad_P450 <- c("P450_g39", "P450_g42", "P450_g8", "P450_g10")
+    gn_categ <- unique(categ)
+    for (i in seq(gn_categ)){
+        cate <- gn_categ[i]
+        print(cate)
+        ind <- categ%in%cate
+#~        if (cate =="P450") {
+#~            bb <- pmatch(bad_P450, tab$Genes)
+#~            ind[bb] <- F
+#~        }
+        print(table(ind)[2])
+#~        plot(tab$N_exon[ind], tab$LgCoding[ind])
+        print(cor.test(tab$N_exon[ind], tab$LgCoding[ind], method="s"))
+    }
 
     # prepare data for plots
     cat("\n")
