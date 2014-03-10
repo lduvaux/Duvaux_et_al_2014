@@ -2,7 +2,7 @@ GLMs := 12_
 
 toclean := $(shell ls [0-9][0-9]_*/Makefile |sed s/Makefile//g)
 
-all : 22_ 24_ 25_ 11_ 12_ 14_ 15_ 16_ 17_ 18_ 07_ 08_ 09_ 26_
+all : 22_ 24_ 25_ 27_ 12_ 14_ 15_ 16_ 17_ 18_ 07_ 08_ 09_ 26_ 19_
 
 
 clean:
@@ -12,10 +12,13 @@ cleanall: clean
 	echo $(toclean)
 	for i in $(toclean); do $(MAKE) -C $$i clean; done
 
-18_: 11_
+19_: 16_
+	@$(MAKE) -C 19_Plot_fqcy_Div-Rel
+
+18_: 15_
 	@$(MAKE) -C 18_Plot_Dup-CpDup_Div-Rel
 
-17_: 11_
+17_: 14_
 	@$(MAKE) -C 17_Plot_Polym_Div-Rel
 
 16_: 11_
@@ -40,7 +43,7 @@ cleanall: clean
 	#@$(MAKE) -C 10_GeneralStatsA
 
 26_: 06_ 08_
-	@$(MAKE) -C get_baits_per_pairs 
+	@$(MAKE) -C 26_Stats_Best_Subtarg_RF
 
 09_: 03_ 06_
 	@$(MAKE) -C 09_Count_CNV
@@ -59,6 +62,9 @@ cleanall: clean
 
 04_: 03_
 	@$(MAKE) -C 04_NJ
+
+27_: 03_
+	@$(MAKE) -C 27_Count_Singletons
 
 25_: 03_
 	@$(MAKE) -C 25_CNVplot_alongChr
