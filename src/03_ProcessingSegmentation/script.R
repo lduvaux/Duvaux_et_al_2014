@@ -41,6 +41,10 @@ main <- function(argv){
     gene_per_categ <- aggregate(Gene ~ GeneCateg, df,function(x)length(unique(x)))
 
     #############################
+    ftab <- cbind(rownames(alpha_matrix), alpha_matrix)
+    write.table(ftab, file=OUT_ALPHA, sep="\t", row.names=F, quote=F)
+    zip(sub("txt$", "zip", OUT_ALPHA), OUT_ALPHA)
+    file.remove(OUT_ALPHA)
     outFileName <- argv[1]
     ver(sprintf("Saving data to %s",outFileName))
     save (fit, alpha_matrix, gene_per_categ, file=outFileName)

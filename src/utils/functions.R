@@ -1,6 +1,15 @@
 DEBUG <- TRUE
 VERBOSE <- 1
 
+get_pval <- function(observ, dist_exp, two_sided=F){
+# if two_sided=F, P is always P(observ>=expected)
+    pval <- round(1-length(subset(dist_exp, observ>=dist_exp))/length(dist_exp), 4)
+    if (two_sided) {
+        pval2 <- abs(1-pval)
+        pval <- ifelse(pval<=pval2, pval, pval2)*2}
+    return(pval)
+}
+
 PrePro_roundToZeroFive <- function(dat){
     return(round(dat*2)/2)
 }

@@ -39,8 +39,8 @@ cleanall: clean
 #10_: 03_
 	#@$(MAKE) -C 10_GeneralStatsA
 
-26_: 06_
-	@$(MAKE) -C 26_Extract_bestSubtarg_RF 
+26_: 06_ 08_
+	@$(MAKE) -C get_baits_per_pairs 
 
 09_: 03_ 06_
 	@$(MAKE) -C 09_Count_CNV
