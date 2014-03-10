@@ -1,9 +1,9 @@
-test_CDD <- function(x, gd_genes, GLMtab_all1, tab_best_obs){
+test_CDD <- function(x, gd_genes, GLMtab_all1, tab_best_obs, v_races){
 
     gene <- gd_genes[x]
     sub_GLM <- subset(GLMtab_all1, GLMtab_all1[,"Gene"]==gene)
     ind <- grep(paste(gene, "_", sep=""), tab_best_obs$Subtarget)
-    vec_best_obs <- tab_best_obs[ind,4:11]
+    vec_best_obs <- tab_best_obs[ind, v_races]
     
     best_disc_race_ind <- which.max(vec_best_obs[,])
     best_disc_race <- colnames(vec_best_obs)[best_disc_race_ind]
@@ -17,7 +17,7 @@ test_CDD <- function(x, gd_genes, GLMtab_all1, tab_best_obs){
     return(v)
 }
 
-get_info_rking <- function(tab_best_obs, GLMtab_all1){
+get_info_rking <- function(tab_best_obs, GLMtab_all1, v_races){
     subtargs <- as.character(tab_best_obs$Subtarget)
     genes <- sapply(subtargs, collapse_elements, what=1:2)
     info_CDD <- matrix(data=NA, nrow=nrow(tab_best_obs), ncol=2, dimnames=list(rownames(tab_best_obs), c("CDD_best", "CDD_test_all")))
@@ -25,7 +25,7 @@ get_info_rking <- function(tab_best_obs, GLMtab_all1){
     inside <- genes%in%GLMtab_all1$Gene
     gd_genes <- genes[inside]
 
-    fetch_CDD <- t(sapply(seq(gd_genes), test_CDD, gd_genes, GLMtab_all1, tab_best_obs))
+    fetch_CDD <- t(sapply(seq(gd_genes), test_CDD, gd_genes, GLMtab_all1, tab_best_obs, v_races))
     info_CDD[inside,] <- as.character(fetch_CDD)
     N_CDD <- table(fetch_CDD)[3]
     rks <- 111:1
@@ -36,8 +36,13 @@ get_info_rking <- function(tab_best_obs, GLMtab_all1){
     ll <- list(N_CDD=N_CDD, sum_rank_CDD=sum_rk, info_CDD=info_CDD)
 }
 
+get_real_name <- function(target, tab_target){
 
+    tab_target <- subset(tab_target, NewTargetName==target)
 
+    res <- ifelse(length(grep("ApisSNMP|Control", tab_target[1,"NewTargetName"]))==1, collapse_elements(tab_target[1, "NewTargetName"], what=1:2), tab_target[1,1])
+    return(res)
+}
 
 
 
