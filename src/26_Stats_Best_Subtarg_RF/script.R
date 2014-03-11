@@ -59,7 +59,7 @@ print("#####  4) Homemade test to account for sampling scheme (best disc race on
 N_CDD <- data_CDD_obs$N_CDD
 sum_rk_obs <- data_CDD_obs$sum_rank_CDD
 simul_sum_rk <- replicate(5000, sum(sample(nrow(tab_best_obs):1, N_CDD)))
-P_val_rk_obs <- get_pval(sum_rk_obs, simul_sum_rk, two_sided=F)
+print(P_val_rk_obs <- get_pval(sum_rk_obs, simul_sum_rk, two_sided=F))
 
 hist(simul_sum_rk)
 abline(v=sum_rk_obs, col="red")
