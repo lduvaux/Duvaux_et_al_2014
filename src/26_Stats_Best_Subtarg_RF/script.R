@@ -53,18 +53,27 @@ tab_best_obs <- data.frame(Gene, data_CDD_obs$info_CDD, tab_best_obs)
 write.table(tab_best_obs, file=FIL, sep="\t", quote=F, row.names=F)
 
 
-
 cat("\n")
 print("#####  4) Homemade test to account for sampling scheme (best disc race only)")
+    # 4.1) stat for all best subtargets
 N_CDD <- data_CDD_obs$N_CDD
 sum_rk_obs <- data_CDD_obs$sum_rank_CDD
-simul_sum_rk <- replicate(5000, sum(sample(111:1, N_CDD)))
+simul_sum_rk <- replicate(5000, sum(sample(nrow(tab_best_obs):1, N_CDD)))
 P_val_rk_obs <- get_pval(sum_rk_obs, simul_sum_rk, two_sided=F)
 
 hist(simul_sum_rk)
 abline(v=sum_rk_obs, col="red")
 
+    # 4.1) stat for the best 50 subtargets
+N_CDD_50 <- data_CDD_obs$N_CDD_50
+sum_rk_obs_50 <- data_CDD_obs$sum_rank_CDD_50
+simul_sum_rk_50 <- replicate(5000, sum(sample(50:1, N_CDD_50)))
+P_val_rk_obs_50 <- get_pval(sum_rk_obs_50, simul_sum_rk_50, two_sided=F)
 
+hist(simul_sum_rk_50)
+abline(v=sum_rk_obs_50, col="red")
+
+    
 cat("\n")
 print("##### save data")
 dummy <- NULL
