@@ -53,11 +53,8 @@ get_real_name <- function(target, tab_target){
     return(res)
 }
 
-
-
-
-
-
-
-
+get_CNmedian_race <- function(vec, l_races){
+    res <- sapply(l_races, function(x) median(vec[x]))
+    return(res)
+}
 
