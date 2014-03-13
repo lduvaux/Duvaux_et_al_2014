@@ -93,7 +93,20 @@ tab_temp <- as.data.frame(matrix(data=NA, ncol=16, nrow=nrow(tab_med), dimnames=
 tab_temp[seq(1, 16, by=2)] <- tab_med
 tab_temp[seq(2, 16, by=2)] <- tab_best_obs[ind_tab_best_obs]
 
-tab_f <- data.frame(tab_best_obs[1:7], tab_temp, tab_best_obs[ncol(tab_best_obs)])
+Family <- sapply(as.character(tab_best_obs$Subtarget), get_elements)
+Most_discriminated <- races[apply(tab_best_obs[,races], 1, which.max)]
+print(table(Most_discriminated))
+tab_f <- data.frame(Gene=tab_best_obs[,1], Family, tab_best_obs[,2:7], Most_discriminated, tab_temp, tab_best_obs[,ncol(tab_best_obs)])
+
+plot(tab_f$MeanDecreaseGini)
+tab_40 <- tab_f[1:40,]
+table(tab_40$Family)
+table(tab_40$Most_discriminated)
+
+
+
+
+
 write.table(tab_f, file=FIL, sep="\t", quote=F, row.names=F)
 
 
