@@ -5,9 +5,10 @@ RAW_DATA <- "../01_GetData.Rdata"
 
 # proba
 TWOSIDED <- F
+N_IN_TEST <- c(40, 50)
 
 # outputs
 N_SIM_OLD <- 1000
 N_SIM_NEW <- 5000
-SIGNIF <- "FamilySignif_OverImportce_rk.txt"
-N_CORES <- 8
+SIGNIF <- "Res_FamilySignif_OverImportce_rk.txt"
+N_CORES <- 4

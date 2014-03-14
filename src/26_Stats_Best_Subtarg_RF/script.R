@@ -1,6 +1,5 @@
 #!/bin/Rscript
 rm(list=ls())
-library(tseries)
 
 source("./params.R")
 load(PREVIOUS_DATA)
@@ -68,7 +67,7 @@ print("#####  3) Estimate the number and ranks of CDD genes in the best genes")
     # 3.1) gather information
 gn_best_obs <- sapply(rownames(tab_best_obs), collapse_elements, what=1:2)
 categ <- sapply(rownames(tab_best_obs), get_elements, what=1)
-data_CDD_obs <- get_info_rking(tab_best_obs, GLMtab_all1, v_races)
+data_CDD_obs <- get_info_rking(tab_best_obs, GLMtab_all1, v_races, varia=40)
 tab_best_obs <- data.frame(Gene, data_CDD_obs$info_CDD, tab_best_obs)
 
     # 3.2) add CN info to table
@@ -98,14 +97,20 @@ Most_discriminated <- races[apply(tab_best_obs[,races], 1, which.max)]
 print(table(Most_discriminated))
 tab_f <- data.frame(Gene=tab_best_obs[,1], Family, tab_best_obs[,2:7], Most_discriminated, tab_temp, tab_best_obs[,ncol(tab_best_obs)])
 
+jpeg(JPG1, height=480*2, width=480*2, quality=100, res=72*2)
 plot(tab_f$MeanDecreaseGini)
-tab_40 <- tab_f[1:40,]
-table(tab_40$Family)
-table(tab_40$Most_discriminated)
+abline(v=c(40), lty=3)
+dev.off()
+
+pdf(PDF1)
+plot(tab_f$MeanDecreaseGini)
+abline(v=c(40), lty=3)
+dev.off()
 
 
-
-
+#~tab_40 <- tab_f[1:40,]
+#~table(tab_40$Family)
+#~table(tab_40$Most_discriminated)
 
 write.table(tab_f, file=FIL, sep="\t", quote=F, row.names=F)
 
@@ -124,13 +129,13 @@ hist(simul_sum_rk)
 abline(v=sum_rk_obs, col="red")
 
     # 4.1) stat for the best 50 subtargets
-N_CDD_50 <- data_CDD_obs$N_CDD_50
-sum_rk_obs_50 <- data_CDD_obs$sum_rank_CDD_50
-simul_sum_rk_50 <- replicate(5000, sum(sample(50:1, N_CDD_50)))
-P_val_rk_obs_50 <- get_pval(sum_rk_obs_50, simul_sum_rk_50, two_sided=F)
+N_CDD_varia <- data_CDD_obs$N_CDD_varia
+sum_rk_obs_varia <- data_CDD_obs$sum_rank_CDD_varia
+simul_sum_rk_varia <- replicate(5000, sum(sample(VARIA:1, N_CDD_varia)))
+P_val_rk_obs_varia <- get_pval(sum_rk_obs_varia, simul_sum_rk_varia, two_sided=F)
 
-hist(simul_sum_rk_50)
-abline(v=sum_rk_obs_50, col="red")
+hist(simul_sum_rk_varia)
+abline(v=sum_rk_obs_varia, col="red")
 
     
 cat("\n")

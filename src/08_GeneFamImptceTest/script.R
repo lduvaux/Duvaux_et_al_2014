@@ -84,7 +84,7 @@ draw_rk_distrib(sum_ranks, distr_rdom_rk, distr_rdom_LD_rk, final_nber, length(g
 
             # 4.4.3.1) for a subset of genes
 dat_obs <- names(genes)
-for (i in c(30, 50, final_nber))
+for (i in c(N_IN_TEST, final_nber))
 {
     print(paste("Sum of ranks over ", i, " baits (", i, " baits ranked from ", i, " (best) to 1 (less good))", sep=""))
     # data obs
