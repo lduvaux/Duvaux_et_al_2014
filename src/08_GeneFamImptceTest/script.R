@@ -24,7 +24,7 @@ Perform test to detect gene category with significant effect to distinguish race
 
 
 cat("\n")
-print("##### 1) observed sum of ranks")
+print("##### 1) Observed sum of ranks")
 genes <- addZeroImpGenes(gini_contig_rf, alpha_matrix)
 group <- sapply(names(genes), get_elements)
 categ <- sort(unique(group))
@@ -69,7 +69,7 @@ draw_P_same_contig(P_Gn_obs,
 
 
 cat("\n")
-print("##### 4) compute the expected distribution of ranks per gene category")
+print("##### 4) Test the non random distribution of the genes within the top x (rank test)")
         # 4.4.1) random drawing (Gns and PMTs distinguished)
 distr_rk_rdom_mat <- get_rdom_rk_mat(bait_nam, N_cate_rfGn, gini_gene_rf, INFO_TARGENE_FILE, gini_contig_rf, n_sim=N_SIM_OLD, n_cores = N_CORES)
 
@@ -104,18 +104,20 @@ for (i in c(N_IN_TEST, final_nber)) {
 }
 
 
-#~cat("\n")
-#~print("##### 5) draw the expected number of gene per categ in the top x")
-#~for (i in c(N_IN_TEST, final_nber)) {
-#~    print(paste("Cunt baits par category over the top ", i, " baits", sep=""))
-#~    categ <- sum_ranks[,1]
-#~    obs_count <- get_count_top(names(gini_contig_rf), top=i, categ)
-#~    rdom_count <- apply(distr_rk_rdom_mat, 2, get_count_top,
-#~        top=i, categ)
-#~    rdom_LD_count <- apply(distr_rk_rdom_LD_mat, 2, get_count_top,
-#~        top=i, categ)
-#~    draw_count_distrib(top=i, categ, obs_count, rdom_count, rdom_LD_count)
-#~}
+cat("\n")
+print("##### 5) Test the over-representation of gene categories within the top x")
+for (i in c(N_IN_TEST, final_nber)) {
+    print(paste("Count baits par category over the top ", i, " baits", sep=""))
+    categ <- sum_ranks[,1]
+    obs_count <- get_count_top(names(gini_contig_rf), top=i, categ)
+    rdom_count <- apply(distr_rk_rdom_mat, 2, get_count_top,
+        top=i, categ)
+    rdom_LD_count <- apply(distr_rk_rdom_LD_mat, 2, get_count_top,
+        top=i, categ)
+    res <- draw_count_distrib(top=i, categ, obs_count, rdom_count, rdom_LD_count)
+    nfil <- sub(".txt", paste(i, ".txt", sep=""), SIGNIF2)
+    write.table(res, file=nfil, row.names=F, quote=F, sep="\t")
+}
 
 
 cat("\n")
@@ -125,10 +127,6 @@ outFileName <- argv[1]
 rm(argv)
 ver(sprintf("Saving data to %s",outFileName))
 save.image(file=outFileName)
-
-
-
-
 
 
 

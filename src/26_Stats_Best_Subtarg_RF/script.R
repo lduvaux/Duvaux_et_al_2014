@@ -99,12 +99,14 @@ print(table(Most_discriminated))
 tab_f <- data.frame(Gene=tab_best_obs[,1], Family, tab_best_obs[,2:7], Most_discriminated, tab_temp, tab_best_obs[,ncol(tab_best_obs)])
 
 jpeg(JPG1, height=480*2, width=480*2, quality=100, res=72*2)
-plot(tab_f$MeanDecreaseGini)
+par(mar=c(5,5.5,4,2))
+plot(tab_f$MeanDecreaseGini, xlab="Subtarget rank", ylab="Subtarget information\n(Mean decrease Gini)")
 abline(v=c(VARIA), lty=3)
 dev.off()
 
 pdf(PDF1)
-plot(tab_f$MeanDecreaseGini)
+par(mar=c(5,5.5,4,2))
+plot(tab_f$MeanDecreaseGini, xlab="Subtarget rank", ylab="Subtarget information\n(Mean decrease Gini)")
 abline(v=c(VARIA), lty=3)
 dev.off()
 

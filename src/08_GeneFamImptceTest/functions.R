@@ -416,17 +416,19 @@ draw_P_same_contig <- function(P_Gn_cont_Gn_obs, distr_rdom_P_Gn_cont_Gn, P_Gns,
 }
 
 draw_rk_distrib <- function(sum_ranks, distr_rdom_rk, distr_rdom_LD_rk, n_imp, kept, plot_old_test=T){
-    mat_p <- as.data.frame(matrix(data=NA, nrow=length(sum_ranks$grp), ncol=3, dimnames=list(sum_ranks$grp, c("Family", "P-val_1", "P-val_LD"))))
 
-    mat_p[,1] <- sum_ranks$grp
+    mat_p <- as.data.frame(matrix(data=NA, nrow=length(sum_ranks$grp), ncol=4, dimnames=list(sum_ranks$grp, c("Family", "Sum_Rank", "P-val_old", "P-val_LD"))))
+    mat_p[,"Family"] <- sum_ranks$grp
+    mat_p[,"Sum_Rank"] <- sum_ranks$rnk
+
     if (plot_old_test){
-        pdf(paste("Distrib-rk_rdom_", n_imp, "_", kept, ".pdf", sep=""))
+        pdf(paste("Res_Distrib-RkSum_rdom_", n_imp, "_", kept, ".pdf", sep=""))
         for(i0 in seq(sum_ranks$grp)){
             i <- sum_ranks$grp[i0]
             obs <- sum_ranks$rnk[which(sum_ranks$grp==i)]
             rg <- range(c(obs, distr_rdom_rk[i,]))
             p_val <- get_pval(obs, distr_rdom_rk[i,], two_sided=TWOSIDED)
-            mat_p[i0, 2] <- p_val
+            mat_p[i0, "P-val_old"] <- p_val
             tit <- paste(i, ifelse(TWOSIDED, " (two sided", " (one sided"), " P= ", p_val, ")", sep="")
             hist(distr_rdom_rk[i,], main=tit, breaks=50, xlab="Sum of the ranks", cex.main=0.9, xlim=c(rg[1], rg[2]))
             srtd <- sort(distr_rdom_rk[i,])
@@ -435,13 +437,13 @@ draw_rk_distrib <- function(sum_ranks, distr_rdom_rk, distr_rdom_LD_rk, n_imp, k
         dev.off()
     }
 
-	pdf(paste("Distrib-rk_rdom-LD_", n_imp, "_",  kept, ".pdf"))
+	pdf(paste("Res_Distrib-RkSum_rdom-LD_", n_imp, "_",  kept, ".pdf", sep=""))
 	for(i0 in seq(sum_ranks$grp)){
         i <- sum_ranks$grp[i0]
         obs <- sum_ranks$rnk[which(sum_ranks$grp==i)]
         rg <- range(c(obs, distr_rdom_LD_rk[i,]))
         p_val <- get_pval(obs, distr_rdom_LD_rk[i,], two_sided=TWOSIDED)
-        mat_p[i0, 3] <- p_val
+        mat_p[i0, "P-val_LD"] <- p_val
         tit <- paste(i, ifelse(TWOSIDED, " (two sided", " (one sided"), " P= ", p_val, ")", sep="")
 		hist(distr_rdom_LD_rk[i,], main=tit, breaks=50, xlab="Sum of the ranks", cex.main=0.9, xlim=c(rg[1], rg[2]))
 		srtd <- sort(distr_rdom_LD_rk[i,])
@@ -454,15 +456,20 @@ draw_rk_distrib <- function(sum_ranks, distr_rdom_rk, distr_rdom_LD_rk, n_imp, k
 
 draw_count_distrib <- function(top, categ, obs_count, rdom_count, rdom_LD_count, plot_old_test=T){
 
+    mat_p <- as.data.frame(matrix(data=NA, nrow=length(categ), ncol=4, dimnames=list(categ, c("Family", "N_in_top", "P-val_old", "P-val_LD"))))
+    mat_p[,"Family"] <- categ
+    mat_p[,"N_in_top"] <- obs_count
+    
     if (plot_old_test){
-        pdf(paste("Distrib-count", top, "_rdom.pdf", sep=""))
-        for(i in 1:length(obs_count)){
-            obs <- obs_count[i]
-            rg <- range(c(obs, rdom_count[i,]))
-            p_val <- get_pval(obs, rdom_count[i,], two_sided=TWOSIDED)
-            tit <- paste(categ[i], ifelse(TWOSIDED, " (two sided", " (one sided"),
+        pdf(paste("Res_Distrib-count", top, "_rdom.pdf", sep=""))
+        for(i0 in 1:length(obs_count)){
+            obs <- obs_count[i0]
+            rg <- range(c(obs, rdom_count[i0,]))
+            p_val <- get_pval(obs, rdom_count[i0,], two_sided=TWOSIDED)
+            mat_p[i0, "P-val_old"] <- p_val
+            tit <- paste(categ[i0], ifelse(TWOSIDED, " (two sided", " (one sided"),
                 " P= ", p_val, ")", sep="")
-            tab <- table(rdom_count[i,])
+            tab <- table(rdom_count[i0,])
             aa <- plot(tab, main=tit, xlab="Counts", cex.main=0.9, xlim=c(rg[1], rg[2]), ylab="Frequency")
             test <- as.numeric(names(tab))==obs
             y <- ifelse(T%in%test, tab[test], 0)
@@ -471,21 +478,22 @@ draw_count_distrib <- function(top, categ, obs_count, rdom_count, rdom_LD_count,
         dev.off()
     }
 
-	pdf(paste("Distrib-count", top, "_rdom-LD.pdf", sep=""))
-	for(i in 1:length(obs_count)){
-        obs <- obs_count[i]
-        rg <- range(c(obs, rdom_LD_count[i,]))
-        p_val <- get_pval(obs, rdom_LD_count[i,], two_sided=TWOSIDED)
-        tit <- paste(categ[i], ifelse(TWOSIDED, " (two sided", " (one sided"),
+	pdf(paste("Res_Distrib-count", top, "_rdom-LD.pdf", sep=""))
+	for(i0 in 1:length(obs_count)){
+        obs <- obs_count[i0]
+        rg <- range(c(obs, rdom_LD_count[i0,]))
+        p_val <- get_pval(obs, rdom_LD_count[i0,], two_sided=TWOSIDED)
+        mat_p[i0, "P-val_LD"] <- p_val
+        tit <- paste(categ[i0], ifelse(TWOSIDED, " (two sided", " (one sided"),
             " P= ", p_val, ")", sep="")
-        tab <- table(rdom_LD_count[i,])
+        tab <- table(rdom_LD_count[i0,])
 		aa <- plot(tab, main=tit, xlab="Counts", cex.main=0.9, xlim=c(rg[1], rg[2]), ylab="Frequency")
         test <- as.numeric(names(tab))==obs
         y <- ifelse(T%in%test, tab[test], 0)
 		points(obs, y, col="red",lwd=5)
 	}
 	dev.off()
-
+    return(mat_p)
 }
 
 get_rk_sum <- function(rked_gns, n_imp, kept, categ){

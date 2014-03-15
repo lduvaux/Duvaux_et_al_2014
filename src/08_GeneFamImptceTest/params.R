@@ -10,5 +10,6 @@ N_IN_TEST <- c(40, 50)
 # outputs
 N_SIM_OLD <- 500
 N_SIM_NEW <- 5000
-SIGNIF <- "Res_FamilySignif_OverImportce_rk.txt"
+SIGNIF <- "Res_Test_RomDistr_rk.txt"
+SIGNIF2 <- "Res_Test_Over-rpstation.txt"
 N_CORES <- 8
