@@ -8,7 +8,7 @@ TWOSIDED <- F
 N_IN_TEST <- c(40, 50)
 
 # outputs
-N_SIM_OLD <- 1000
+N_SIM_OLD <- 500
 N_SIM_NEW <- 5000
 SIGNIF <- "Res_FamilySignif_OverImportce_rk.txt"
-N_CORES <- 4
+N_CORES <- 8

@@ -14,12 +14,11 @@ library(lattice)
 
 main <- function(argv){
 	load(PREVIOUS_DATA)
-#~	print(ls())
+	set.seed(0)
 
     cat("\n")
     print(" #### 1) load data and colors")
         # 1.1) reads count
-#~	raw_data_file <- RAW_DATA
 	alpha_matrix <- PrePro_roundToZeroFive(alpha_matrix)
         # 1.2) remove bad cytisus
     ind_bad <- PrePro_findIndex(BAD_CYTISUS, colnames(alpha_matrix))

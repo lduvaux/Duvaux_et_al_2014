@@ -12,7 +12,7 @@ source("./functions.R")
 
 main <- function(argv){
 	load(PREVIOUS_DATA)
-	
+	set.seed(0)
 	dim(contig_rf$proximity)
 	new <- colnames(contig_rf$test$proximity)%in%rownames(contig_rf$test$proximity)
 

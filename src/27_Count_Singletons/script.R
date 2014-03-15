@@ -1,6 +1,5 @@
 #!/bin/Rscript
 rm(list=ls())
-set.seed(0)
 
 cat("\n")
 print("##### load functions")
@@ -13,6 +12,7 @@ source("./functions.R")
 cat("\n")
 print(" #### 1) load data and colors")
 load(PREVIOUS_DATA)
+set.seed(0)
 
     # 1.1) reads count
 alpha_matrix <- PrePro_roundToZeroFive(alpha_matrix)

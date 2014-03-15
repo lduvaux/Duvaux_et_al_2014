@@ -7,6 +7,7 @@ source("../utils/functions.R")
 source("../utils/globalCtes.R")
 source("params.R")
 
+
 main <- function(argv){
     
 	#############END OF TO_CLEANUP###########
@@ -16,6 +17,8 @@ main <- function(argv){
 	# 0.0) list all files to be processed
 	targ_fils <- dir(DFIL, TARG_PATT, full.names=T)
 	metrics_fils <- dir(DFIL, METRICS_PATT, full.names=T)
+
+    set.seed(0)
 
 	# 0.1) Normalization1: N=C/R where C=mean coverage per bp per bait, R total nuber of aligned read for this individual
 		# 0.1.0) define the number of good targets (less than 5% of reads with Q<10)

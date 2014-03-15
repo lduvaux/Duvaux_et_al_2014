@@ -12,9 +12,8 @@ source("../utils/randomForest_helperFuns.R")
 source("./params.R")
 source("./functions.R")
 
-set.seed(0)
-
 load(PREVIOUS_DATA)
+set.seed(0)
 
 races <- PrePro_fetchRaces(RAW_DATA, CTRL_GUYS , BAD_GUYS)
 races[races=="Medicago_ctrl"] <- "Medicago"

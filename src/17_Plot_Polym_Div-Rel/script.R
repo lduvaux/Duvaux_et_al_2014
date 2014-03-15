@@ -16,7 +16,7 @@ main <- function(argv){
 	# load data
 	load(PREVIOUS_DATA)
 	load(PREVIOUS_DATA2)
-    
+    set.seed(0)
     cat("\n")
     print("#### 1) proba per trimmed per gene family")
 #~    print(samp_size_pol <- table(with(GLMtab_all1, interaction(Family, Polymorphic))))

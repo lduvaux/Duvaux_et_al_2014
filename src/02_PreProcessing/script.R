@@ -6,10 +6,16 @@ source("../utils/getter_functions.R")
 source("./transformDataByFit.R")
 source("./params.R")
 source("./functions.R")
+
+
+
 ##test
 main <- function(argv){
     
     raw_data_file <- PREVIOUS_DATA
+
+    set.seed(0)
+    
     data_mat <- PrePro_fetchRawDataMat(raw_data_file, BAD_GUYS); dbgPrint(dim(data_mat))
     lib_name <- PrePro_LibName(indiv_details=INDIV_DETAILS,indiv=colnames(data_mat))
 

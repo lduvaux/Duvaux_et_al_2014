@@ -10,6 +10,7 @@ main <- function(argv){
     
     raw_data_file <- RAW_DATA
     load(raw_data_file)
+    set.seed(0)
     data_mat <- PrePro_fetchRawDataMat(raw_data_file, BAD_GUYS); dbgPrint(dim(data_mat))
     control_vec <- PrePro_fetchRawCtrl(raw_data_file)
     

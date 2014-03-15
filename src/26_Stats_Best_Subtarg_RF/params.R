@@ -6,6 +6,7 @@ PREVIOUS_DATA3 <- "../03_ProcessingSegmentation.Rdata"
 VARIA <- 40
 
 # poutput
-FIL <- "MostInformativeSubtargets_RF.csv"
+FIL <- "Res_MostInformativeSubtargets_RF.csv"
 PDF1 <- "FigS2_MeanDevcreaseGini.pdf"
+PDF0 <- "Misc_boxplots.pdf"
 JPG1 <- "FigS2_MeanDevcreaseGini.jpg"

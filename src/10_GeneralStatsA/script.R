@@ -9,6 +9,7 @@ source("./functions.R")
 main <- function(argv){
 	
 	load(PREVIOUS_DATA)
+    set.seed(0)
 	alpha_matrix_raw <- PrePro_roundToZeroFive(alpha_matrix)
 	IndivRace_raw <- PrePro_fetchRacesPrior(PRIOR_ASSIGN)
 	races_raw <- unique(IndivRace_raw)
@@ -26,7 +27,6 @@ main <- function(argv){
     dummy <- numeric()
     save(dummy,file=outFileName)
 
-	
 }
 
 cat("dummy logfile\n")

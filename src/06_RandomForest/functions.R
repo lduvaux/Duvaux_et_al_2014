@@ -4,19 +4,6 @@
 
 
 ############################################################# 
-#~getGenePerCategTable <- function(){
-#~	load(PREVIOUS_DATA2)
-#~	N_gene_categ <- as.vector(gene_per_categ[,2])
-#~	names(N_gene_categ) <- as.vector(as.character(gene_per_categ[,1]))
-#~	return(N_gene_categ)
-#~}
-
-#~PreProNJ_GetGeneCateg <-  function(All_bait_categ){
-#~	cate <- unique(All_bait_categ)
-#~	cate <- c("All", cate)
-#~	return(cate)
-#~}
-
 define_alpha_matrix <- function(alpha_matrix, gene_categ, i_categ, baits)
 {
 	categ <- gene_categ[i_categ]

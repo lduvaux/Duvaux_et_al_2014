@@ -14,7 +14,7 @@ source("./functions.R")
 main <- function(argv){
 	# load data
 	load(PREVIOUS_DATA)
-    
+    set.seed(0)
     cat("\n")
     print("#### 1) Frequency of unusual CN in populations per gene families x trimmed categories")
     samp_size1 <- table(with(GLMtab_all2, interaction(Family, trimmed)))
@@ -59,7 +59,6 @@ main <- function(argv){
     dummy <- numeric()
     save(dummy,file=outFileName)
 
-	file.remove("Rplots.pdf")
 }
 
 cat("dummy logfile\n")

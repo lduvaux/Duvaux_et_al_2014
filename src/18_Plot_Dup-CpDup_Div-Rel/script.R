@@ -16,6 +16,7 @@ main <- function(argv){
 	load(PREVIOUS_DATA)
 	load(PREVIOUS_DATA2)
 	load(PREVIOUS_DATA3)
+    set.seed(0)
     Genes_Info <- read.delim(INFO_TARGENE_FILE, stringsAsFactors=F)
 
     # 0) get number of exons per genes
@@ -29,15 +30,15 @@ main <- function(argv){
     LnLengthExon <- sapply(genes, get_length, GLMtab_all2)
     tab <- data.frame(Genes=genes, LgCoding=exp(LnLengthExon), N_exon=N_exon_init, N_exon_trunc=N_exon_clean, Truncated=truncated, Categ=categ)
 
-    boxplot(N_exon_init~truncated)
+#~    boxplot(N_exon_init~truncated)
     inter <- interaction(truncated, categ)
-    boxplot(N_exon_init~inter)
+#~    boxplot(N_exon_init~inter)
     
     print(cor.test(tab$N_exon, tab$LgCoding, method="s"))
-    plot(tab$N_exon, tab$LgCoding, col=as.numeric(tab$Categ))
+#~    plot(tab$N_exon, tab$LgCoding, col=as.numeric(tab$Categ))
     p <- ggplot(tab, aes(x = N_exon, y = LgCoding, color = Categ)) + geom_point() + facet_wrap( ~ Categ, ncol=2)
-    x11()
-    plot(p)
+#~    x11()
+#~    plot(p)
     bad_Or <- c("Or_g64", "Or_g69", "Or_g55")
     bad_P450 <- c("P450_g39", "P450_g42", "P450_g8", "P450_g10")
     gn_categ <- unique(categ)
@@ -108,6 +109,3 @@ if(DEBUG)
 	traceback(main(argv));
 if(!DEBUG)
 	main(argv);
-
-
-

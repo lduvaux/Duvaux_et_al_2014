@@ -10,6 +10,8 @@ main <- function(argv){
 
     load(PREVIOUS_DATA)
     
+    set.seed(0)
+
     raw_data_file <- RAW_DATA
     print(names(data_list))    
     

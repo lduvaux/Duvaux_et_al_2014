@@ -19,6 +19,7 @@ main <- function(argv){
     
         # 1.1) load reads count
     load(PREVIOUS_DATA)
+    set.seed(0)
     v_races <- PrePro_fetchRaces(RAW_DATA, CTRL_GUYS, BAD_GUYS)
         # 1.2) remove bad cytisus
     ind_bad <- PrePro_findIndex(BAD_CYTISUS, colnames(alpha_matrix))

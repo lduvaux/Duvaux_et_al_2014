@@ -3,25 +3,18 @@ grep_first <- function(patt, vec, value=T){
     return(grep(paste("^", patt, sep=""), vec, value=value)[1])
 }
 
-count_categ <- function(){
-    load(PREVIOUS_DATA2)
-    noms <- rownames(alpha_matrix)
-    print(system.time(ct_categ <- table(sapply(noms, get_elements))))
-    return(ct_categ)
-}
-
 get_contig <- function(target, info_TargGene){
     return(info_TargGene$contigV2[info_TargGene$NewTargetName==target])
 }
 
-addZeroImpGenes <- function(xx){
+addZeroImpGenes <- function(xx, alpha_matrix){
 
 	import_genes <- sapply(names(xx),function(x){
 		st <- strsplit(x,"_")[[1]][1:2]
 		return(paste(st[1],st[2],sep="_"))
 		})
 
-	all_genes <- getAllGeneNames()
+	all_genes <- getAllGeneNames(alpha_matrix)
 	zero_imp <- all_genes[!(all_genes %in% import_genes)]
 	v <- rep(0,length(zero_imp))
 	names(v) <- zero_imp
@@ -29,8 +22,7 @@ addZeroImpGenes <- function(xx){
 	return(out)
 }
 
-getAllGeneNames <- function(){
-    load(PREVIOUS_DATA2)
+getAllGeneNames <- function(alpha_matrix){
     data_mat <- alpha_matrix
 	out <- unique(sapply(rownames(data_mat),function(x){
 		st <- strsplit(x,"_")[[1]][1:2]
@@ -340,9 +332,8 @@ get_P_same_contig <- function(noms1, noms2, info_TargGene_fil, verbose=T){
     return(P)
 }
 
-get_1rdom_bait_per_gn <- function (gene_names){
-    
-    load(PREVIOUS_DATA2)
+get_1rdom_bait_per_gn <- function (gene_names, alpha_matrix){
+
     noms <- rownames(alpha_matrix)
     res <- sapply(gene_names, grep_first, noms, value=T)
     return(res)
@@ -424,23 +415,26 @@ draw_P_same_contig <- function(P_Gn_cont_Gn_obs, distr_rdom_P_Gn_cont_Gn, P_Gns,
     dev.off()
 }
 
-draw_rk_distrib <- function(sum_ranks, distr_rdom_rk, distr_rdom_LD_rk, n_imp, kept){
+draw_rk_distrib <- function(sum_ranks, distr_rdom_rk, distr_rdom_LD_rk, n_imp, kept, plot_old_test=T){
     mat_p <- as.data.frame(matrix(data=NA, nrow=length(sum_ranks$grp), ncol=3, dimnames=list(sum_ranks$grp, c("Family", "P-val_1", "P-val_LD"))))
+
     mat_p[,1] <- sum_ranks$grp
-    pdf(paste("Distrib-rk_rdom_", n_imp, "_", kept, ".pdf", sep=""))
-	for(i0 in seq(sum_ranks$grp)){
-        i <- sum_ranks$grp[i0]
-        obs <- sum_ranks$rnk[which(sum_ranks$grp==i)]
-        rg <- range(c(obs, distr_rdom_rk[i,]))
-        p_val <- get_pval(obs, distr_rdom_rk[i,], two_sided=TWOSIDED)
-        mat_p[i0, 2] <- p_val
-        tit <- paste(i, ifelse(TWOSIDED, " (two sided", " (one sided"), " P= ", p_val, ")", sep="")
-		hist(distr_rdom_rk[i,], main=tit, breaks=50, xlab="Sum of the ranks", cex.main=0.9, xlim=c(rg[1], rg[2]))
-		srtd <- sort(distr_rdom_rk[i,])
-		abline(v = obs,col="red",lwd=3)
-	}
-	dev.off()
-    
+    if (plot_old_test){
+        pdf(paste("Distrib-rk_rdom_", n_imp, "_", kept, ".pdf", sep=""))
+        for(i0 in seq(sum_ranks$grp)){
+            i <- sum_ranks$grp[i0]
+            obs <- sum_ranks$rnk[which(sum_ranks$grp==i)]
+            rg <- range(c(obs, distr_rdom_rk[i,]))
+            p_val <- get_pval(obs, distr_rdom_rk[i,], two_sided=TWOSIDED)
+            mat_p[i0, 2] <- p_val
+            tit <- paste(i, ifelse(TWOSIDED, " (two sided", " (one sided"), " P= ", p_val, ")", sep="")
+            hist(distr_rdom_rk[i,], main=tit, breaks=50, xlab="Sum of the ranks", cex.main=0.9, xlim=c(rg[1], rg[2]))
+            srtd <- sort(distr_rdom_rk[i,])
+            abline(v = obs,col="red",lwd=3)
+        }
+        dev.off()
+    }
+
 	pdf(paste("Distrib-rk_rdom-LD_", n_imp, "_",  kept, ".pdf"))
 	for(i0 in seq(sum_ranks$grp)){
         i <- sum_ranks$grp[i0]
@@ -458,23 +452,25 @@ draw_rk_distrib <- function(sum_ranks, distr_rdom_rk, distr_rdom_LD_rk, n_imp, k
     return(mat_p)
 }
 
-draw_count_distrib <- function(top, categ, obs_count, rdom_count, rdom_LD_count){
-    
-	pdf(paste("Distrib-count", top, "_rdom.pdf", sep=""))
-	for(i in 1:length(obs_count)){
-        obs <- obs_count[i]
-        rg <- range(c(obs, rdom_count[i,]))
-        p_val <- get_pval(obs, rdom_count[i,], two_sided=TWOSIDED)
-        tit <- paste(categ[i], ifelse(TWOSIDED, " (two sided", " (one sided"),
-            " P= ", p_val, ")", sep="")
-        tab <- table(rdom_count[i,])
-		aa <- plot(tab, main=tit, xlab="Counts", cex.main=0.9, xlim=c(rg[1], rg[2]), ylab="Frequency")
-        test <- as.numeric(names(tab))==obs
-        y <- ifelse(T%in%test, tab[test], 0)
-		points(obs, y, col="red",lwd=5)
-	}
-	dev.off()
-    
+draw_count_distrib <- function(top, categ, obs_count, rdom_count, rdom_LD_count, plot_old_test=T){
+
+    if (plot_old_test){
+        pdf(paste("Distrib-count", top, "_rdom.pdf", sep=""))
+        for(i in 1:length(obs_count)){
+            obs <- obs_count[i]
+            rg <- range(c(obs, rdom_count[i,]))
+            p_val <- get_pval(obs, rdom_count[i,], two_sided=TWOSIDED)
+            tit <- paste(categ[i], ifelse(TWOSIDED, " (two sided", " (one sided"),
+                " P= ", p_val, ")", sep="")
+            tab <- table(rdom_count[i,])
+            aa <- plot(tab, main=tit, xlab="Counts", cex.main=0.9, xlim=c(rg[1], rg[2]), ylab="Frequency")
+            test <- as.numeric(names(tab))==obs
+            y <- ifelse(T%in%test, tab[test], 0)
+            points(obs, y, col="red",lwd=5)
+        }
+        dev.off()
+    }
+
 	pdf(paste("Distrib-count", top, "_rdom-LD.pdf", sep=""))
 	for(i in 1:length(obs_count)){
         obs <- obs_count[i]

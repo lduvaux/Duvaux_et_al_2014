@@ -11,10 +11,11 @@ source("../utils/randomForest_helperFuns.R")
 
 source("params.R")
 load(PREVIOUS_DATA)
+load(PREVIOUS_DATA2)
 source("params.R")  # needed as the previous will load former params!
 source("./functions.R")
 
-set.seed(1)
+set.seed(0)
 
 cat("\n")
 print("########################################################
@@ -24,7 +25,7 @@ Perform test to detect gene category with significant effect to distinguish race
 
 cat("\n")
 print("##### 1) observed sum of ranks")
-genes <- addZeroImpGenes(gini_contig_rf)
+genes <- addZeroImpGenes(gini_contig_rf, alpha_matrix)
 group <- sapply(names(genes), get_elements)
 categ <- sort(unique(group))
 final_nber <- length(gini_contig_rf)
@@ -36,7 +37,7 @@ rownames(sum_ranks) <- categ
 cat("\n")
 print("##### 2) P being same contig")
 nn <- paste(sapply(names(genes), collapse_elements, sep="_", what=1:2, colla="_"), "_", sep="")
-bait_nam <- get_1rdom_bait_per_gn(nn)
+bait_nam <- get_1rdom_bait_per_gn(nn, alpha_matrix)
 
 data4plot_same_cont <- get_data4plot_same_contig(gini_gene_rf, INFO_TARGENE_FILE, bait_nam, n_sim=N_SIM_OLD, n_cores = N_CORES)
 
@@ -70,7 +71,6 @@ draw_P_same_contig(P_Gn_obs,
 cat("\n")
 print("##### 4) compute the expected distribution of ranks per gene category")
         # 4.4.1) random drawing (Gns and PMTs distinguished)
-#~    N_bait_alpMat <- count_categ()
 distr_rk_rdom_mat <- get_rdom_rk_mat(bait_nam, N_cate_rfGn, gini_gene_rf, INFO_TARGENE_FILE, gini_contig_rf, n_sim=N_SIM_OLD, n_cores = N_CORES)
 
         # 4.4.2) random_LD drawing (Gns and PMTs distinguished)
@@ -84,8 +84,7 @@ draw_rk_distrib(sum_ranks, distr_rdom_rk, distr_rdom_LD_rk, final_nber, length(g
 
             # 4.4.3.1) for a subset of genes
 dat_obs <- names(genes)
-for (i in c(N_IN_TEST, final_nber))
-{
+for (i in c(N_IN_TEST, final_nber)) {
     print(paste("Sum of ranks over ", i, " baits (", i, " baits ranked from ", i, " (best) to 1 (less good))", sep=""))
     # data obs
     sum_ranks0 <- get_rk_sum(dat_obs, n_imp=i, kept=i, categ)
@@ -105,19 +104,18 @@ for (i in c(N_IN_TEST, final_nber))
 }
 
 
-cat("\n")
-print("##### 5) draw the expected number of gene per categ in the top x")
-for (i in c(30, 50, final_nber))
-{
-    print(paste("Cunt baits par category over the top ", i, " baits", sep=""))
-    categ <- sum_ranks[,1]
-    obs_count <- get_count_top(names(gini_contig_rf), top=i, categ)
-    rdom_count <- apply(distr_rk_rdom_mat, 2, get_count_top,
-        top=i, categ)
-    rdom_LD_count <- apply(distr_rk_rdom_LD_mat, 2, get_count_top,
-        top=i, categ)
-    draw_count_distrib(top=i, categ, obs_count, rdom_count, rdom_LD_count)
-}
+#~cat("\n")
+#~print("##### 5) draw the expected number of gene per categ in the top x")
+#~for (i in c(N_IN_TEST, final_nber)) {
+#~    print(paste("Cunt baits par category over the top ", i, " baits", sep=""))
+#~    categ <- sum_ranks[,1]
+#~    obs_count <- get_count_top(names(gini_contig_rf), top=i, categ)
+#~    rdom_count <- apply(distr_rk_rdom_mat, 2, get_count_top,
+#~        top=i, categ)
+#~    rdom_LD_count <- apply(distr_rk_rdom_LD_mat, 2, get_count_top,
+#~        top=i, categ)
+#~    draw_count_distrib(top=i, categ, obs_count, rdom_count, rdom_LD_count)
+#~}
 
 
 cat("\n")

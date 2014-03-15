@@ -28,6 +28,7 @@ GLMtab_1Pgen0 <- GLMtab_all1[ind,]
 GLMtab_1Pgen <- subset(GLMtab_1Pgen0, Polymorphic==T)
 table(GLMtab_1Pgen$trimmed)
 
+pdf(PDF0)
 boxplot(GLMtab_1Pgen$LnIntronLength ~ GLMtab_1Pgen$trimmed)
 print(t.test(GLMtab_1Pgen$LnIntronLength ~ GLMtab_1Pgen$trimmed))
 print(kruskal.test(GLMtab_1Pgen$LnIntronLength ~ GLMtab_1Pgen$trimmed))
@@ -35,7 +36,7 @@ print(kruskal.test(GLMtab_1Pgen$LnIntronLength ~ GLMtab_1Pgen$trimmed))
 boxplot(GLMtab_1Pgen$LnGeneLength ~ GLMtab_1Pgen$trimmed)
 print(t.test(GLMtab_1Pgen$LnGeneLength ~ GLMtab_1Pgen$trimmed))
 print(kruskal.test(GLMtab_1Pgen$LnGeneLength ~ GLMtab_1Pgen$trimmed))
-
+dev.off()
 
 cat("\n")
 print("#####  1) write list of most informative genes (1 per contig)")
@@ -67,7 +68,7 @@ print("#####  3) Estimate the number and ranks of CDD genes in the best genes")
     # 3.1) gather information
 gn_best_obs <- sapply(rownames(tab_best_obs), collapse_elements, what=1:2)
 categ <- sapply(rownames(tab_best_obs), get_elements, what=1)
-data_CDD_obs <- get_info_rking(tab_best_obs, GLMtab_all1, v_races, varia=40)
+data_CDD_obs <- get_info_rking(tab_best_obs, GLMtab_all1, v_races, varia=VARIA)
 tab_best_obs <- data.frame(Gene, data_CDD_obs$info_CDD, tab_best_obs)
 
     # 3.2) add CN info to table
@@ -99,25 +100,21 @@ tab_f <- data.frame(Gene=tab_best_obs[,1], Family, tab_best_obs[,2:7], Most_disc
 
 jpeg(JPG1, height=480*2, width=480*2, quality=100, res=72*2)
 plot(tab_f$MeanDecreaseGini)
-abline(v=c(40), lty=3)
+abline(v=c(VARIA), lty=3)
 dev.off()
 
 pdf(PDF1)
 plot(tab_f$MeanDecreaseGini)
-abline(v=c(40), lty=3)
+abline(v=c(VARIA), lty=3)
 dev.off()
 
-
-#~tab_40 <- tab_f[1:40,]
-#~table(tab_40$Family)
-#~table(tab_40$Most_discriminated)
 
 write.table(tab_f, file=FIL, sep="\t", quote=F, row.names=F)
 
 
 cat("\n")
 print("#####  4) Over-representation of CDD genes in disciminating targets: homemade test to account for sampling scheme (best disc race only)")
-    # 4.1) stat for all best subtargets
+    # 4.1) test the sum of the rank
 N_CDD <- data_CDD_obs$N_CDD
 sum_rk_obs <- data_CDD_obs$sum_rank_CDD
 simul_sum_rk <- replicate(5000, sum(sample(nrow(tab_best_obs):1, N_CDD)))
@@ -128,14 +125,15 @@ print(P_val_rk_obs <- get_pval(sum_rk_obs, simul_sum_rk, two_sided=F))
 hist(simul_sum_rk)
 abline(v=sum_rk_obs, col="red")
 
-    # 4.1) stat for the best 50 subtargets
+    # 4.2) test the number of CDD in the top varia
 N_CDD_varia <- data_CDD_obs$N_CDD_varia
-sum_rk_obs_varia <- data_CDD_obs$sum_rank_CDD_varia
-simul_sum_rk_varia <- replicate(5000, sum(sample(VARIA:1, N_CDD_varia)))
-P_val_rk_obs_varia <- get_pval(sum_rk_obs_varia, simul_sum_rk_varia, two_sided=F)
+simul_N_in_varia <- replicate(5000, length(
+    which(sample(1:nrow(tab_best_obs), N_CDD)<=VARIA)
+    ))
+P_val_N_in_varia <- get_pval(N_CDD_varia, simul_N_in_varia, two_sided=F)
 
-hist(simul_sum_rk_varia)
-abline(v=sum_rk_obs_varia, col="red")
+hist(simul_N_in_varia)
+#~abline(v=sum_rk_obs_varia, col="red")
 
     
 cat("\n")
@@ -145,4 +143,3 @@ argv <- commandArgs(TRUE)[1]
 outFileName <- argv[1]
 ver(sprintf("Saving data to %s",outFileName))
 save.image(file=outFileName)
-

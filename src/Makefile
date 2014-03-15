@@ -2,8 +2,7 @@ GLMs := 12_
 
 toclean := $(shell ls [0-9][0-9]_*/Makefile |sed s/Makefile//g)
 
-all : 22_ 24_ 25_ 27_ 12_ 14_ 15_ 16_ 17_ 18_ 07_ 08_ 09_ 26_ 19_
-
+all : 22_ 24_ 25_ 27_ 14_ 15_ 16_ 17_ 18_ 19_ 07_ 09_ 08_ 26_
 
 clean:
 	rm -f *.Rdata
@@ -33,8 +32,8 @@ cleanall: clean
 #13_: 11_
 	#@$(MAKE) -C 13_Binom2Steps-polym_Diverg-Related
 
-12_: 11_
-	@$(MAKE) -C 12_Multinom-polym_Diverg-Related
+#12_: 11_
+	#@$(MAKE) -C 12_Multinom-polym_Diverg-Related
 
 11_: 03_ 23_
 	@$(MAKE) -C 11_GLMTruncFetchData
