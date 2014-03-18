@@ -89,3 +89,10 @@ Draw_pdf <- function(fonction, nom_pdf)
 	fonction
 	dev.off()
 }
+
+Draw_jpg <- function(fonction, nom_jpg, height=480*2, width=480*2, quality=100, res=72*2)
+{
+	jpeg(nom_jpg, height=height, width=width, quality=quality, res=res)
+	fonction
+	dev.off()
+}

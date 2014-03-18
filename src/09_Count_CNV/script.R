@@ -42,8 +42,9 @@ main <- function(argv){
     CNV_distr0 <- table(as.vector(alpha_matrix))
     CNV_distr <- CNV_distr0[-3]
     CNV_distr_pro <- round(CNV_distr/sum(CNV_distr), 5)*100
-    tab <- rbind(names(CNV_distr_pro), CNV_distr_pro)
-    write.table(tab, file=TAB_CNV_DISTR, sep="\t", row.names=F, quote=F, col.names=F)
+    Draw_jpg(draw_bar_chart(CNV_distr_pro), BARPLOT1.1)
+    Draw_pdf(draw_bar_chart(CNV_distr_pro), BARPLOT1.2)
+    write.table(t(CNV_distr_pro), file=TAB_CNV_DISTR, sep="\t", row.names=F, quote=F, col.names=T)
     
     
         print(" # 2.1) subtargets")
@@ -119,12 +120,8 @@ main <- function(argv){
     print(" # 2.6) draw venns")
     l_venns <- list(Subtargets=l4venn_bait, Targets=l4venn_targ, Genes=l4venn_gn, Promoters=l4venn_pmt)
 
-    jpeg(VENN1.1)
-    draw_venn(l_venns)
-    dev.off()
-    pdf(VENN1.2)
-    draw_venn(l_venns)
-    dev.off()
+    Draw_jpg(draw_venn(l_venns), VENN1.1)
+    Draw_pdf(draw_venn(l_venns), VENN1.2)
 
 
 #~    cat("\n")

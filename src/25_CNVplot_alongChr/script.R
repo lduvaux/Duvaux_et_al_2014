@@ -68,9 +68,6 @@ main <- function(argv){
                 l_data <- get_data4plot(gen, t_targ, subtarg, alpha_matrix, adapt=T)
                 tab[i,] <- l_data$stats
 
-                # draw plot
-    #~            pdf("test.pdf")
-    #~              tab_cnv <- l_data$lcnv; tab_star <- l_data$lt_star; tab_tar <- l_data$lt_targ; yli=l_data$rgg; centz=c(0.75,1.25); c_ex=.9; l_wd=.9; races=v_races
                 plot_CNV_chr(tab_cnv=l_data$lcnv, tab_star=l_data$lt_star, tab_tar=l_data$lt_targ, c_ex=0.5, l_wd=.5, yli=l_data$rgg, races=v_races)
                 cat ("###################")
                 if (i%%20==0) {cat("\n") ; print(i)}
@@ -89,8 +86,8 @@ main <- function(argv){
     print(" #### 3) plots for the paper")
     l_gn <- GN_FIG2
     m_rg <- cbind(rep(YLI1, 6), YLI2)
-    print(system.time({
-        pdf(PDF2)
+
+    Draw_pdf({
         layout(MAT_LAYOUT)
         par(mar=c(4, 4, 2, 2), mgp=c(1.5,0.5,0))
         for (i in seq(l_gn))
@@ -99,20 +96,16 @@ main <- function(argv){
             gen <- l_gn[i]
             l_data <- get_data4plot(gen, t_targ, subtarg, alpha_matrix, adapt=T)
 
-            # draw plot
-#~            pdf("test.pdf")
-#~              tab_cnv <- l_data$lcnv; tab_star <- l_data$lt_star; tab_tar <- l_data$lt_targ; yli=l_data$rgg; centz=c(0.75,1.25); c_ex=.9; l_wd=.9; races=v_races
             colos_race <- plot_CNV_chr(tab_cnv=l_data$lcnv, tab_star=l_data$lt_star, tab_tar=l_data$lt_targ, c_ex=0.5, l_wd=.5, yli=m_rg[i,], races=v_races, transp=TRANSP, alphaa=ALPHA)
             cat ("###################")
             if (i%%20==0) {cat("\n") ; print(i)}
             cat ("###################\n")
 #~            dev.off()
         }
-        dev.off()
-    }))
+    }, PDF2)
 
-    jpeg(JPG, height=480*2, width=480*2, quality=100, res=72*2)
-    {
+
+    Draw_jpg({
         layout(MAT_LAYOUT)
         par(mar=c(4, 4, 2, 2), mgp=c(1.5,0.5,0))
         for (i in seq(l_gn))
@@ -123,8 +116,7 @@ main <- function(argv){
             # draw plot
             colos_race <- plot_CNV_chr(tab_cnv=l_data$lcnv, tab_star=l_data$lt_star, tab_tar=l_data$lt_targ, c_ex=0.5, l_wd=.5, yli=m_rg[i,], races=v_races, transp=TRANSP, alphaa=ALPHA)
         }
-        dev.off()
-    }
+    },JPG)
 
 
     #############################

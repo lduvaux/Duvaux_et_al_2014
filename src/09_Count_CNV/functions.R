@@ -29,7 +29,7 @@ caract_bait_race <- function(race, noms, vect_bait, x){
     return(res)}
 
 
-draw_venn <- function(venns){
+draw_venn <- function(venns, font = "serif", marg = 0.2, sub_pos= c(0.5, 0.78), cat_dist = -0.06){
 
 #~    plot.new() 
     # setup layout
@@ -50,8 +50,8 @@ draw_venn <- function(venns){
         vp <- paste("vp.", i, sep="")
         pushViewport(get(vp))
 
-        coco <- c("red", "blue")
-        temp <- venn.diagram(venns[[i]], fill = coco, alpha = c(0.5, 0.5), cex = 1,cat.fontface = 2, lty =2, filename = NULL, sub=names(venns)[i], margin = 0.2, sub.pos = c(0.5, 0.78), sub.col="black", sub.fontface = "bold", sub.cex = 1.5, cat.col =coco)
+        coco <- c("darkgrey", "black")
+        temp <- venn.diagram(venns[[i]], fill = coco, alpha = c(0.5, 0.5), cex = 1.3,cat.fontface = 2, lty =1, lwd=1, filename = NULL, sub=names(venns)[i], margin = marg, sub.pos = sub_pos, sub.col="black", sub.fontface = "bold", sub.cex = 1.6, cat.col ="black", fontfamily = font, cat.fontfamily = font, sub.fontfamily = font, cat.dist = cat_dist, cat.cex = 1.3)
 
         # start new base graphics in first viewport
 #~        if (i==1) par(new=TRUE, fig=gridFIG())
@@ -60,4 +60,10 @@ draw_venn <- function(venns){
         # done with the first viewport
         popViewport()
     }
+}
+
+draw_bar_chart <- function(CNV_distr_pro, cex=1.2){
+    par(mar=c(5.2, 4.2, 4, 1))
+    mp <- barplot(CNV_distr_pro, axisnames = FALSE, xlab="Copy number", ylab="Frequency", cex.axis = cex, cex.names = cex, cex.lab = cex)
+    text(mp-0.3, par("usr")[3], labels = names(CNV_distr_pro), srt = 45, adj = c(1.1,1.1), xpd = TRUE, cex=cex+.1)
 }
