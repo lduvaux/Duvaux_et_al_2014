@@ -84,7 +84,7 @@ main <- function(argv){
     print("#### 2) Correalation between exon length and proba of complete duplication/deletion ")
     Complete_CNV <- ifelse(GLMtab_all2$Duplication=="3_CpDup", 1, 0)
     GLMtab_all2[,"Complete_CNV"] <- Complete_CNV
-    gplot <- ggplot(GLMtab_all2, aes(x = LnExonLength, y = Complete_CNV, color = trimmed)) + geom_point(alpha=0.7) + labs(colour = "Truncated") + coord_fixed(ratio=2)
+    gplot <- ggplot(GLMtab_all2, aes(x = LnExonLength, y = Complete_CNV, color = trimmed)) + geom_point(alpha=0.7) + labs(colour = "Truncated") + coord_fixed(ratio=2) + labs(x = "Coding sequence length")
     gplot <- gplot + stat_smooth(method = 'glm', family = 'binomial')
 
     ggsave(PDF2)
