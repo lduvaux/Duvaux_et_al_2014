@@ -98,7 +98,7 @@ main <- function(argv){
     {
         ca <- categ[i]
         # total
-        ind <- grep(paste(ca, "_", sep=""), rownames(CNV_count_gn_pmt))
+        ind <- grep(paste("^", ca, "_", sep=""), rownames(CNV_count_gn_pmt))
         N_cat <- nrow(CNV_count_gn_pmt[ind,])
 
         # polym
