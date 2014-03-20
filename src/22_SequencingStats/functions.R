@@ -62,4 +62,23 @@ new_grep <- function(pattern, x)
 	return(res)
 }
 
+######################
+    get_insert_size <- function(fil, rpint=F){
+    if (rpint) print(fil)
+    con <- file(fil, open="r")
+    txt <- readLines(con)
+    close(con)
+    gd_vec <- txt[8]
+    ins_size <- as.numeric(unlist(strsplit(gd_vec, "\t"))[[1]])
+    return(ins_size)
+}
+
+batch_ins_size <- function(path, pattern){
+    files <- dir(path, pattern)
+    sample_name <- sapply(files, collapse_elements)
+    fils <- dir(path, pattern, full.names = T)
+    insert_size <- as.numeric(sapply(fils, get_insert_size))
+    tab <- data.frame(files, sample_name, insert_size)
+    return(tab)
+}
 

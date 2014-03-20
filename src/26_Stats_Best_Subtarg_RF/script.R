@@ -98,7 +98,7 @@ ind_race <- apply(tab_best_obs[,races], 1, which.max)
 Most_discriminated <- races[ind_race]
 CN_most_Discr <- sapply(seq(ind_race), function(x) tab_med[x, ind_race[x]])
 print(table(Most_discriminated))
-tab_f <- data.frame(Gene=tab_best_obs[,1], Family, tab_best_obs[,2:4], Most_discriminated, CN_most_Discr, tab_best_obs[,5:7], tab_temp, tab_best_obs[,ncol(tab_best_obs)])
+tab_f <- data.frame(Gene=tab_best_obs[,1], Family, tab_best_obs[,2:4], Most_discriminated, CN_most_Discr, tab_best_obs[,5:7], tab_temp, tab_best_obs[,"MeanDecreaseAccuracy"])
 
 jpeg(JPG1, height=480*2, width=480*2, quality=100, res=72*2)
 par(mar=c(5,5.5,4,2))
