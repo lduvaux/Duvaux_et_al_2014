@@ -12,3 +12,10 @@ testing.R
 result_*.csv
 *~lock.*
 *.xls
+GLM*.txt
+result_*.txt
+StackOverf_MuMin-Multinom_cplte.txt
+TableS*.csv
+StackOverf_dredgeInScript_1.R
+*.log
+Res_*
