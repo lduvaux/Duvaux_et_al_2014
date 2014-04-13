@@ -8,7 +8,7 @@ BAD_GUYS <- c("L.ped._82_T47", "L.ped._84_T49", "Medicago_210_T65")
 
 BAD_CYTISUS <- c("Cytisus_115_T1", "Cytisus_127_T2", "Cytisus_128_T3", "Cytisus_16_T7", "Cytisus_76_T10", "Cytisus_77_T11", "Cytisus_79_T12", "Cytisus_80_T13", "Cytisus_87_T14", "Cytisus_89_T15", "Cytisus_90_T16", "Cytisus_92_T17")
 
-RACE_UNKNOWN <- c("L.corn._239_T35", "L.corn._243_T36", "L.ped._N184_T54", "Lathyrus_167_T18", "Lathyrus_282_T25", "Ononis_277_T85", "Pisum_192_T93", "Pisum_193_T94", "Pisum_246_T96", "Pisum_247_T97", "Pisum_248_T98", "Pisum_249_T99", "Trifolium_106_T106", "Trifolium_136_T110", "Trifolium_198_T111", "Trifolium_47_T112", "Trifolium_48_T113", "Trifolium_57_T114", "Trifolium_N185_T117", "Trifolium_N322_T119", "Trifolium_N324_T120")  # Med2 as been tested as unknown => very similar to Med1, so not included here anymore.
+RACE_UNKNOWN <- c("L.corn._239_T35", "L.corn._243_T36", "L.ped._N184_T54", "Lathyrus_167_T18", "Lathyrus_282_T25", "Ononis_277_T85", "Pisum_192_T93", "Pisum_193_T94", "Pisum_246_T96", "Pisum_247_T97", "Pisum_248_T98", "Pisum_249_T99", "Pisum_5_T100", "Trifolium_106_T106", "Trifolium_136_T110", "Trifolium_198_T111", "Trifolium_47_T112", "Trifolium_48_T113", "Trifolium_57_T114", "Trifolium_N185_T117", "Trifolium_N322_T119", "Trifolium_N324_T120")  # Med2 as been tested as unknown => very similar to Med1, so not included here anymore.
 
 INDIV_DETAILS <- read.delim("../00_RawData/02-1_SummarySequencingPerindividual.txt", stringsAsFactors =F)
 PRIOR_ASSIGN <- read.delim("../00_RawData/00_filtering_good_Baits/IndivAssign_STRUCTUREandRF_20130814.final.csv", stringsAsFactors =F)
