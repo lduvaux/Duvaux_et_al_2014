@@ -42,29 +42,57 @@ plot_dble_hist(vst_val=vec_vst, list_fam=l_ind_fam, nam_plot=PLOT_HIST_VST)  # 2
 
 
 cat("\n")
-print(" #### 29.4) Compute average Vst per gene/PMT - 1 value per segment")
-# 29.4.0) load data
+print(" #### 29.3) Compute average Vst per gene/PMT - 1 value per segment")
+print("# 29.3.0) load data")
 load(RAW_ALPHA)
 alpha_matrix0 <- alpha_matrix
 alpha_matrix <- PrePro_roundToZeroFive(alpha_matrix)
 gd <- colnames(alpha_matrix)%in%colnames(tab_cnv)
 alpha_matrix <- alpha_matrix[,gd]
+alpha_matrix0 <- alpha_matrix0[,gd]
 
-# 29.4.1) for each gene, get one value per segment
+print("# 29.3.1) for each gene, get one value per segment")
 m_alpha_seg <- get_alpha_seg(alpha_matrix)
+m_alpha_seg0 <- get_alpha_seg(alpha_matrix0)
 
-# 29.4.2) compute Vst per gene (average of segments per genes)
+print("# 29.3.2) compute Vst per gene (average of segments per genes)")
+    # rounded
 gene_Vst <- compute_gene_Vst(m_alpha_seg, races)
 bad <- is.na(gene_Vst)
 gene_Vst <- gene_Vst[!bad]
 
-# 29.4.3) prepare data per families
-l_ind_fam2 <- sort_name_per_categ(names(gene_Vst))
+    # raw estimates
+gene_Vst0 <- compute_gene_Vst(m_alpha_seg0, races)
+bad <- is.na(gene_Vst0)
+gene_Vst0 <- gene_Vst0[!bad]
 
-# 29.4.4) plot Vst per family
+
+print("# 29.3.3) prepare data per families")
+l_ind_fam2 <- sort_name_per_categ(names(gene_Vst))
+l_ind_fam02 <- sort_name_per_categ(names(gene_Vst0))
+
+print("# 29.3.4) plot Vst per family")
+    print("# 29.3.4.1) rounded alpha")
 plot_dble_hist(vst_val=gene_Vst, list_fam=l_ind_fam2, nam_plot=PLOT_HIST_VST2, brks=seq(-1.8, 1, by=0.1), y_lim=c(0,3))
 plot_dble_hist(vst_val=gene_Vst, list_fam=l_ind_fam2, nam_plot=PLOT_HIST_VST3, brks=seq(-1.8, 1, by=0.2), y_lim=c(0,2))
 plot_dble_hist(vst_val=gene_Vst, list_fam=l_ind_fam2, nam_plot=PLOT_HIST_VST4, brks=seq(-2, 1, by=0.3), y_lim=c(0,2))
+
+    print("# 29.3.4.1) raw alpha")
+plot_dble_hist(vst_val=gene_Vst0, list_fam=l_ind_fam02, nam_plot=PLOT_HIST_VST02, brks=seq(-1.8, 1, by=0.1), y_lim=c(0,3))
+plot_dble_hist(vst_val=gene_Vst0, list_fam=l_ind_fam02, nam_plot=PLOT_HIST_VST03, brks=seq(-1.8, 1, by=0.2), y_lim=c(0,2))
+plot_dble_hist(vst_val=gene_Vst0, list_fam=l_ind_fam02, nam_plot=PLOT_HIST_VST04, brks=seq(-2, 1, by=0.3), y_lim=c(0,2))
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

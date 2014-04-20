@@ -13,3 +13,7 @@ PLOT_HIST_VST <- "Vst_Histog_PolymSubtargets.pdf"
 PLOT_HIST_VST2 <- "Vst_Histog_geneVst_bin0.1.pdf"
 PLOT_HIST_VST3 <- "Vst_Histog_geneVst_bin0.2.pdf"
 PLOT_HIST_VST4 <- "Vst_Histog_geneVst_bin0.3.pdf"
+
+PLOT_HIST_VST02 <- "Vst_Histog_geneVst-rawAlpha_bin0.1.pdf"
+PLOT_HIST_VST03 <- "Vst_Histog_geneVst-rawAlpha_bin0.2.pdf"
+PLOT_HIST_VST04 <- "Vst_Histog_geneVst-rawAlpha_bin0.3.pdf"
