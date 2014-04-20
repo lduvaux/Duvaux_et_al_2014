@@ -34,11 +34,92 @@ makeTransparent<-function(someColor, alpha=100)
     blue=curcoldata[3],alpha=alpha, maxColorValue=255)})
 }
 
-plot_dble_hist <- function(famille, list_ind, xlim=c(-1.8, 1), ylim=c(0,2), breaks=seq(-1.8, 1, by=0.1), alpha, color){
-
-    main <- paste("Vst Distribution of control\nand ", famille, " genes", sep="")
+dble_hist <- function(vec_vst, famille, list_ind, xlim, ylim, breaks, alpha, color){
+    N_control <- length(list_ind[["Control"]])
+    N_other <- length(list_ind[[famille]])
+    main <- paste("Vst Distribution of control (N=", N_control, ")\nand ", famille, " genes (N=", N_other, ")", sep="")
     hist(vec_vst[list_ind[["Control"]]],freq=F, xlim=xlim, ylim=ylim, breaks=breaks, xlab="Vst", main=main)
     par(new=T)
     colo <- makeTransparent(color, alpha)
     hist(vec_vst[list_ind[[famille]]],freq=F, xlim=xlim, ylim=ylim, xlab="", ylab="",col=colo, border=colo, breaks=breaks, main="")
 }
+
+plot_dble_hist <- function(vst_val, famm=c("Gr", "Or", "P450"), list_fam, colos=c("blue", "purple", "green"), x_lim=c(-1.8, 1), y_lim=c(0,2), brks=seq(-1.8, 1, by=0.1), alpha=70, nam_plot){
+    pdf(nam_plot)
+    layout(matrix(1:4, nrow=2, ncol=2, byrow=T))
+    sapply(1:length(famm), function(x) dble_hist(vst_val, famm[x], list_fam, xlim=x_lim, ylim=y_lim, breaks=brks, color=colos[x], alpha=alpha))
+    dev.off()
+}
+
+get_segments_gene <- function(gen, v_genes, tab_alpha){
+#~    print(gene)
+    ind <- which(v_genes==gen)
+    tab <- tab_alpha[ind,]
+    if (length(ind)==1)
+        res <- t(as.matrix(tab))
+    else
+        res <- as.matrix(unique(tab))
+    return(res)
+}
+
+get_alpha_seg <- function(alpha_mat){
+    vec_genes <- sapply(rownames(alpha_mat), collapse_elements, what=1:2)
+    genes <- unique(vec_genes)
+    lis_alpha_seg <- sapply(genes, get_segments_gene, vec_genes, alpha_mat)
+    n_seg <- sapply(lis_alpha_seg, nrow)
+    genes2 <- rep(genes, n_seg)
+    vec_alpha_seg <- unlist(lis_alpha_seg)
+    m_alph_seg <- matrix(data=vec_alpha_seg, ncol=ncol(alpha_mat), nrow=length(vec_alpha_seg)/ncol(alpha_mat), byrow=T, dimnames=list(genes2, colnames(alpha_mat)))
+    return(m_alph_seg)
+}
+
+compute_gene_Vst <- function(m_alph_seg, races){
+    v_genes <- rownames(m_alph_seg)
+        # average Vs per gene
+    vec_Vs <- apply(m_alph_seg, 1, get_vs, races) 
+    mean_Vs <- multi_mean(vec_Vs, v_genes)
+        # average Vt per gene
+    vec_Vt <- apply(m_alph_seg, 1, var)
+    mean_Vt <- multi_mean(vec_Vt, v_genes)
+
+    Vst <- (mean_Vt - mean_Vs)/mean_Vt
+    return(Vst)
+}
+
+multi_mean <- function(vec, v_grps){
+    grps <- unique(v_grps)
+    v_means <- sapply(grps, function(x) mean(vec[which(v_grps==x)]))
+    names(v_means) <- grps
+    return(v_means)
+}
+
+sort_name_per_categ <- function(vect){
+    vec_categ <- sapply(vect, get_elements)
+    categs <- unique(vec_categ)
+    list_ind <- lapply(categs, function(x) which(vec_categ==x))
+    names(list_ind) <- categs
+    return(list_ind)
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

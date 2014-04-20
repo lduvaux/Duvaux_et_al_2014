@@ -4,68 +4,67 @@ library(ape)
 library(randomForest)
 library(parallel)
 
-
 cat("\n")
 print(" #### 29.1) load data, sources, parameters and functions")
 source("params.R")
 load(PREVIOUS_DATA)
-ll <- ls()
-ll <- ll[-which(ll=="x")]
+ll <- ls() ; ll <- ll[-which(ll=="x")]
 rm(list=ll)
 
 source("../utils/functions.R")
 source("../utils/getter_functions.R")
 source("../utils/globalCtes.R")
 source("../utils/randomForest_helperFuns.R")
-
 source("params.R")  # needed as the previous will load former params!
 source("./functions.R")
 
 set.seed(0)
 tab_targ <- read.delim(TARG, stringsAsFactors=F)
 tab_cnv <- t(x)
-inval_rows <- PrePro_findMeaninglessRows(tab_cnv)
-tab_cnv <- tab_cnv[!inval_rows,]
+tab_cnv <- tab_cnv[!PrePro_findMeaninglessRows(tab_cnv),]
+
 
 cat("\n")
-print(" #### 29.2) compute Vst")
-    # 29.2.1) set races and targ names
+print(" #### 29.2) compute Vst per polymorphic subtarget")
 races <- sapply(colnames(tab_cnv), get_elements)
-targets <- sapply(rownames(tab_cnv), collapse_elements)
-
-    # 29.2.2) compute Vst
+    #29.2.1) raw data
 vec_vst <- apply(tab_cnv, 1, get_Vst, races)
         # write a subsample in a table
 gd <- which(vec_vst==1)
 ftab <- tab_cnv[gd,]
 write.table(cbind(rownames(ftab),ftab), col.names=T, row.names=F, sep="\t", quote=F, file=SUBSAMP1)
-
+    #29.2.2) log2 transformed
 vec_vst_log2 <- apply(tab_cnv, 1, get_Vst, races, log_2=T)
-#~big <- which(abs(vec_vst-vec_vst_log2)>0.5)
+
+    # 29.2.3) plot histograms
+l_ind_fam <- sort_name_per_categ(rownames(tab_cnv)) # 29.3.1) prepare data per families
+plot_dble_hist(vst_val=vec_vst, list_fam=l_ind_fam, nam_plot=PLOT_HIST_VST)  # 29.3.2) plot Vst per family
+
 
 cat("\n")
-print(" #### 29.2) compute Vst")
-vec_fam <- sapply(rownames(tab_cnv), get_elements)
-families <- unique(vec_fam)
-list_ind <- lapply(families, function(x) which(vec_fam==x))
-names(list_ind) <- families
+print(" #### 29.4) Compute average Vst per gene/PMT - 1 value per segment")
+# 29.4.0) load data
+load(RAW_ALPHA)
+alpha_matrix0 <- alpha_matrix
+alpha_matrix <- PrePro_roundToZeroFive(alpha_matrix)
+gd <- colnames(alpha_matrix)%in%colnames(tab_cnv)
+alpha_matrix <- alpha_matrix[,gd]
 
-cat("\n")
-print(" #### 29.3) plot histograms")
-pdf(PLOT_HIST_VST)
-layout(matrix(1:4, nrow=2, ncol=2, byrow=T))
-famm <- c("Gr", "Or", "P450")
-colos <- c("blue", "purple", "green")
-sapply(1:length(famm), function(x) plot_dble_hist(famm[x], list_ind, color=colos[x], alpha=70))
-dev.off()
+# 29.4.1) for each gene, get one value per segment
+m_alpha_seg <- get_alpha_seg(alpha_matrix)
 
-#~cat("\n")
-#~print(" #### 29.4) keep the highest Vst per contig")
-#~vec_cont <- tab_targ$contigV2[sapply(targets, function(x) which(x==tab_targ$NewTargetName))]
-#~contigs <- unique(vec_cont)
+# 29.4.2) compute Vst per gene (average of segments per genes)
+gene_Vst <- compute_gene_Vst(m_alpha_seg, races)
+bad <- is.na(gene_Vst)
+gene_Vst <- gene_Vst[!bad]
 
-#~vec_maxVst <- get_all_maxVst(vec_vst, vec_cont)
-#~vec_maxVst_log2 <- get_all_maxVst(vec_vst_log2, vec_cont)
+# 29.4.3) prepare data per families
+l_ind_fam2 <- sort_name_per_categ(names(gene_Vst))
+
+# 29.4.4) plot Vst per family
+plot_dble_hist(vst_val=gene_Vst, list_fam=l_ind_fam2, nam_plot=PLOT_HIST_VST2, brks=seq(-1.8, 1, by=0.1), y_lim=c(0,3))
+plot_dble_hist(vst_val=gene_Vst, list_fam=l_ind_fam2, nam_plot=PLOT_HIST_VST3, brks=seq(-1.8, 1, by=0.2), y_lim=c(0,2))
+plot_dble_hist(vst_val=gene_Vst, list_fam=l_ind_fam2, nam_plot=PLOT_HIST_VST4, brks=seq(-2, 1, by=0.3), y_lim=c(0,2))
 
 
 
