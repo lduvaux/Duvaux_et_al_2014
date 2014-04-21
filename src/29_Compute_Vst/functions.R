@@ -73,13 +73,19 @@ get_alpha_seg <- function(alpha_mat){
     return(m_alph_seg)
 }
 
-compute_gene_Vst <- function(m_alph_seg, races){
+compute_gene_Vst <- function(m_alph_seg, races, log_2=F){
     v_genes <- rownames(m_alph_seg)
         # average Vs per gene
-    vec_Vs <- apply(m_alph_seg, 1, get_vs, races) 
+    if (log_2)
+        vec_Vs <- apply(log2(m_alph_seg+0.0001), 1, get_vs, races)
+    else
+        vec_Vs <- apply(m_alph_seg, 1, get_vs, races)
     mean_Vs <- multi_mean(vec_Vs, v_genes)
         # average Vt per gene
-    vec_Vt <- apply(m_alph_seg, 1, var)
+    if (log_2)
+        vec_Vt <- apply(log2(m_alph_seg+0.0001), 1, var)
+    else
+        vec_Vt <- apply(m_alph_seg, 1, var)
     mean_Vt <- multi_mean(vec_Vt, v_genes)
 
     Vst <- (mean_Vt - mean_Vs)/mean_Vt
@@ -101,9 +107,30 @@ sort_name_per_categ <- function(vect){
     return(list_ind)
 }
 
+get_boxplot <- function(vec_vst, families, main=NULL){
 
+    if (is.null(main))
+        main <- deparse(substitute(vec_vst))
 
+    vec_families <- sapply(names(vec_vst), get_elements)
+    good <- vec_families%in%families
+    vec_families <- vec_families[good]
+    vec_vst_new <- vec_vst[good]
+    boxplot(vec_vst_new~vec_families, main=main)
+}
 
+test_dif_NoParam <- function(v_factors, sub_factors, v_values, toprint, wilcox=T){
+    cat("\n")
+    cat("# ", toprint, sep="")
+    good <- v_factors%in%sub_factors
+    sub_v_factors <- as.factor(v_factors[good])
+    sub_val <- v_values[good]
+    if (wilcox)
+        test <- wilcox.test(sub_val ~ sub_v_factors)
+    else
+        test <- kruskal.test(sub_val ~ sub_v_factors)
+    return(test)
+}
 
 
 
