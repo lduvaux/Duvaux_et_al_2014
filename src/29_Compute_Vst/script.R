@@ -90,8 +90,8 @@ plot_dble_hist(vst_val=gene_Vst, list_fam=l_ind_fam2, nam_plot=PLOT_HIST_VST4, b
 
     print("# 29.3.4.1) raw alpha")
 plot_dble_hist(vst_val=gene_Vst0, list_fam=l_ind_fam02, nam_plot=PLOT_HIST_VST02, brks=seq(-1.8, 1, by=0.1), y_lim=c(0,3))
-plot_dble_hist(vst_val=gene_Vst0, list_fam=l_ind_fam02, nam_plot=PLOT_HIST_VST03, brks=seq(-1.8, 1, by=0.2), y_lim=c(0,2))
-plot_dble_hist(vst_val=gene_Vst0, list_fam=l_ind_fam02, nam_plot=PLOT_HIST_VST04, brks=seq(-2, 1, by=0.3), y_lim=c(0,2))
+plot_dble_hist(vst_val=gene_Vst0, list_fam=l_ind_fam02, nam_plot=PLOT_HIST_VST03, brks=seq(-1.8, 1, by=0.2), y_lim=c(0,3))
+plot_dble_hist(vst_val=gene_Vst0, list_fam=l_ind_fam02, nam_plot=PLOT_HIST_VST04, brks=seq(-2, 1, by=0.3), y_lim=c(0,3))
 
 
 
