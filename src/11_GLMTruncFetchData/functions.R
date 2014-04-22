@@ -1,17 +1,17 @@
-Trim_Alpha_mat <- function(PRIOR_ASSIGN, alpha_matrix_raw)
+fetchRacesPrior <- function(tabrace){
+    tabrace <- subset(tabrace, tabrace[,"Included.in.CNV.RF.training.set.and.GLMM.analyses"]==1)
+    vrace <- sapply(tabrace$Sample.Name, get_elements)
+    return(vrace)
+}
+
+Trim_Alpha_mat <- function(prior_assign, raw_alpha_mat)
 # remove individuals designated as irrelavant for statistics uses
 {
 	# 1) fetch info about individuals
-	IndivRace_raw <- PrePro_fetchRacesPrior(PRIOR_ASSIGN)
+	IndivRace_raw <- fetchRacesPrior(prior_assign)
     
-	# 2) check correspondance between alpha matrix and the info matrix
-	ind_order <- PrePro_findIndex(colnames(alpha_matrix_raw), names(IndivRace_raw)) # Y
-	IndivRace_raw <- IndivRace_raw[ind_order] # Y
-	if (!identical(names(IndivRace_raw), colnames(alpha_matrix_raw)))
-		stop("Problem of correspondance between alpha_matrix & PRIOR_ASSIGN")
-        
-	# 3) remove bad individuals
-	bad_indiv_ind <- which(is.na(IndivRace_raw)|IndivRace_raw=="hybrid")
-	alpha_matrix <- alpha_matrix_raw[,-bad_indiv_ind]
+	# 2) keep only good individuals
+    good <- pmatch(names(IndivRace_raw), colnames(raw_alpha_mat))
+	alpha_matrix <- raw_alpha_mat[,good]
 	return(alpha_matrix)
 }

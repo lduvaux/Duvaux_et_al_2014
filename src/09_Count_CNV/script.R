@@ -123,13 +123,6 @@ main <- function(argv){
     Draw_jpg(draw_venn(l_venns), VENN1.1)
     Draw_pdf(draw_venn(l_venns), VENN1.2)
 
-
-#~    cat("\n")
-#~    print(" #### 3) count global proportion of deletion/insertions/both per race")
-#~        # 3.1) subtargets
-#~    CNV_count_race <- mclapply(1:nrow(alpha_matrix), function(x) sapply(races, caract_bait_race, clones, alpha_matrix[x,], x))
-#~    names(CNV_count_race) <- subtargets
-
     #############################
     cat("\n")
     print(" #### save results")

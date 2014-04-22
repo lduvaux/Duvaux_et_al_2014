@@ -2,7 +2,6 @@
 
 source("../05_Stability-RF/params.R")
 PREVIOUS_DATA <- "../03_ProcessingSegmentation.Rdata"
-#~RAW_DATA <- "../01_GetData.Rdata"
 
 # outputs
 TAB_CNV_DISTR <- "Res_CNVs_distrib_subtargets.csv"

@@ -86,10 +86,11 @@ cleanall: clean
 01_: 
 	@$(MAKE) -C 01_GetData
 
+24_: 02_
+	@$(MAKE) -C 24_ShowPreProcessingEffic
+
 22_:
 	@$(MAKE) -C 22_SequencingStats
 
-24_: 02_
-	@$(MAKE) -C 24_ShowPreProcessingEffic
 
 

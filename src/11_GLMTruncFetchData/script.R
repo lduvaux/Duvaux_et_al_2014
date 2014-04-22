@@ -1,5 +1,5 @@
 #!/bin/Rscript
-
+rm(list=ls())
 source("../utils/functions.R")
 source("../utils/getter_functions.R")
 source("../utils/globalCtes.R")
