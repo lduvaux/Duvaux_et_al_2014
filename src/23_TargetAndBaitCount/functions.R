@@ -1,4 +1,4 @@
-source("../10_GeneralStatsA/functions.R")
+source("../10_Functions_GLMMs/functions.R")
 source("../11_GLMTruncFetchData/glm_common.R")
 
 ###############
