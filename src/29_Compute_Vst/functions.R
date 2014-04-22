@@ -116,7 +116,8 @@ get_boxplot <- function(vec_vst, families, main=NULL){
     good <- vec_families%in%families
     vec_families <- vec_families[good]
     vec_vst_new <- vec_vst[good]
-    boxplot(vec_vst_new~vec_families, main=main)
+    res <- boxplot(vec_vst_new~vec_families, main=main)
+    return(res)
 }
 
 test_dif_NoParam <- function(v_factors, sub_factors, v_values, toprint, wilcox=T){

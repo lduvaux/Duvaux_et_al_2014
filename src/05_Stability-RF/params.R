@@ -11,8 +11,8 @@ NTREES <- 100
 # sample size in RF
     # races are sorted as follow:
     # "Cytisus", "Lathyrus", "L.corn.", "L.ped.", "Medicago", "Ononis", "Pisum", "Trifolium"
-SAMP_SIZE1 <- c(5, rep(10, 5), 9, 6)
-SAMP_SIZE2 <- c(5, rep(10, 5), 9, 6)
+SAMP_SIZE1 <- c(5, rep(10, 5), 8, 6)
+SAMP_SIZE2 <- c(5, rep(10, 5), 8, 6)
 
 PDF_NAME1 <- "Res_10_bestVariab_superv.pdf"
 PDF_NAME2 <- "Res_10_bestVariab_unsuperv.pdf"

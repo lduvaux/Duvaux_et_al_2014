@@ -150,10 +150,10 @@ print(test_dif_NoParam(vec_families0.0, c("Control", "P450"), gene_Vst0_log2, to
 
 pdf()
 layout(matrix(1:4, nrow=2, ncol=2, byrow=T))
-get_boxplot(gene_Vst, families)
-get_boxplot(gene_Vst0, families)
-get_boxplot(gene_Vst_log2, families)
-get_boxplot(gene_Vst0_log2, families)
+print(get_boxplot(gene_Vst, families))
+print(get_boxplot(gene_Vst0, families))
+print(get_boxplot(gene_Vst_log2, families))
+print(get_boxplot(gene_Vst0_log2, families))
 dev.off()
 
 

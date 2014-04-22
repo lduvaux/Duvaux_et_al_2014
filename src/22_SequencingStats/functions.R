@@ -4,8 +4,10 @@ source("../11_GLMTruncFetchData/glm_common.R")
 ###############
 get_SeqDepth <- function(fil_seq_depth)
 {
+
 	tab <- read.delim(fil_seq_depth, stringsAsFactors = F)
 	bad <- which("Target_Name"==colnames(tab))
+    rownames(tab) <- tab[,bad]
 	tab <- tab[,-bad]
 	tab <- as.matrix(tab)
 	return(tab)
