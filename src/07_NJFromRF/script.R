@@ -1,4 +1,5 @@
 #!/bin/Rscript
+rm(list=ls())
 library(ape)
 
 source("../utils/functions.R")
@@ -13,30 +14,30 @@ source("./functions.R")
 main <- function(argv){
 	load(PREVIOUS_DATA)
 	set.seed(0)
-	dim(contig_rf$proximity)
-	new <- colnames(contig_rf$test$proximity)%in%rownames(contig_rf$test$proximity)
+    mat_prox <- contig_rf$proximity
+	dim(mat_prox)
 
-	nindiv <- ncol(contig_rf$test$proximity)
+    mat_prox_test <- contig_rf$test$proximity
+	new <- colnames(mat_prox_test)%in%rownames(mat_prox_test)
+	nindiv <- ncol(mat_prox_test)
 	fullproxi <- matrix(NA, nrow=nindiv,ncol=nindiv)
 
-	fin_new <- nrow(contig_rf$test$proximity)
-	deb <- nrow(contig_rf$test$proximity)+1
-	fin <- deb+ncol(contig_rf$proximity)-1
+	fin_new <- nrow(mat_prox_test)
+	deb <- nrow(mat_prox_test)+1
+	fin <- deb+ncol(mat_prox)-1
 
-	fullproxi[1:fin_new,] <- contig_rf$test$proximity
-	fullproxi[,1:fin_new] <- t(contig_rf$test$proximity)
-	fullproxi[deb:fin, deb:fin] <- contig_rf$proximity
-	colnames(fullproxi) <- colnames(contig_rf$test$proximity)
-	rownames(fullproxi) <- colnames(contig_rf$test$proximity)
+	fullproxi[1:fin_new,] <- mat_prox_test
+	fullproxi[,1:fin_new] <- t(mat_prox_test)
+	fullproxi[deb:fin, deb:fin] <- mat_prox
+	colnames(fullproxi) <- colnames(mat_prox_test)
+	rownames(fullproxi) <- colnames(mat_prox_test)
 
 	distance_matrix <- 1-fullproxi
-	grep("Lathyrus", colnames(contig_rf$test$proximity))
-	grep("Lathyrus", colnames(contig_rf$test$proximity), value=T)
+	grep("Lathyrus", colnames(mat_prox_test))
+	grep("Lathyrus", colnames(mat_prox_test), value=T)
 
-
-	races <- PrePro_fetchRaces(RAW_DATA, CTRL_GUYS, BAD_GUYS)
+    races <- PrePro_fetchRaces(RAW_DATA, CTRL_GUYS, BAD_GUYS)
 	races_uniq <- unique(races)	
-
 	col_races <- PrePro_fetchColours(races, races_uniq, race_colo_raw)
 	good <- names(col_races)%in%colnames(distance_matrix)
 	col_races  <- col_races[good]
@@ -44,7 +45,6 @@ main <- function(argv){
 
 	
 	col_races <- col_races[ind]
-#identical(names(col_races),colnames(distance_matrix))
 
     root <- which(colnames(distance_matrix)==ROOT)
 	tree <- root(nj(distance_matrix), root)
