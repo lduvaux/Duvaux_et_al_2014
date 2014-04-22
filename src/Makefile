@@ -60,7 +60,7 @@ cleanall: clean
 	@$(MAKE) -C 28_Clone_Sqced_Twice
 
 #27_: 03_
-	#@$(MAKE) -C 27_Count_Singletons
+	#@$(MAKE) -C 27_Count_Singletons	# deprecated
 
 25_: 03_
 	@$(MAKE) -C 25_CNVplot_alongChr

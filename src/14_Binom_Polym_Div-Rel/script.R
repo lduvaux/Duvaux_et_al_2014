@@ -6,12 +6,6 @@ library(MuMIn)
 library(methods)
 library(ggplot2)
 
-# 0) set up parallel dredge
-library(parallel)
-    # Set up the cluster
-clusterType <- if(length(find.package("snow", quiet = TRUE))) "SOCK" else "PSOCK"
-clust <- try(makeCluster(getOption("cl.cores", 8), type = clusterType))
-
 source("../utils/functions.R")
 source("../utils/getter_functions.R")
 source("../utils/globalCtes.R")
@@ -20,6 +14,12 @@ source("./params.R")
 source("./functions.R")
 
 argv <- commandArgs(TRUE)[1]
+
+# 0) set up parallel dredge
+library(parallel)
+    # Set up the cluster
+clusterType <- if(length(find.package("snow", quiet = TRUE))) "SOCK" else "PSOCK"
+clust <- try(makeCluster(getOption("cl.cores", N_CORE), type = clusterType))
 
 # main <- function(argv){
 
@@ -63,7 +63,7 @@ cat("\n             # Dimension of GLMtab_all1\n")
 print(dim(GLMtab_all1))
 cat("\n")
 
-fm1 <- glmer(formula=MOD_ALL1, data = GLMtab_all1, family=FAMILY, control=glmerControl(optCtrl=list(maxfun=15000)))
+fm1 <- glmer(formula=MOD_ALL1, data = GLMtab_all1, family=FAMILY, control=glmerControl(optCtrl=list(maxfun=30000)))
 sum_fm1 <- summary(fm1)
 print(sum_fm1, corr=F)
 nomfil <- GLM_POL_MAX
@@ -83,7 +83,7 @@ cat(capture.output(test_trimmed), file=nomfil, sep="\n")
 
 cat("\n\n             # get deviance of the best model\n")
 best_fma <- formula(attributes(test_trimmed)$calls[[1]])
-best_fm <- glmer(formula=best_fma, data = GLMtab_all1, family=FAMILY, control=glmerControl(optCtrl=list(maxfun=15000)))
+best_fm <- glmer(formula=best_fma, data = GLMtab_all1, family=FAMILY, control=glmerControl(optCtrl=list(maxfun=30000)))
 sum_best_fm <- summary(best_fm)
 print(sum_best_fm, corr=F)
 output_glm(sum_best_fm, GLM_POL_BEST)
