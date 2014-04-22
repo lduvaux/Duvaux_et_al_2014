@@ -1,1 +1,0 @@
-../11_GLMTruncFetchData/glm_common.R

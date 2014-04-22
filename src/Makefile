@@ -29,17 +29,8 @@ cleanall: clean
 14_: 11_
 	@$(MAKE) -C 14_Binom_Polym_Div-Rel
 
-#13_: 11_
-	#@$(MAKE) -C 13_Binom2Steps-polym_Diverg-Related
-
-#12_: 11_
-	#@$(MAKE) -C 12_Multinom-polym_Diverg-Related
-
 11_: 03_ 23_
 	@$(MAKE) -C 11_GLMTruncFetchData
-
-#10_: 03_
-	#@$(MAKE) -C 10_GeneralStatsA
 
 26_: 06_ 08_
 	@$(MAKE) -C 26_Stats_Best_Subtarg_RF
