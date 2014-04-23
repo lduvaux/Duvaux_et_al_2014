@@ -2,7 +2,7 @@ GLMs := 12_
 
 toclean := $(shell ls [0-9][0-9]_*/Makefile |sed s/Makefile//g)
 
-all : 22_ 24_ 25_ 28_ 14_ 15_ 16_ 17_ 18_ 19_ 07_ 09_ 29_ 08_ 26_
+all : 22_ 24_ 25_ 27_ 14_ 15_ 16_ 17_ 18_ 19_ 07_ 09_ 28_ 08_ 26_
 
 clean:
 	rm -f *.Rdata
@@ -35,8 +35,8 @@ cleanall: clean
 26_: 06_ 08_
 	@$(MAKE) -C 26_Stats_Best_Subtarg_RF
 
-29_: 03_ 06_
-	@$(MAKE) -C 29_Compute_Vst
+28_: 03_ 06_
+	@$(MAKE) -C 28_Compute_Vst
 
 09_: 03_ 06_
 	@$(MAKE) -C 09_Count_CNV
@@ -56,11 +56,8 @@ cleanall: clean
 04_: 03_
 	@$(MAKE) -C 04_NJ
 
-28_: 03_
-	@$(MAKE) -C 28_Clone_Sqced_Twice
-
-#27_: 03_
-	#@$(MAKE) -C 27_Count_Singletons	# deprecated
+27_: 03_
+	@$(MAKE) -C 27_Count_Singletons
 
 25_: 03_
 	@$(MAKE) -C 25_CNVplot_alongChr

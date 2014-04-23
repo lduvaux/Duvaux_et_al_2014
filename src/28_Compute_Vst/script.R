@@ -157,6 +157,13 @@ print(get_boxplot(gene_Vst0_log2, families))
 dev.off()
 
 
+cat("\n")
+print("##### save data")
+dummy <- NULL
+argv <- commandArgs(TRUE)[1]
+outFileName <- argv[1]
+ver(sprintf("Saving data to %s",outFileName))
+save.image(file=outFileName)
 
 
 

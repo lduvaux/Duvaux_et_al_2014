@@ -29,9 +29,12 @@ alpha_matrix2 <- alpha_matrix[!inval_rows,]
 print(dim(alpha_matrix2))
 
 test_singletons <- apply(alpha_matrix2, 1, test_singleton)
-N_singletons <- table(test_singletons)
 
-ratio <- N_singletons[2]/nrow(alpha_matrix2)
+cat("\n", "Nber of singletons", sep="")
+print(N_singletons <- table(test_singletons))
+
+cat("\n", "Proportion of singletons", sep="")
+print(ratio <- N_singletons[2]/nrow(alpha_matrix2))
 
 cat("\n")
 print("##### save data")
