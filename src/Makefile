@@ -1,5 +1,3 @@
-GLMs:= 12_ 
-
 toclean:= $(shell ls [0-9][0-9]_*/Makefile |sed s/Makefile//g)
 
 all: part1 part2
