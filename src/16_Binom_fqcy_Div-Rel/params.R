@@ -16,6 +16,8 @@ FAMILY <- "binomial"
 DELTA2 <- 10
 FIXED_TERMS2 <- NULL
 M_MAX <- 10
+#~GLMER_ITERATIONS <- 15000 # I don't know how to make it work with pdredge
+#~GLMER_OPTIMIZER <- "bobyqa" # I don't know how to make it work with pdredge
 
 # 3) outputs
 PAIRS_ALL_EXON_LENGTH <- "./Res16_PairPlot_DupFqcy.pdf"

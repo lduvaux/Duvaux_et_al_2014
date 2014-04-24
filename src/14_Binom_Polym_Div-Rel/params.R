@@ -14,11 +14,13 @@ SUBCLUSTERS <- list(Cytisus="Cytisus", Lathyrus="Lathyrus", L.corn.="L.corn.", L
 MODP2 <- Polymorphic ~ LnIntronLength + LnExonLength + Family + trimmed + Race + Phylog_lvl
 
 # 3) model binomial 1 (polymorphic or not polymorphic?)
-MOD_ALL1 <- Polymorphic ~ LnIntronLength + LnExonLength + Family + Phylog_lvl + trimmed + (1|Race) + (1|Gene) # 'lengthX:family' interactions removed as 'lengthX' never significant, idem for + LnIntronLength * LnExonLength, + Family * Phylog_lvl 
+MOD_ALL1 <- Polymorphic ~ LnIntronLength + LnExonLength + Family + Phylog_lvl + trimmed + Family * Phylog_lvl + (1|Race) + (1|Gene) # 'lengthX:family' interactions removed as 'lengthX' never significant, idem for + LnIntronLength * LnExonLength, 
 FAMILY <- "binomial"
 DELTA1 <- 10
 FIXED_TERMS1 <- NULL
 M_MAX <- 8
+#~GLMER_ITERATIONS <- 15000 # I don't know how to make it work with pdredge
+#~GLMER_OPTIMIZER <- "bobyqa" # I don't know how to make it work with pdredge
 
 # 4) outputs
 PAIRS_ALL_EXON_LENGTH <- "./Res14-0_PairPlot_Polym.pdf"

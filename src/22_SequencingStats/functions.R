@@ -37,7 +37,7 @@ set_ftab <- function (tab_reads, badFcell, badIndiv, Met_indiv)
 	# 3) final table
 		# 3.1) set up
 	clones <- names(Met_indiv)[ind]
-	tab <- cbind(clones, dir=tab_reads[,"dir"], NberOfReads=tab_reads[,"ReadNber"], ReadLength=tab_reads[,"length"], MedSeqDepth=Met_indiv[ind], Encode=tab_reads[,"Encode"], file1=tab_reads[,"fil1"], file2=tab_reads[,"fil2"], SqcingDate, Flowcell, Lane, GenepoolTag)
+	tab <- data.frame(clones, dir=tab_reads[,"dir"], NberOfReads=tab_reads[,"ReadNber"], ReadLength=tab_reads[,"length"], MedSeqDepth=Met_indiv[ind], Encode=tab_reads[,"Encode"], file1=tab_reads[,"fil1"], file2=tab_reads[,"fil2"], SqcingDate, Flowcell, Lane, GenepoolTag)
 
 		# 3.2) order
 	ind2 <- order(SqcingDate, Flowcell, Lane, GenepoolTag)
@@ -48,7 +48,7 @@ set_ftab <- function (tab_reads, badFcell, badIndiv, Met_indiv)
 	bad1 <- which(tab[,"Flowcell"]==badFcell)
 	bad2 <- sapply(badIndiv, function(x) which(x==tab[,"dir"]))
 	CNVestimation[c(bad1, bad2)]=F
-	tab <- cbind(tab, CNVestimation)
+	tab <- data.frame(tab, CNVestimation)
 	return(tab)
 }
 
@@ -65,7 +65,7 @@ new_grep <- function(pattern, x)
 }
 
 ######################
-    get_insert_size <- function(fil, rpint=F){
+get_insert_size <- function(fil, rpint=F){
     if (rpint) print(fil)
     con <- file(fil, open="r")
     txt <- readLines(con)
@@ -83,4 +83,30 @@ batch_ins_size <- function(path, pattern){
     tab <- data.frame(files, sample_name, insert_size)
     return(tab)
 }
+
+######################
+get_capture_metrics <- function(fil){
+    tab <- read.delim(fil, skip=6, stringsAsFactors = F)
+    enrichment <- round(tab [, "FOLD_ENRICHMENT"],2)
+    efficiency <- round(tab [, "ON_BAIT_BASES"]/tab [, "PF_UQ_BASES_ALIGNED"],4)
+    PTB_30 <- round(tab [, "PCT_TARGET_BASES_30X"], 3)
+    res <- c(enrichment, efficiency, PTB_30)
+    return(res)
+}
+
+
+batch_capture_metrics <- function(path, pattern){
+    files <- dir(path, pattern)
+    sample_name <- sapply(files, collapse_elements)
+    fils <- dir(path, pattern, full.names = T)
+    tab <- t(sapply(fils, get_capture_metrics))
+    colnames(tab) <- c("Enrichment", "Efficiency", "PTB30X")
+    indiv <- sapply(fils, function(x) unlist(strsplit(x, "\\/|_R1s1a1"))[5])
+    rownames (tab) <- indiv
+    return(tab)
+}
+
+
+
+
 

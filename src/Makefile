@@ -1,8 +1,12 @@
-GLMs := 12_ 
+GLMs:= 12_ 
 
-toclean := $(shell ls [0-9][0-9]_*/Makefile |sed s/Makefile//g)
+toclean:= $(shell ls [0-9][0-9]_*/Makefile |sed s/Makefile//g)
 
-all : 22_ 24_ 25_ 27_ 14_ 15_ 16_ 17_ 18_ 19_ 07_ 09_ 28_ 08_ 26_
+all: part1 part2
+
+part1: 22_ 24_ 25_ 27_ 14_ 15_ 16_ 17_ 18_ 19_ 07_ 09_ 28_
+
+part2: 08_ 26_	# long process
 
 clean:
 	rm -f *.Rdata
