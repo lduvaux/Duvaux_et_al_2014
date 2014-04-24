@@ -63,7 +63,7 @@ cat("\n             # Dimension of GLMtab_all1\n")
 print(dim(GLMtab_all1))
 cat("\n")
 
-fm1 <- glmer(formula=MOD_ALL1, data = GLMtab_all1, family=FAMILY, control=glmerControl(optCtrl=list(maxfun=15000), optimizer="bobyqa"), verbose=T)
+fm1 <- glmer(formula=MOD_ALL1, data = GLMtab_all1, family=FAMILY, control=glmerControl(optCtrl=list(maxfun=20000)), verbose=T)
 sum_fm1 <- summary(fm1)
 print(sum_fm1, corr=F)
 nomfil <- GLM_POL_MAX
@@ -83,7 +83,7 @@ cat(capture.output(test_trimmed), file=nomfil, sep="\n")
 
 cat("\n\n             # get deviance of the best model\n")
 best_fma <- formula(attributes(test_trimmed)$calls[[1]])
-best_fm <- glmer(formula=best_fma, data = GLMtab_all1, family=FAMILY, control=glmerControl(optCtrl=list(maxfun=15000), optimizer="bobyqa"), verbose=T)
+best_fm <- glmer(formula=best_fma, data = GLMtab_all1, family=FAMILY, control=glmerControl(optCtrl=list(maxfun=20000)), verbose=T)
 sum_best_fm <- summary(best_fm)
 print(sum_best_fm, corr=F)
 output_glm(sum_best_fm, GLM_POL_BEST)

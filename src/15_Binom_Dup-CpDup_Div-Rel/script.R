@@ -69,7 +69,7 @@ cat("\n             # Dimension of GLMtab_all2\n")
 print(dim(GLMtab_all2))
 cat("\n")
 
-fm2 <- glmer(formula=MOD_ALL2, data = GLMtab_all2, family=FAMILY, control=glmerControl(optCtrl=list(maxfun=15000), optimizer="bobyqa"), verbose=T)
+fm2 <- glmer(formula=MOD_ALL2, data = GLMtab_all2, family=FAMILY, control=glmerControl(optCtrl=list(maxfun=20000)), verbose=T)
 sum_fm2 <- summary(fm2)
 print(sum_fm2, corr=F)
 nomfil <- GLM_DUP_MAX
@@ -89,7 +89,7 @@ cat(capture.output(test_trimmed2), file=nomfil, sep="\n")
 
 cat("\n\n             # get deviance of the best model\n")
 best_fma2 <- formula(attributes(test_trimmed2)$calls[[1]])
-best_fm2 <- glmer(formula=best_fma2, data = GLMtab_all2, family=FAMILY, control=glmerControl(optCtrl=list(maxfun=15000), optimizer="bobyqa"), verbose=T)
+best_fm2 <- glmer(formula=best_fma2, data = GLMtab_all2, family=FAMILY, control=glmerControl(optCtrl=list(maxfun=20000)), verbose=T)
 sum_best_fm2 <- summary(best_fm2)
 print(sum_best_fm2, corr=F)
 output_glm(sum_best_fm2, GLM_DUP_BEST)
