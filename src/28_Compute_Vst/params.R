@@ -29,3 +29,5 @@ HIST_VST4_L2 <- "Vst_Hist_GnVst_log2_bin0.3.pdf"
 HIST_VST02_L2 <- "Vst_Hist_GnVst-rawAlpha_log2_bin0.1.pdf"
 HIST_VST03_L2 <- "Vst_Hist_GnVst-rawAlpha_log2_bin0.2.pdf"
 HIST_VST04_L2 <- "Vst_Hist_GnVst-rawAlpha_log2_bin0.3.pdf"
+
+BOXPLOT <- "VstDistrib_GeneFamily.pdf"

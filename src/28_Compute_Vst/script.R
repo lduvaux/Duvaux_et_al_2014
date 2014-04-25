@@ -148,7 +148,7 @@ print(test_dif_NoParam(vec_families.0, c("Control", "P450"), gene_Vst_log2, topr
 print(test_dif_NoParam(vec_families0.0, c("Control", "P450"), gene_Vst0_log2, toprint="Transformed raw values"))
 
 
-pdf()
+pdf(BOXPLOT)
 layout(matrix(1:4, nrow=2, ncol=2, byrow=T))
 print(get_boxplot(gene_Vst, families))
 print(get_boxplot(gene_Vst0, families))
