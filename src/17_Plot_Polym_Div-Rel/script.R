@@ -50,12 +50,12 @@ main <- function(argv){
 
     jpeg(JPG, height=480*2, width=480*2, quality=100, res=72*2)
     par(mar=c(7, 6,4,2))
-    draw_plot(obs_prob1, colo, categ1, yli=c(0, 0.55), yla="Proportion of observations\npolymorphic for CNV per family")
+    draw_plot(obs_prob1, colo, categ1, yli=c(0, 0.55), xla=XLAB, yla=YLAB)
     text(x=c(2.5, 9), y=c(0.2, 0.5), labels=c("Non\ntruncated", "Truncated"), lheight=1.5)
     dev.off()
     pdf(PDF)
     par(mar=c(7, 6,4,2))
-    draw_plot(obs_prob1, colo, categ1, yli=c(0, 0.55), yla="Proportion of observations\npolymorphic for CNV per family")
+    draw_plot(obs_prob1, colo, categ1, yli=c(0, 0.55), xla=XLAB, yla=YLAB)
     text(x=c(2.5, 9), y=c(0.2, 0.5), labels=c("Non\ntruncated", "Truncated"), lheight=1.5)
     dev.off()
 
@@ -71,13 +71,13 @@ main <- function(argv){
 
     jpeg(JPG2, height=480*2, width=480*2, quality=100, res=72*2)
     par(mar=c(7, 6,4,2))
-    draw_plot(obs_prob2, colo=c("black", "white"), categ2_0, yli=c(0, 0.35), yla="Proportion of observations\npolymorphic for CNV per genetic proximity")
+    draw_plot(obs_prob2, colo=c("black", "white"), categ2_0, yli=c(0, 0.35), xla=XLAB, yla=YLAB, m_gp=c(5, 0.5, 0))
     text(x=c(1.5, 5), y=c(0.2, 0.32), labels=c("Non\ntruncated", "Truncated"), lheight=1.5)
     dev.off()
 
     pdf(PDF2)
     par(mar=c(7, 6,4,2))
-    draw_plot(obs_prob2, colo=c("black", "white"), categ2_0, yli=c(0, 0.35), yla="Proportion of observations\npolymorphic for CNV per genetic proximity")
+    draw_plot(obs_prob2, colo=c("black", "white"), categ2_0, yli=c(0, 0.35), xla=XLAB, yla=YLAB, m_gp=c(5, 0.5, 0))
     text(x=c(1.5, 5), y=c(0.2, 0.32), labels=c("Non\ntruncated", "Truncated"), lheight=1.5)
     dev.off()
 
@@ -90,17 +90,21 @@ main <- function(argv){
     obs_prob3 <- obs_prob3.0[(length(obs_prob3.0)/2+1):length(obs_prob3.0)]
     categ3 <- paste(categ, " (", samp_size3_0[(length(samp_size3_0)/2+1):length(samp_size3_0)], ")", sep="")
 
+
+    coord_txt_x <- c(3, 9, 15, 21, 6, 18)
+    coord_txt_y <- c(.2, .2, .5+0.05, .5+0.05, .28, .55+0.05)
+    y_lim <- c(0, 0.65)
     jpeg(JPG3, height=480*2, width=480*2, quality=100, res=72*2)   
     par(mar=c(7, 6,4,2), lheight=1.2)
-    draw_plot(obs_prob3, colo=colo, categ3, yli=c(0, 0.6), yla="Proportion of observations polymorphic\nfor CNV per family per genetic proximity", sep_ind=c(5, 9, 13))
-    text(x=c(3, 9, 15, 21, 6, 18), y=c(.2, .2, .5, .5, .28, .55), labels=c(rep(c("Divergent", "Related"),2),"Non\ntruncated", "Truncated"))
+    draw_plot(obs_prob3, colo=colo, categ3, yli=y_lim, xla=XLAB, yla=YLAB, sep_ind=c(5, 9, 13))
+    text(x=coord_txt_x, y=coord_txt_y, labels=c(rep(c("Divergent", "Related"),2),"Non\ntruncated", "Truncated"))
     abline(v=11.5, lty=2)
     dev.off()
 
     pdf(PDF3)
     par(mar=c(7, 6,4,2), lheight=1.2)
-    draw_plot(obs_prob3, colo=colo, categ3, yli=c(0, 0.6), yla="Proportion of observations polymorphic\nfor CNV per family per genetic proximity", sep_ind=c(5, 9, 13))
-    text(x=c(3, 9, 15, 21, 6, 18), y=c(.2, .2, .5, .5, .28, .55), labels=c(rep(c("Divergent", "Related"),2),"Non\ntruncated", "Truncated"))
+    draw_plot(obs_prob3, colo=colo, categ3, yli=y_lim, xla=XLAB, yla=YLAB, sep_ind=c(5, 9, 13))
+    text(x=coord_txt_x, y=coord_txt_y, labels=c(rep(c("Divergent", "Related"),2),"Non\ntruncated", "Truncated"))
     abline(v=11.5, lty=2)
     dev.off()
 

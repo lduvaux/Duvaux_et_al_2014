@@ -2,6 +2,10 @@
 PREVIOUS_DATA <- "../14_Binom_Polym_Div-Rel.Rdata"
 PREVIOUS_DATA2 <- "../23_TargetAndBaitCount.Rdata"
 
+# graph options
+XLAB <- "Polymorphic observations for CNV"
+YLAB <- "Proportion"
+
 
 # output
 JPG <- "Fig2.1_barplot_fqcyPolymGenes_trim-fam.jpeg"
