@@ -3,8 +3,8 @@ PREVIOUS_DATA <- "../14_Binom_Polym_Div-Rel.Rdata"
 PREVIOUS_DATA2 <- "../23_TargetAndBaitCount.Rdata"
 
 # graph options
-XLAB <- "Polymorphic observations for CNV"
-YLAB <- "Proportion"
+XLAB <- "Gene family per truncation state and\ngenetic proximity to the gold standard"
+YLAB <- "Frequency"
 
 
 # output

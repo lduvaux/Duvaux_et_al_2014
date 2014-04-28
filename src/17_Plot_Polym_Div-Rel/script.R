@@ -94,16 +94,17 @@ main <- function(argv){
     coord_txt_x <- c(3, 9, 15, 21, 6, 18)
     coord_txt_y <- c(.2, .2, .5+0.05, .5+0.05, .28, .55+0.05)
     y_lim <- c(0, 0.65)
+    m_gp <- c(5.5, 1, 0)
     jpeg(JPG3, height=480*2, width=480*2, quality=100, res=72*2)   
     par(mar=c(7, 6,4,2), lheight=1.2)
-    draw_plot(obs_prob3, colo=colo, categ3, yli=y_lim, xla=XLAB, yla=YLAB, sep_ind=c(5, 9, 13))
+    draw_plot(obs_prob3, colo=colo, categ3, yli=y_lim, xla=XLAB, yla=YLAB, sep_ind=c(5, 9, 13), m_gp=m_gp)
     text(x=coord_txt_x, y=coord_txt_y, labels=c(rep(c("Divergent", "Related"),2),"Non\ntruncated", "Truncated"))
     abline(v=11.5, lty=2)
     dev.off()
 
     pdf(PDF3)
     par(mar=c(7, 6,4,2), lheight=1.2)
-    draw_plot(obs_prob3, colo=colo, categ3, yli=y_lim, xla=XLAB, yla=YLAB, sep_ind=c(5, 9, 13))
+    draw_plot(obs_prob3, colo=colo, categ3, yli=y_lim, xla=XLAB, yla=YLAB, sep_ind=c(5, 9, 13), m_gp=m_gp)
     text(x=coord_txt_x, y=coord_txt_y, labels=c(rep(c("Divergent", "Related"),2),"Non\ntruncated", "Truncated"))
     abline(v=11.5, lty=2)
     dev.off()
@@ -127,6 +128,4 @@ if(DEBUG)
 	traceback(main(argv));
 if(!DEBUG)
 	main(argv);
-
-
 
