@@ -60,7 +60,7 @@ main <- function(argv){
 	dev.off()
 
 	jpeg(JPG_NAME, height=688*2, width=480*2, quality=100, res=72*2)
-    whole_fig(tree, col_races, edge_colors, races_uniq2, race_colo_raw, contig_rf, leg_pos=LEG_POS, cex_leaves=0.5)
+    whole_fig(tree, col_races, edge_colors, races_uniq2, race_colo_raw, contig_rf, leg_pos=LEG_POS, cex_leaves=0.5, leg_cex=0.9)
 	dev.off()
 
 	outFileName <- argv[1]
