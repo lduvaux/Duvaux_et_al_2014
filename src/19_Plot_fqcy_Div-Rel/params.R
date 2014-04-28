@@ -1,6 +1,12 @@
 #~ All explit parameters for the related script.R should be declared here as constantes ~#
 PREVIOUS_DATA <- "../16_Binom_fqcy_Div-Rel.Rdata"
 
+# graph options
+XLAB1 <- "Gene family per CDD state"
+YLAB1 <- "Frequency"
+XLAB2 <- "Genetic proximity to the gold standard"
+YLAB2 <- "Frequency"
+
 # output
 JPG <- "Fig5.1_barplot_FqcyInPop_Fam-CpDup.jpeg"
 PDF <- "Fig5.1_barplot_FqcyInPop_Fam-CpDup.pdf"

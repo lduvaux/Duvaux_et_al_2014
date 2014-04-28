@@ -67,15 +67,18 @@ main <- function(argv){
     categ <- c("Control", "Gr", "Or", "P450")
     categ1 <- paste(categ, " (", samp_size1_0[(length(samp_size1_0)/2+1):length(samp_size1_0)], ")", sep="")
 
+
+    coord_txt_x <- c(2.5, 9)
+    coord_txt_y <- c(0.4, 0.9)
     jpeg(JPG, height=480*2, width=480*2, quality=100, res=72*2)
-    draw_plot(obs_prob1, colo, categ1, yli=c(0, 1), yla="Proportion of observations completely\nduplicated/deleted for CNV per family")
-    text(x=c(2.5, 9), y=c(0.4, 0.9), labels=c("Non\ntruncated", "Truncated"), lheight=1.5)
+    draw_plot(obs_prob1, colo, categ1, yli=c(0, 1), xla=XLAB1, yla=YLAB1, m_gp=c(5, 1, 0))
+    text(x=coord_txt_x, y=coord_txt_y, labels=c("Non\ntruncated", "Truncated"), lheight=1.5)
     abline(v=5.5, lty=2)
     dev.off()
     
     pdf(PDF)
-    draw_plot(obs_prob1, colo, categ1, yli=c(0, 1), yla="Proportion of observations completely\nduplicated/deleted for CNV per family")
-    text(x=c(2.5, 9), y=c(0.4, 0.9), labels=c("Non\ntruncated", "Truncated"), lheight=1.5)
+    draw_plot(obs_prob1, colo, categ1, yli=c(0, 1), xla=XLAB1, yla=YLAB1, m_gp=c(5, 1, 0))
+    text(x=coord_txt_x, y=coord_txt_y, labels=c("Non\ntruncated", "Truncated"), lheight=1.5)
     abline(v=5.5, lty=2)
     dev.off()
 
@@ -84,8 +87,8 @@ main <- function(argv){
     print("#### 2) Correalation between exon length and proba of complete duplication/deletion ")
     Complete_CNV <- ifelse(GLMtab_all2$Duplication=="3_CpDup", 1, 0)
     GLMtab_all2[,"Complete_CNV"] <- Complete_CNV
-    gplot <- ggplot(GLMtab_all2, aes(x = LnExonLength, y = Complete_CNV, color = trimmed)) + geom_point(alpha=0.7) + labs(colour = "Truncated") + coord_fixed(ratio=2) + labs(x = "Coding sequence length")
-    gplot <- gplot + stat_smooth(method = 'glm', family = 'binomial')
+    gplot <- ggplot(GLMtab_all2, aes(x = LnExonLength, y = Complete_CNV, color = trimmed)) + geom_point(alpha=0.7) + labs(colour = "Truncated") + coord_fixed(ratio=2) + labs(x = XLAB2, y=YLAB2)
+    gplot <- gplot + stat_smooth(method = 'glm', family = 'binomial') + theme(axis.title=element_text(size=13,face="bold"))
 
     ggsave(PDF2)
     ggsave(JPG2)
