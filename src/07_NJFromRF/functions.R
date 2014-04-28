@@ -100,30 +100,12 @@ plot_tree <- function(tree, col_races, edge_colors, lane, libraries, races_uniq,
 	title(paste("NJ tree of CNV distribution across aphid individuals\n", categ, " genes (", nbaits, " baits)", sep=""), cex.main=1.5, font=4)
 }
 
-processing_NJ <- function(i_categ, gene_categ, alpha_matrix, method, racine, lane, col_races, col_lib, libraries, races_uniq, col_lib_raw, race_colo_raw, baits)
-{
-
-	categ <- gene_categ[i_categ]
-	talpha <- define_alpha_matrix(alpha_matrix, gene_categ, i_categ, baits)
-	nbaits <- nrow(talpha)
-	distance_matrix <-  compute_dstce(talpha, method)
-	tree <- get_tree(distance_matrix, racine)
-	
-	tree_edges <- get_tree_edges(tree)
-	edge_colors <- apply_colors_2_edges(tree, tree_edges, lane, col_races, col_lib)
-	plot_tree(tree, col_races, edge_colors, lane, libraries, races_uniq, col_lib_raw, race_colo_raw, categ, nbaits)
-	
-	print(categ)
-	print(dim(talpha))
-
-}
-
 whole_fig <- function(tree, col_races, edge_colors, races_uniq, race_colo_raw, contig_rf, leg_pos="bottomleft", cex_leaves=0.75)
 {
 	par(mar=c(3, 2, 3, 0))
 	plot(tree, show.tip.label = T, tip.color=col_races, edge.color=edge_colors, edge.width=1.5, root.edge=F, cex = cex_leaves, font=4)
 
-	legend(leg_pos, legend=races_uniq, col = race_colo_raw, lwd=2, bg = 'gray92', cex=1)
+	legend(leg_pos, legend=races_uniq, col = race_colo_raw, lwd=2, bg = 'gray92', cex=1, text.font=3)
 
 	title(paste("NJ tree based on random forest proximity matrix\n(", nrow(contig_rf$importance), " informative genes)", sep=""), cex.main=1.5, font=4)
 }
