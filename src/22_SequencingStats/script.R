@@ -49,10 +49,10 @@ main <- function(argv){
     print("# 22.7) Draw plot capture metrics")
     pdf(HIST_CAPT)
     layout(matrix(1:4, nrow=2, ncol=2, byrow=T))
-    hist(ftab$MTSD, breaks=12, main="Median of target sequencing depth", xlab="Sequencing depth")
-    hist(ftab$Enrichment, breaks=12, main="Target enrichment", xlab="Fold enrichment relatively to  \nbackground sequencing depth")
-    hist(ftab$Efficiency, breaks=12, main="Capture efficiency", xlab="Proportion of total sequenced bases\nmapping to targets")
-    hist(ftab$PTB30X, breaks=12, main="Proportion of bp sequenced at 30X", xlab="Proportion of base pairs with\na sequencing depth of at least 30X")
+    hist(ftab$MTSD, breaks=12, main="A) Median of target\nsequencing depth", xlab="Sequencing depth")
+    hist(ftab$Enrichment, breaks=12, main="B) Target enrichment", xlab="Fold enrichment relatively to  \nbackground sequencing depth")
+    hist(ftab$Efficiency, breaks=12, main="C) Capture efficiency", xlab="Proportion of total sequenced bases\nmapping to targets")
+    hist(ftab$PTB30X, breaks=12, main="D) Proportion of bp\nsequenced at 30X", xlab="Proportion of base pairs with\na sequencing depth of at least 30X")
     dev.off()
     
     ######################
