@@ -4,7 +4,7 @@ PREVIOUS_DATA2 <- "../03_ProcessingSegmentation.Rdata"
 PREVIOUS_DATA3 <- "../23_TargetAndBaitCount.Rdata"
 
 # graph options
-XLAB1 <- "Gene family per truncation state"
+XLAB1 <- "Gene family by truncation state"
 YLAB1 <- "Frequency"
 XLAB2 <- "Coding sequence length in bp\n(natural logarithm scale)"
 YLAB2 <- "CDD Probability"

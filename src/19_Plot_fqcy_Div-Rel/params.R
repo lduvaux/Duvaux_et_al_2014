@@ -2,7 +2,7 @@
 PREVIOUS_DATA <- "../16_Binom_fqcy_Div-Rel.Rdata"
 
 # graph options
-XLAB1 <- "Gene family per CDD state"
+XLAB1 <- "Gene family by CDD state"
 YLAB1 <- "Frequency"
 XLAB2 <- "Genetic proximity to the gold standard"
 YLAB2 <- "Frequency"
