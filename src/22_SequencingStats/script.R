@@ -1,6 +1,6 @@
 #!/bin/Rscript
 rm(list=ls())
-library('multicore')
+library('parallel')
 
 source("../utils/functions.R")
 source("../utils/getter_functions.R")

@@ -2,7 +2,7 @@ source("./warnings2logfile.R")
 source("../utils/getter_functions.R")
 source("../utils/globalCtes.R")
 
-library(multicore)
+library(parallel)
 library(optimalCaptureSegmentation)
 
 # setup nk for 'findOptimalSegmentations' (nk= the maximal nb of segments k

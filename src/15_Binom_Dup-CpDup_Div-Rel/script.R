@@ -1,6 +1,5 @@
 #!/bin/Rscript
 rm(list=ls())
-#~library('multicore')
 library(lme4)
 library(MuMIn)
 library(methods)

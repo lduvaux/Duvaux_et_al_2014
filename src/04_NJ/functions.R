@@ -1,6 +1,5 @@
 #~ source("./02_ProcessScripts/transformDataByFit.R")
 #~ source("./00_Accessory_Scripts/getter_functions.R")
-#~ library(parallel)
 PreProNJ_GetGeneCateg <-  function(All_bait_categ){
 	cate <- unique(All_bait_categ)
 	cate <- c("All", cate)

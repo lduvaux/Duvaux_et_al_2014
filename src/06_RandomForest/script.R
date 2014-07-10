@@ -120,6 +120,7 @@ gini_contig_rf_ind <- order(contig_rf$importance[,10], decreasing=T)
 best20_contigPromot <- names(gini_contig_rf[1:20])
 tab_best20_contig <- (contig_rf$importance[gini_contig_rf_ind,])[1:20,]
 
+        # tem_tab is the table of random forest information for race classification
 tem_tab <- cbind(rownames(tab_best20_contig), round(tab_best20_contig,4))
 write.table(tem_tab, TAB20CONTIG, quote=F, sep="\t", row.names=F)
 tem_tab <- contig_rf$importance[gini_contig_rf_ind,]

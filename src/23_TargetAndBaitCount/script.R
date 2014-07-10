@@ -1,5 +1,5 @@
 #!/bin/Rscript
-library('multicore')
+library('parallel')
 
 
 source("../utils/functions.R")

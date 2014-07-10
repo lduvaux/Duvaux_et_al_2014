@@ -1,7 +1,5 @@
 #~ source("./02_ProcessScripts/transformDataByFit.R")
 #~ source("./00_Accessory_Scripts/getter_functions.R")
-#~ library(parallel)
-
 
 ############################################################# 
 define_alpha_matrix <- function(alpha_matrix, gene_categ, i_categ, baits)
