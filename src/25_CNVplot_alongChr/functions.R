@@ -34,7 +34,7 @@ plot_CNV_chr <- function(tab_star, tab_tar, tab_cnv, yli=c(-0.5, 2.5), centz=c(0
     # 1) define preliminary parameters
         # 1.0) misc
     sub_targ <- tab_star$Name
-    contig <- unique(tab_star$Contig)
+    scaffold <- unique(tab_star$Contig)
     cnv_starg <- rownames(tab_cnv)
     gene <- collapse_elements(sub_targ[1], what=1:2)
     print(gene)
@@ -57,12 +57,12 @@ plot_CNV_chr <- function(tab_star, tab_tar, tab_cnv, yli=c(-0.5, 2.5), centz=c(0
     ftab_cnv <- ftab_cnv[order(ftab_cnv[, "bary"]), ]
 
     # 2) plot an empty graph
-    main0 <- paste(gene_real_name, " (", contig, ")", sep="")
+    main0 <- paste(gene_real_name, " (", scaffold, ")", sep="")
     main <- ifelse(T%in%is.na(tab_tar[,"contigV2"]), paste(main0, "*", sep=""), main0)
     rg_coo <- c(min(c(tab_tar$startV2,tab_tar$stopV2), na.rm=T), max(c(tab_tar$startV2,tab_tar$stopV2), na.rm=T))# define range of initial targets
     print("Range of displayed marker:")
     print(range(rg_coo))
-    plot(rg_coo, rep(1, 2), xlim=rg_coo, ylim=yli, type="n", main=main, xlab="Contig coordinate (bp)", ylab="Alpha (CNV relative to standard)")
+    plot(rg_coo, rep(1, 2), xlim=rg_coo, ylim=yli, type="n", main=main, xlab="Scaffold coordinate (bp)", ylab="Alpha (CNV relative to standard)")
     points(x=c(-10, 10000000), y=c(0,0), type="l")	# add a lower box (x range is over large on purpose) 
 
     # 3) draw the rounding area
@@ -145,21 +145,21 @@ get_data4plot <- function(gn, t_targ, subtarg, alpha_matrix, adapt=T)
                 rownames(lcnv) <- rownames(alpha_matrix)[ind]
             }
             
-            # check contig
+            # check scaffold
             if (length(n_ctig)>1) {
-                print("WARNING: gene on several contigs")
+                print("WARNING: gene on several scaffolds")
                 
                 # detect good subtarget in initial subtargets
                 gd_ctig <- names(n_ctig)[1]
                 ind <- lt_star$Contig%in%gd_ctig
                 lt_star <- lt_star[ind,]    # subset initial table of subtargets
                 
-                # remove subtargets from bad contigs in lcnv
-                    # fetch contigs of star in lt_cnv
+                # remove subtargets from bad scaffolds in lcnv
+                    # fetch scaffolds of star in lt_cnv
 #~                ind <- match(rownames(lcnv), subtarg[, "Name"])
                 ind <- sapply(rownames(lcnv), function(x) which(x==subtarg[, "Name"]))
-                cnv_contigs <- subtarg[ind,"Contig"]
-                ind <- cnv_contigs%in%gd_ctig
+                cnv_scaffolds <- subtarg[ind,"Contig"]
+                ind <- cnv_scaffolds%in%gd_ctig
                 lcnv <- lcnv[ind, ]
 
                 # same with lt_targ table

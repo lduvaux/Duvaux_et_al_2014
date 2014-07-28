@@ -14,7 +14,7 @@ main <- function(argv){
     subtarg <- read.table(SUBTARG, stringsAsFactors=F)
     refBaits <- sapply(subtarg$V5, Prepro_fixName)
     subtarg[,"V5"] <- refBaits
-    colnames(subtarg) <- c("Contig", "Start", "End", "Strand", "Name")
+    colnames(subtarg) <- c("Scaffold", "Start", "End", "Strand", "Name")
     t_targ0 <-  read.delim(TARG, stringsAsFactors=F)
     
         # 1.1) load reads count
@@ -41,7 +41,7 @@ main <- function(argv){
     t_targ <- t_targ0[ind,]
 
     # reorder genes vector
-        # reorder target table by V1 coordinates of contig and lower bp coordinate
+        # reorder target table by V1 coordinates of scaffold and lower bp coordinate
     first_coord <- sapply(1:nrow(t_targ), function(x) min(as.numeric(t_targ[x,c("startV1", "stopV1")])))
     ord <- order(t_targ$contigV1, first_coord)
     t_targ2 <- t_targ[ord,]
