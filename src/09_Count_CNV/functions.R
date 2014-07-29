@@ -64,6 +64,6 @@ draw_venn <- function(venns, font = "serif", marg = 0.2, sub_pos= c(0.5, 0.78), 
 
 draw_bar_chart <- function(CNV_distr_pro, cex=1.2){
     par(mar=c(5.2, 4.2, 4, 1))
-    mp <- barplot(CNV_distr_pro, axisnames = FALSE, xlab="Copy number", ylab="Frequency", cex.axis = cex, cex.names = cex, cex.lab = cex)
+    mp <- barplot(CNV_distr_pro, axisnames = FALSE, xlab="Rounded  value of alpha\n(CNV relative to standard)", ylab="Frequency", cex.axis = cex, cex.names = cex, cex.lab = cex)
     text(mp-0.3, par("usr")[3], labels = names(CNV_distr_pro), srt = 45, adj = c(1.1,1.1), xpd = TRUE, cex=cex+.1)
 }
