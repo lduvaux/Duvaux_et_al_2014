@@ -28,13 +28,13 @@ draw_lines <- function(v_sta, v_end, l_wd=0.5, l_ty=3, colo="red")
     points(x=v_sta, y=v_end, lwd=l_wd, lty=l_ty, type="l", col=colo)
 }
 
-plot_CNV_chr <- function(tab_star, tab_tar, tab_cnv, yli=c(-0.5, 2.5), centz=c(0.75,1.25), c_ex=.9, l_wd=.9, races, transp=F, alphaa=80)
+plot_CNV_chr <- function(tab_star, tab_tar, tab_cnv, prefmain="", yli=c(-0.5, 2.5), centz=c(0.75,1.25), c_ex=.9, l_wd=.9, races, transp=F, alphaa=80)
 #zcent: central zone, use the delimit the rounding area where alpha wil lbe rounded to 1
 {
     # 1) define preliminary parameters
         # 1.0) misc
     sub_targ <- tab_star$Name
-    scaffold <- unique(tab_star$Contig)
+    scaffold <- unique(tab_star$Scaffold)
     cnv_starg <- rownames(tab_cnv)
     gene <- collapse_elements(sub_targ[1], what=1:2)
     print(gene)
@@ -58,11 +58,12 @@ plot_CNV_chr <- function(tab_star, tab_tar, tab_cnv, yli=c(-0.5, 2.5), centz=c(0
 
     # 2) plot an empty graph
     main0 <- paste(gene_real_name, " (", scaffold, ")", sep="")
-    main <- ifelse(T%in%is.na(tab_tar[,"contigV2"]), paste(main0, "*", sep=""), main0)
+    main <- paste(prefmain, ifelse(T%in%is.na(tab_tar[,"contigV2"]), paste(main0, "*", sep=""), main0), sep="")
     rg_coo <- c(min(c(tab_tar$startV2,tab_tar$stopV2), na.rm=T), max(c(tab_tar$startV2,tab_tar$stopV2), na.rm=T))# define range of initial targets
     print("Range of displayed marker:")
     print(range(rg_coo))
-    plot(rg_coo, rep(1, 2), xlim=rg_coo, ylim=yli, type="n", main=main, xlab="Scaffold coordinate (bp)", ylab="Alpha (CNV relative to standard)")
+    plot(rg_coo, rep(1, 2), xlim=rg_coo, ylim=yli, type="n", main=NULL, xlab="Scaffold coordinate (bp)", ylab="Alpha (CNV relative to standard)")
+    title(main,adj=0, cex.main=1)
     points(x=c(-10, 10000000), y=c(0,0), type="l")	# add a lower box (x range is over large on purpose) 
 
     # 3) draw the rounding area
@@ -136,7 +137,7 @@ get_data4plot <- function(gn, t_targ, subtarg, alpha_matrix, adapt=T)
 
             ind <- grep (paste(gn, "_", sep=""), subtarg[,"Name"])
             lt_star <- subtarg[ind, ]
-            n_ctig <- sort(table(lt_star$Contig), decreasing=T)
+            n_ctig <- sort(table(lt_star$Scaffold), decreasing=T)
             
             ind <- grep (paste(gn, "_", sep=""), rownames(alpha_matrix))
             lcnv <- alpha_matrix[ind,]
@@ -151,14 +152,14 @@ get_data4plot <- function(gn, t_targ, subtarg, alpha_matrix, adapt=T)
                 
                 # detect good subtarget in initial subtargets
                 gd_ctig <- names(n_ctig)[1]
-                ind <- lt_star$Contig%in%gd_ctig
+                ind <- lt_star$Scaffold%in%gd_ctig
                 lt_star <- lt_star[ind,]    # subset initial table of subtargets
                 
                 # remove subtargets from bad scaffolds in lcnv
                     # fetch scaffolds of star in lt_cnv
 #~                ind <- match(rownames(lcnv), subtarg[, "Name"])
                 ind <- sapply(rownames(lcnv), function(x) which(x==subtarg[, "Name"]))
-                cnv_scaffolds <- subtarg[ind,"Contig"]
+                cnv_scaffolds <- subtarg[ind,"Scaffold"]
                 ind <- cnv_scaffolds%in%gd_ctig
                 lcnv <- lcnv[ind, ]
 
