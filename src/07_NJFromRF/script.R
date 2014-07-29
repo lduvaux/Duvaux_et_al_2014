@@ -46,17 +46,20 @@ main <- function(argv){
 
 	col_races <- col_races[ind]
 
-    root <- which(colnames(distance_matrix)==ROOT)
+    root <- which(colnames(distance_matrix)==ROOT)   
 	tree <- ladderize(root(nj(distance_matrix), root))
 	tree_edges <- get_tree_edges(tree)
 	edge_colors <- apply_colors_2_edges(tree, tree_edges, lane=F, col_races)
+
+    # change tip label
+    tree$tip.label <- sapply(tree$tip.label, function(x) unlist(strsplit(x, "_"))[1])
 
 
     ind_gd <- match(races_uniq, RACE_LEGEND[,1])
     races_uniq2 <- RACE_LEGEND[ind_gd,2]
 
 	pdf(PDF_NAME, height=12.9, width=9)
-    whole_fig(tree, col_races, edge_colors, races_uniq2, race_colo_raw, contig_rf, leg_pos=LEG_POS)
+    whole_fig(tree, col_races, edge_colors, races_uniq2, race_colo_raw, contig_rf, leg_pos=LEG_POS, cex_leaves=0.7, leg_cex=1.2)
 	dev.off()
 
 	jpeg(JPG_NAME, height=688*2, width=480*2, quality=100, res=72*2)

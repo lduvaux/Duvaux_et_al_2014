@@ -8,7 +8,7 @@ XLAB2 <- "Genetic proximity to the gold standard"
 YLAB2 <- "Frequency"
 
 # output
-JPG <- "Fig5.1_barplot_FqcyInPop_Fam-CpDup.jpeg"
-PDF <- "Fig5.1_barplot_FqcyInPop_Fam-CpDup.pdf"
-JPG2 <- "Fig5.2_barplot_FqcyInPop.jpeg"
-PDF2 <- "Fig5.2_barplot_FqcyInPop.pdf"
+JPG <- "Res_Fig5a_barplot_FqcyInPop_Fam-CpDup.jpeg"
+PDF <- "Res_Fig5a_barplot_FqcyInPop_Fam-CpDup.pdf"
+JPG2 <- "Res_Fig5b_barplot_FqcyInPop.jpeg"
+PDF2 <- "Res_Fig5b_barplot_FqcyInPop.pdf"

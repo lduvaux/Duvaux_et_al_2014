@@ -10,8 +10,8 @@ XLAB2 <- "Coding sequence length in bp\n(natural logarithm scale)"
 YLAB2 <- "CDD Probability"
 
 # output
-JPG <- "Fig4.1_barplot_fqcyCpCNV_truncated.jpeg"
-PDF <- "Fig4.1_barplot_fqcyCpCNV_truncated.pdf"
-JPG2 <- "Fig4.2_barplot_fqcyCpCNV_truncated-ExonLgth.jpeg"
-PDF2 <- "Fig4.2_barplot_fqcyCpCNV_truncated-ExonLgth.pdf"
+JPG <- "Res_Fig4a_barplot_fqcyCpCNV_truncated.jpeg"
+PDF <- "Res_Fig4a_barplot_fqcyCpCNV_truncated.pdf"
+JPG2 <- "Res_Fig4b_barplot_fqcyCpCNV_truncated-ExonLgth.jpeg"
+PDF2 <- "Res_Fig4b_barplot_fqcyCpCNV_truncated-ExonLgth.pdf"
 

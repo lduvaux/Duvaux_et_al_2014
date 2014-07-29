@@ -14,6 +14,6 @@ SKIP_MAIN <- F
 
 # outputs
 PDF1 <- "Res_Plot_CNV_along_Chr.pdf"
-PDF2 <- "Fig1_CNV_along_Chr_paper.pdf"
-JPG <- "Fig1_CNV_along_Chr_paper.jpg"
+PDF2 <- "Res_Fig1_CNV_along_Chr_paper.pdf"
+JPG <- "Res_Fig1_CNV_along_Chr_paper.jpg"
 FIL_LGTH <- "Res_LengthDifference_V1-V2.csv"
