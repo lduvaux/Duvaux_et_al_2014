@@ -13,7 +13,7 @@ ALPHA <- 120
 SKIP_MAIN <- F
 
 # outputs
-PDF1 <- "Plot_CNV_along_Chr.pdf"
+PDF1 <- "Res_Plot_CNV_along_Chr.pdf"
 PDF2 <- "Fig1_CNV_along_Chr_paper.pdf"
 JPG <- "Fig1_CNV_along_Chr_paper.jpg"
-FIL_LGTH <- "LengthDifference_V1-V2.csv"
+FIL_LGTH <- "Res_LengthDifference_V1-V2.csv"
