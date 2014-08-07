@@ -50,3 +50,11 @@ The succession of processing steps is orchestrated by a master `src/Makefile`.
 Each processing steps has its own folder and local `Makefile`.
 The master `Makefile` essentially calls `sub-Makefiles` in the good order.
 After if finishes, each processing steps generate an transitory `*.Rdata` file that can be loaded by another step.
+
+WARNINGS
+-------
+- The variable names are far to be consistent along the pipeline.
+Moreover, some terms were errouneously used instead of others (e.g.
+real scaffolds were most of time erroneously referred as 'contigs').
+However, in order to not introduce bugs in the scripts, we did not
+change the previous nomenclature.

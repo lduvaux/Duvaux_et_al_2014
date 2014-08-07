@@ -99,7 +99,7 @@ plot_tree <- function(tree, col_races, edge_colors, lane, libraries, races_uniq,
 		legend("topright", legend=c(libraries, races_uniq), col = col_lib_raw, lty = c(rep(1, length(libraries)), rep(-1, length(race_colo_raw))), lwd=2, bg = 'gray92', cex=0.8, text.col=c(rep("black", length(libraries)), race_colo_raw))
 	else 
 		legend("topright", legend=races_uniq, col = race_colo_raw, lwd=2, bg = 'gray92', cex=0.8)
-	title(paste("NJ tree of CNV distribution across aphid individuals\n", categ, " genes (", nbaits, " baits)", sep=""), cex.main=1.5, font=4)
+	title(paste("NJ tree of CNV distribution across aphid individuals\n", categ, " genes (", nbaits, " subtargets)", sep=""), cex.main=1.5, font=4)
 }
 
 processing_NJ <- function(i_categ, gene_categ, alpha_matrix, method, racine, lane, col_races, col_lib, libraries, races_uniq, col_lib_raw, race_colo_raw, baits)

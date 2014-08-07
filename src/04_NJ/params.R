@@ -3,6 +3,6 @@
 PREVIOUS_DATA <- "../03_ProcessingSegmentation.Rdata"
 RAW_DATA <- "../01_GetData.Rdata"
 METHOD <- "manhattan"	# "manhattan" or "ludo"
-ROOT <- 24
+ROOT <- "Lathyrus_281_T24"
 LANE <- FALSE
 PREFIX4PDF_NAME <- "Res_NJ_Polyn"
