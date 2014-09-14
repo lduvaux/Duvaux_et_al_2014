@@ -1,4 +1,4 @@
-"Gene"	"Aliases"	"Aliases3"	"GeneCateg"	"PromoterOf"	"contigV1"	"startV1"	"stopV1"	"strandV1"	"Npaths"	"contigV2"	"startV2"	"stopV2"	"strandV2"	"Qstart"	"Qstop"	"LQueryMapped"	"QueryLength"	"coverage"	"TrimmedCoverage"	"PcIdentity"	"matches"	"mismatches"	"indels"	"unknowns"	"TranslateStart"	"TranslateStop"	"NbOfAA"	"AAchanges"	"NewTargetName"
+"Gene"	"Aliases"	"Aliases3"	"GeneCateg"	"PromoterOf"	"contigV1"	"startV1"	"stopV1"	"strandV1"	"Npaths"	"scaffoldV2"	"startV2"	"stopV2"	"strandV2"	"Qstart"	"Qstop"	"LQueryMapped"	"QueryLength"	"coverage"	"TrimmedCoverage"	"PcIdentity"	"matches"	"mismatches"	"indels"	"unknowns"	"TranslateStart"	"TranslateStop"	"NbOfAA"	"AAchanges"	"NewTargetName"
 "Gr1"	"Gr_g1.1"	"Gr1.5"	"Gr"	"None"	"EQ126506"	88246	87972	"-"	1	"GL350420"	92448	92174	"-"	1	275	275	275	100	100	100	275	0	0	0	3	275	91	NA	"Gr_g1_1"
 "Gr1"	"Gr_g1.2"	"Gr1.2"	"Gr"	"None"	"EQ126506"	92112	91917	"-"	1	"GL350420"	96314	96119	"-"	1	196	196	196	100	100	100	196	0	0	0	3	197	65	NA	"Gr_g1_2"
 "Gr1"	"Gr_g1.3"	"Gr1.4"	"Gr"	"None"	"EQ126506"	90057	89872	"-"	1	"GL350420"	94259	94074	"-"	1	186	186	186	100	100	100	186	0	0	0	3	185	61	NA	"Gr_g1_3"
