@@ -1,0 +1,50 @@
+./08_GeneFamImptceTest/old2keep/Optimize_get_null_draw.R:32:    res <- aggregate(rnk ~ grp,df_fc,sum)
+./08_GeneFamImptceTest/old2keep/Optimize_get_null_draw.R:68:    res <- aggregate(rnk ~ grp,df_fc,sum)
+./08_GeneFamImptceTest/functions.R:517:    res <- aggregate(rnk ~ grp, df_fc, sum)
+./19_Plot_fqcy_Div-Rel/functions.R:5:    mp <- boxplot(y~x, ylim=yli, xaxt="n", col=colo, xlab="", ylab="", main=main, at=att, font.lab=2, cex.lab=cex_lab)
+./16_Binom_fqcy_Div-Rel/params.R:11:MODP2 <- Fqcy_all ~ LnIntronLength + LnExonLength + Family + trimmed + Race + Phylog_lvl + CpDup
+./16_Binom_fqcy_Div-Rel/16_Binom_fqcy_Div-Rel.log:355:Formula: Fqcy_all ~ LnExonLength + Family + CpDup + Phylog_lvl + trimmed +      Family * CpDup + (1 | Race) + (1 | Gene) 
+./16_Binom_fqcy_Div-Rel/16_Binom_fqcy_Div-Rel.log:418:Global model call: glmer(formula = Fqcy_all ~ LnExonLength + Family + CpDup + Phylog_lvl + 
+./16_Binom_fqcy_Div-Rel/16_Binom_fqcy_Div-Rel.log:571:Formula: Fqcy_all ~ CpDup + Phylog_lvl + (1 | Race) + (1 | Gene) 
+./16_Binom_fqcy_Div-Rel/GLM16-1_FqcyMax.txt:3:Formula: Fqcy_all ~ LnExonLength + Family + CpDup + Phylog_lvl + trimmed +      Family * CpDup + (1 | Race) + (1 | Gene) 
+./16_Binom_fqcy_Div-Rel/GLM16-3_CpDupFqcybestMdl.txt:3:Formula: Fqcy_all ~ CpDup + Phylog_lvl + (1 | Race) + (1 | Gene) 
+./16_Binom_fqcy_Div-Rel/GLM16-2_DupFqcyDredge.txt:1:Global model call: glmer(formula = Fqcy_all ~ LnExonLength + Family + CpDup + Phylog_lvl + 
+./24_ShowPreProcessingEffic/script.R:46:		lines(d1$y ~ d1$x,lwd=2,col="red")
+./24_ShowPreProcessingEffic/script.R:47:		lines(d2$y ~ d2$x,lwd=2,col="green")
+./18_Plot_Dup-CpDup_Div-Rel/script.R:39:    p <- ggplot(tab, aes(x = N_exon, y = LgCoding, color = Categ)) + geom_point() + facet_wrap( ~ Categ, ncol=2)
+./utils/draft_functions.R:36:        facet_wrap(~  Family)
+./utils/draft_functions.R:55:    bp <- boxplot(pp~fac, xaxt="n", lwd=1.5, col=vcol)
+./utils/randomForest_helperFuns.R:255:		mp <- boxplot(x_prim[, bait]~y_prim, plot=F)
+./utils/randomForest_helperFuns.R:260:			mp <- boxplot(x_prim[, bait] ~ y_prim, border=v_col, xlab="", ylab="Nber of copies", main=main, names = rep("",8), col.main=colmain)
+./utils/randomForest_helperFuns.R:262:			mp <- boxplot(x_prim[, bait] ~ y_prim, border=v_col, xlab="", ylab="Nber of copies", main=main, names = rep("",8), ylim=ylim, col.main=colmain)
+./03_ProcessingSegmentation/script.R:43:    gene_per_categ <- aggregate(Gene ~ GeneCateg, df,function(x)length(unique(x)))
+./26_Stats_Best_Subtarg_RF/script.R:32:boxplot(GLMtab_1Pgen$LnIntronLength ~ GLMtab_1Pgen$trimmed)
+./26_Stats_Best_Subtarg_RF/script.R:33:print(t.test(GLMtab_1Pgen$LnIntronLength ~ GLMtab_1Pgen$trimmed))
+./26_Stats_Best_Subtarg_RF/script.R:34:print(kruskal.test(GLMtab_1Pgen$LnIntronLength ~ GLMtab_1Pgen$trimmed))
+./26_Stats_Best_Subtarg_RF/script.R:36:boxplot(GLMtab_1Pgen$LnGeneLength ~ GLMtab_1Pgen$trimmed)
+./26_Stats_Best_Subtarg_RF/script.R:37:print(t.test(GLMtab_1Pgen$LnGeneLength ~ GLMtab_1Pgen$trimmed))
+./26_Stats_Best_Subtarg_RF/script.R:38:print(kruskal.test(GLMtab_1Pgen$LnGeneLength ~ GLMtab_1Pgen$trimmed))
+./14_Binom_Polym_Div-Rel/GLM14-1_PolMax.txt:3:Formula: Polymorphic ~ LnIntronLength + LnExonLength + Family + Phylog_lvl +      trimmed + Family * Phylog_lvl + (1 | Race) + (1 | Gene) 
+./14_Binom_Polym_Div-Rel/params.R:14:MODP2 <- Polymorphic ~ LnIntronLength + LnExonLength + Family + trimmed + Race + Phylog_lvl
+./14_Binom_Polym_Div-Rel/14_Binom_Polym_Div-Rel.log:260:Formula: Polymorphic ~ LnIntronLength + LnExonLength + Family + Phylog_lvl +      trimmed + Family * Phylog_lvl + (1 | Race) + (1 | Gene) 
+./14_Binom_Polym_Div-Rel/14_Binom_Polym_Div-Rel.log:325:Global model call: glmer(formula = Polymorphic ~ LnIntronLength + LnExonLength + 
+./14_Binom_Polym_Div-Rel/14_Binom_Polym_Div-Rel.log:602:Formula: Polymorphic ~ Family + Phylog_lvl + trimmed + (1 | Race) + (1 |      Gene) 
+./14_Binom_Polym_Div-Rel/GLM14-3_PolbestMdl.txt:3:Formula: Polymorphic ~ Family + Phylog_lvl + trimmed + (1 | Race) + (1 |      Gene) 
+./14_Binom_Polym_Div-Rel/GLM14-2_PolDredge.txt:1:Global model call: glmer(formula = Polymorphic ~ LnIntronLength + LnExonLength + 
+./02_PreProcessing/transformDataByFit.R:4:        form <- y ~ a * x^2 + b * x + c
+./02_PreProcessing/transformDataByFit.R:8:        form <- y ~ a * x^2 + b * x 
+./02_PreProcessing/transformDataByFit.R:15:        form <- y ~ a * x^3 + b * x^2 + c * x + d
+./02_PreProcessing/transformDataByFit.R:19:        form <- y ~ a * x^3 + b * x^2 + c * x  
+./02_PreProcessing/transformDataByFit.R:82:		plot(new_y[samp] ~ x[samp], pch = 20, ylim = c(0,0.02), xlim = c(0,0.02),cex= 0.3, main=main, col.main=col.main, col="red")
+./02_PreProcessing/transformDataByFit.R:96:		if (!is.null(model$mod)) lines(predict(model$mod,list(x = simx)) ~ simx,col ='blue', lwd = 2.25, lty = 2)
+./15_Binom_Dup-CpDup_Div-Rel/GLM15-2_DupDredge.txt:1:Global model call: glmer(formula = Duplication ~ LnIntronLength + LnExonLength + 
+./15_Binom_Dup-CpDup_Div-Rel/params.R:11:MODP2 <- Duplication ~ LnIntronLength + LnExonLength + Family + trimmed + Race + Phylog_lvl
+./15_Binom_Dup-CpDup_Div-Rel/15_Binom_Dup-CpDup_Div-Rel.log:218:Formula: Duplication ~ LnIntronLength + LnExonLength + Family + trimmed +      (1 | Race) + (1 | Gene) 
+./15_Binom_Dup-CpDup_Div-Rel/15_Binom_Dup-CpDup_Div-Rel.log:277:Global model call: glmer(formula = Duplication ~ LnIntronLength + LnExonLength + 
+./15_Binom_Dup-CpDup_Div-Rel/15_Binom_Dup-CpDup_Div-Rel.log:327:Formula: Duplication ~ LnExonLength + trimmed + (1 | Race) + (1 | Gene) 
+./15_Binom_Dup-CpDup_Div-Rel/GLM15-1_DupMax.txt:3:Formula: Duplication ~ LnIntronLength + LnExonLength + Family + trimmed +      (1 | Race) + (1 | Gene) 
+./15_Binom_Dup-CpDup_Div-Rel/GLM15-3_CpDupbestMdl.txt:3:Formula: Duplication ~ LnExonLength + trimmed + (1 | Race) + (1 | Gene) 
+./28_Compute_Vst/functions.R:119:    res <- boxplot(vec_vst_new~vec_families, main=main)
+./28_Compute_Vst/functions.R:130:        test <- wilcox.test(sub_val ~ sub_v_factors)
+./28_Compute_Vst/functions.R:132:        test <- kruskal.test(sub_val ~ sub_v_factors)
+./17_Plot_Polym_Div-Rel/script.R:37:    form <- truncated ~ Family
